@@ -1,0 +1,15 @@
+---
+language: java
+jdk: openjdk11
+dist: xenial
+
+git:
+  depth: false
+  quiet: true
+
+services:
+  - docker
+
+cache:
+  directories:
+    - ${HOME}/.m2/repository
