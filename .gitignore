@@ -1,3 +1,27 @@
-.idea/
-target/
+*.class
+
+# Eclipse
+bin/
+**/bin/
+.classpath
+.settings
+.project
+
+# IntelliJ IDEA
+.idea
+*.iws
 *.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Maven
+target/
+**/target/
+*.log
+*.log.*
+
