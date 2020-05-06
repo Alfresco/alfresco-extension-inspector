@@ -30,8 +30,10 @@ jobs:
   include:
     - name: "Build + Tests"
       stage: build
+      before_install: bash _ci/init.sh
       script: bash _ci/build.sh
 
     - name: "WhiteSource"
       stage: build
+      before_install: bash _ci/init.sh
       script: bash _ci/whitesource.sh
