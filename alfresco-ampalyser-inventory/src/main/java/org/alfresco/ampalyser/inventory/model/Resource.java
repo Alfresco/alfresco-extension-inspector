@@ -11,10 +11,23 @@ package org.alfresco.ampalyser.inventory.model;
  * @author Lucian Tuca
  * created on 07/05/2020
  */
-public enum ResourceType
+public interface Resource
 {
-    FILE,
-    BEAN,
-    PUBLIC_API,
-    THIRD_PARTY;
+    enum Type
+    {
+        FILE, BEAN, PUBLIC_API, THIRD_PARTY;
+    }
+
+    Type getType();
+
+    void setType(Type type);
+
+    boolean isFile();
+
+    boolean isBean();
+
+    boolean isPublicApi();
+
+    boolean isThirdParty();
+
 }
