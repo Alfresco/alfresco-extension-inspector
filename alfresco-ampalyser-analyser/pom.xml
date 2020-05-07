@@ -15,7 +15,8 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco.ampalyser</groupId>
-            <artifactId>alfresco-ampalyser</artifactId>
+            <artifactId>alfresco-ampalyser-inventory</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
