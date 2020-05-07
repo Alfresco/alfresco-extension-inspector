@@ -19,6 +19,24 @@
         <java.version>11</java.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/Alfresco/amp-a-lyser.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/amp-a-lyser.git</developerConnection>
+        <url>https://github.com/Alfresco/amp-a-lyser</url>
+    </scm>
+
+    <distributionManagement>
+        <!-- For now internal repositories -->
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <modules>
         <module>alfresco-ampalyser-inventory</module>
         <module>alfresco-ampalyser-analyser</module>
