@@ -45,7 +45,7 @@ public abstract class AbstractResource implements Resource
     }
 
     @Override
-    public boolean isThirdParty()
+    public boolean isClasspathElement()
     {
         return type == Type.CLASSPATH_ELEMENT;
     }

@@ -28,6 +28,6 @@ public interface Resource
 
     boolean isPublicApi();
 
-    boolean isThirdParty();
+    boolean isClasspathElement();
 
 }
