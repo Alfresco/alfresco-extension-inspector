@@ -16,7 +16,7 @@ public class InventoryReport
 {
     private String version;
     private List<String> resources = new ArrayList<>();
-    private List<ClasspathItem> classpath = new ArrayList<>();
+    private List<ClasspathElement> classpath = new ArrayList<>();
     private List<Bean> beans = new ArrayList<>();
     private List<String> alfrescoPublicApi = new ArrayList<>();
 
@@ -40,12 +40,12 @@ public class InventoryReport
         this.resources = resources;
     }
 
-    public List<ClasspathItem> getClasspath()
+    public List<ClasspathElement> getClasspath()
     {
         return classpath;
     }
 
-    public void setClasspath(List<ClasspathItem> classpath)
+    public void setClasspath(List<ClasspathElement> classpath)
     {
         this.classpath = classpath;
     }

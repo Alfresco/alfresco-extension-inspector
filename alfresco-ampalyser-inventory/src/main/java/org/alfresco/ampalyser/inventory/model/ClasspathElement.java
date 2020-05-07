@@ -10,12 +10,12 @@ package org.alfresco.ampalyser.inventory.model;
 
 import java.util.Objects;
 
-public class ClasspathItem
+public class ClasspathElement extends AbstractResource
 {
     private String name;
     private String object;
 
-    public ClasspathItem(String name, String object)
+    public ClasspathElement(String name, String object)
     {
         this.name = name;
         this.object = object;
@@ -46,9 +46,9 @@ public class ClasspathItem
     {
         if (this == o)
             return true;
-        if (!(o instanceof ClasspathItem))
+        if (!(o instanceof ClasspathElement))
             return false;
-        ClasspathItem that = (ClasspathItem) o;
+        ClasspathElement that = (ClasspathElement) o;
         return Objects.equals(name, that.name) && Objects.equals(object, that.object);
     }
 

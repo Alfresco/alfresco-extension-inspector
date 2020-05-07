@@ -41,7 +41,7 @@ public abstract class AbstractResource implements Resource
     @Override
     public boolean isPublicApi()
     {
-        return type == Type.ALFRSCO_PUBLIC_API;
+        return type == Type.ALFRESCO_PUBLIC_API;
     }
 
     @Override

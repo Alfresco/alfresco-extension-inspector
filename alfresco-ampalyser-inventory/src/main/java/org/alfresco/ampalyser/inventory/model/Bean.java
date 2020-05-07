@@ -10,7 +10,7 @@ package org.alfresco.ampalyser.inventory.model;
 
 import java.util.Objects;
 
-public class Bean
+public class Bean extends AbstractResource
 {
     private String name;
     private String location;
