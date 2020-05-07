@@ -8,11 +8,9 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
-import java.io.FileInputStream;
-
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 
 public interface InventoryService
 {
-    InventoryReport extractInventoryReport(FileInputStream war);
+    InventoryReport extractInventoryReport(String warPath);
 }

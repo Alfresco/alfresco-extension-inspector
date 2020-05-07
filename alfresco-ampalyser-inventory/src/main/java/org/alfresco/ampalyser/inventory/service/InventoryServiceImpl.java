@@ -8,8 +8,6 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
-import java.io.FileInputStream;
-
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class InventoryServiceImpl implements InventoryService
 {
     @Override
-    public InventoryReport extractInventoryReport(FileInputStream war)
+    public InventoryReport extractInventoryReport(String warPath)
     {
         return null;
     }
