@@ -15,7 +15,7 @@ public interface Resource
 {
     enum Type
     {
-        FILE, BEAN, PUBLIC_API, THIRD_PARTY;
+        FILE, BEAN, ALFRSCO_PUBLIC_API, CLASSPATH_ELEMENT
     }
 
     Type getType();
