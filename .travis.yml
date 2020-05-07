@@ -1,0 +1,39 @@
+---
+language: java
+jdk: openjdk11
+dist: xenial
+
+
+git:
+  depth: false
+  quiet: true
+
+
+cache:
+  directories:
+    - ${HOME}/.m2/repository
+
+
+branches:
+  only:
+    - master
+    - /support\/.*/
+    - /fix\/.*/
+    - /feature\/.*/
+
+
+stages:
+  - build
+
+
+jobs:
+  include:
+    - name: "Build + Tests"
+      stage: build
+      before_install: bash _ci/init.sh
+      script: bash _ci/build.sh
+
+    - name: "WhiteSource"
+      stage: build
+      before_install: bash _ci/init.sh
+      script: bash _ci/whitesource.sh
