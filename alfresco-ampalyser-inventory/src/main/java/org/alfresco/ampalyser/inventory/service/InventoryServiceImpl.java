@@ -37,6 +37,7 @@ public class InventoryServiceImpl implements InventoryService
         try
         {
             ZipEntry ze = zis.getNextEntry();
+            System.out.println("Starting war processing");
             while (ze != null)
             {
                 Map<Resource.Type, List<Resource>> resources = resourceProcessor
