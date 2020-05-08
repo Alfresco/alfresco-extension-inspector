@@ -35,9 +35,9 @@ public class InventoryReport
         return resources;
     }
 
-    public void setResources(List<String> resources)
+    public void addResource(String resource)
     {
-        this.resources = resources;
+        this.resources.add(resource);
     }
 
     public List<ClasspathElement> getClasspath()
@@ -45,9 +45,9 @@ public class InventoryReport
         return classpath;
     }
 
-    public void setClasspath(List<ClasspathElement> classpath)
+    public void addClasspathElement(ClasspathElement classpathElement)
     {
-        this.classpath = classpath;
+        this.classpath.add(classpathElement);
     }
 
     public List<Bean> getBeans()
@@ -55,9 +55,9 @@ public class InventoryReport
         return beans;
     }
 
-    public void setBeans(List<Bean> beans)
+    public void addBean(Bean bean)
     {
-        this.beans = beans;
+        this.beans.add(bean);
     }
 
     public List<String> getAlfrescoPublicApi()
@@ -65,9 +65,9 @@ public class InventoryReport
         return alfrescoPublicApi;
     }
 
-    public void setAlfrescoPublicApi(List<String> alfrescoPublicApi)
+    public void addAlfrescoPublicApi(String alfrescoPublicApi)
     {
-        this.alfrescoPublicApi = alfrescoPublicApi;
+        this.alfrescoPublicApi.add(alfrescoPublicApi);
     }
 
     @Override

@@ -28,4 +28,9 @@ public class AlfrescoPublicApiInventory implements Inventory
         //TODO add logic
         return null;
     }
+
+    public Resource.Type getType()
+    {
+        return Resource.Type.ALFRESCO_PUBLIC_API;
+    }
 }

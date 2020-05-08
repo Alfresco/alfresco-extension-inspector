@@ -28,4 +28,10 @@ public class FileInventory implements Inventory
         //TODO add logic
         return null;
     }
+
+    @Override
+    public Resource.Type getType()
+    {
+        return Resource.Type.FILE;
+    }
 }

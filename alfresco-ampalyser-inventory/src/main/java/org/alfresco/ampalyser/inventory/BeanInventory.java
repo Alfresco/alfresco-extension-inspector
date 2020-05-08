@@ -28,4 +28,10 @@ public class BeanInventory implements Inventory
         //TODO add logic
         return null;
     }
+
+    @Override
+    public Resource.Type getType()
+    {
+        return Resource.Type.BEAN;
+    }
 }

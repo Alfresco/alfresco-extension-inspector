@@ -16,4 +16,6 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 public interface Inventory
 {
     List<Resource> processResource(ZipEntry resource);
+
+    Resource.Type getType();
 }

@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.inventory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -28,7 +29,10 @@ public class ResourceProcessor
 
     public Map<Resource.Type, List<Resource>> processResource(ZipEntry resource)
     {
-        //TODO add logic
-        return null;
+        Map<Resource.Type, List<Resource>> resources = new HashMap<>();
+        inventories.stream()
+            .forEach(inventory ->
+                resources.put(inventory.getType(), inventory.processResource(resource)));
+        return resources;
     }
 }
