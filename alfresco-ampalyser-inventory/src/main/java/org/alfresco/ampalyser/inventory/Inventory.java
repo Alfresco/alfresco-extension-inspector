@@ -8,9 +8,12 @@
 
 package org.alfresco.ampalyser.inventory;
 
+import java.util.List;
 import java.util.zip.ZipEntry;
+
+import org.alfresco.ampalyser.inventory.model.Resource;
 
 public interface Inventory
 {
-    void processResource(ZipEntry resource);
+    List<Resource> processResource(ZipEntry resource);
 }

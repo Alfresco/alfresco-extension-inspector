@@ -8,8 +8,13 @@
 
 package org.alfresco.ampalyser.inventory;
 
+import java.util.List;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.inventory.model.Resource;
+import org.springframework.stereotype.Component;
+
+@Component
 public class ClasspathElementInventory implements Inventory
 {
     public ClasspathElementInventory(ResourceProcessor processor)
@@ -18,8 +23,9 @@ public class ClasspathElementInventory implements Inventory
     }
 
     @Override
-    public void processResource(ZipEntry resource)
+    public List<Resource> processResource(ZipEntry resource)
     {
-
+        //TODO add logic
+        return null;
     }
 }

@@ -10,8 +10,13 @@ package org.alfresco.ampalyser.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.inventory.model.Resource;
+import org.springframework.stereotype.Component;
+
+@Component
 public class ResourceProcessor
 {
     private List<Inventory> inventories = new ArrayList<>();
@@ -21,8 +26,9 @@ public class ResourceProcessor
         inventories.add(inventory);
     }
 
-    public void processResource(ZipEntry resource)
+    public Map<Resource.Type, List<Resource>> processResource(ZipEntry resource)
     {
-        inventories.stream().forEach(inventory -> inventory.processResource(resource));
+        //TODO add logic
+        return null;
     }
 }

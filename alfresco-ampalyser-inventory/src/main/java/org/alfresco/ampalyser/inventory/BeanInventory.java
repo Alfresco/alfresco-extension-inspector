@@ -8,17 +8,24 @@
 
 package org.alfresco.ampalyser.inventory;
 
+import java.util.List;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.inventory.model.Resource;
+import org.springframework.stereotype.Component;
+
+@Component
 public class BeanInventory implements Inventory
 {
     public BeanInventory(ResourceProcessor processor)
     {
         processor.attach(this);
     }
-    @Override
-    public void processResource(ZipEntry resource)
-    {
 
+    @Override
+    public List<Resource> processResource(ZipEntry resource)
+    {
+        //TODO add logic
+        return null;
     }
 }
