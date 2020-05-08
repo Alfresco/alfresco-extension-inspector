@@ -14,7 +14,19 @@ package org.alfresco.ampalyser.inventory.model;
  */
 public abstract class AbstractResource implements Resource
 {
+    private String name;
     private Resource.Type type;
+    private String path; // TODO definingObject? or location?
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
     public Resource.Type getType()
     {
@@ -48,5 +60,15 @@ public abstract class AbstractResource implements Resource
     public boolean isClasspathElement()
     {
         return type == Type.CLASSPATH_ELEMENT;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
     }
 }
