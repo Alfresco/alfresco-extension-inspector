@@ -15,10 +15,10 @@ import java.util.Objects;
 public class InventoryReport
 {
     private String version;
-    private List<String> files = new ArrayList<>(); // TODO become List<FileResource>
+    private List<FileResource> files = new ArrayList<>();
     private List<ClasspathElementResource> classpath = new ArrayList<>();
     private List<BeanResource> beanResources = new ArrayList<>();
-    private List<String> alfrescoPublicApi = new ArrayList<>(); // TODO become List<AlfrescoPublicApiResource>
+    private List<AlfrescoPublicApiResource> alfrescoPublicApi = new ArrayList<>();
 
     public String getVersion()
     {
@@ -30,14 +30,14 @@ public class InventoryReport
         this.version = version;
     }
 
-    public List<String> getFiles()
+    public List<FileResource> getFiles()
     {
         return files;
     }
 
-    public void addResource(String resource)
+    public void addResource(FileResource file)
     {
-        this.files.add(resource);
+        this.files.add(file);
     }
 
     public List<ClasspathElementResource> getClasspath()
@@ -60,12 +60,12 @@ public class InventoryReport
         this.beanResources.add(beanResource);
     }
 
-    public List<String> getAlfrescoPublicApi()
+    public List<AlfrescoPublicApiResource> getAlfrescoPublicApi()
     {
         return alfrescoPublicApi;
     }
 
-    public void addAlfrescoPublicApi(String alfrescoPublicApi)
+    public void addAlfrescoPublicApi(AlfrescoPublicApiResource alfrescoPublicApi)
     {
         this.alfrescoPublicApi.add(alfrescoPublicApi);
     }
