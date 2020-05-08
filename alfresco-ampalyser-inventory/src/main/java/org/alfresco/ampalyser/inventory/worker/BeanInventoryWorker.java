@@ -6,32 +6,41 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.ampalyser.inventory.worker;
+
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BeanInventory implements Inventory
+public class BeanInventoryWorker extends AbstractInventoryWorker
 {
-    public BeanInventory(ResourceProcessor processor)
+    public BeanInventoryWorker(EntryProcessor processor)
     {
         processor.attach(this);
     }
 
     @Override
-    public List<Resource> processResource(ZipEntry resource)
+    public List<Resource> processInternal(ZipEntry zipEntry)
     {
         //TODO add logic
-        return null;
+        return emptyList();
     }
 
     @Override
     public Resource.Type getType()
     {
         return Resource.Type.BEAN;
+    }
+
+    @Override
+    public boolean canProcessEntry(ZipEntry entry)
+    {
+        return entry.getName().endsWith(".xml");
     }
 }

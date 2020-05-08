@@ -6,16 +6,19 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.ampalyser.inventory.model;
 
-import java.util.List;
-import java.util.zip.ZipEntry;
-
-import org.alfresco.ampalyser.inventory.model.Resource;
-
-public interface Inventory
+public class BeanResource extends AbstractResource
 {
-    List<Resource> processResource(ZipEntry resource);
+    private String id;
 
-    Resource.Type getType();
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 }

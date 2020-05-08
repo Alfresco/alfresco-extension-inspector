@@ -6,31 +6,40 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.ampalyser.inventory.worker;
+
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AlfrescoPublicApiInventory implements Inventory
+public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
 {
-    public AlfrescoPublicApiInventory(ResourceProcessor processor)
+    public AlfrescoPublicApiInventoryWorker(EntryProcessor processor)
     {
         processor.attach(this);
     }
 
     @Override
-    public List<Resource> processResource(ZipEntry resource)
+    public List<Resource> processInternal(ZipEntry zipEntry)
     {
         //TODO add logic
-        return null;
+        return emptyList();
     }
 
     public Resource.Type getType()
     {
         return Resource.Type.ALFRESCO_PUBLIC_API;
+    }
+
+    @Override
+    public boolean canProcessEntry(ZipEntry entry)
+    {
+        return false;
     }
 }

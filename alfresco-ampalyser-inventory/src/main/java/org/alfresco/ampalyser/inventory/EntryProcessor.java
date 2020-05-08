@@ -15,24 +15,25 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ResourceProcessor
+public class EntryProcessor
 {
-    private List<Inventory> inventories = new ArrayList<>();
+    private List<InventoryWorker> inventoryWorkers = new ArrayList<>();
 
-    public void attach(Inventory inventory)
+    public void attach(InventoryWorker inventoryWorker)
     {
-        inventories.add(inventory);
+        inventoryWorkers.add(inventoryWorker);
     }
 
-    public Map<Resource.Type, List<Resource>> processResource(ZipEntry resource)
+    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry)
     {
         Map<Resource.Type, List<Resource>> resources = new HashMap<>();
-        inventories.stream()
-            .forEach(inventory ->
-                resources.put(inventory.getType(), inventory.processResource(resource)));
+        inventoryWorkers
+            .forEach(inventoryWorker ->
+                resources.put(inventoryWorker.getType(), inventoryWorker.processZipEntry(warEntry)));
         return resources;
     }
 }

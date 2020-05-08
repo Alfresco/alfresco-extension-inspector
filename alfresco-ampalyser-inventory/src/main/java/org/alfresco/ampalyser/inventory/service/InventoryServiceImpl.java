@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.inventory.ResourceProcessor;
+import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class InventoryServiceImpl implements InventoryService
 {
     @Autowired
-    private ResourceProcessor resourceProcessor;
+    private EntryProcessor entryProcessor;
 
     @Override
     public InventoryReport extractInventoryReport(String warPath)
@@ -40,8 +40,8 @@ public class InventoryServiceImpl implements InventoryService
             System.out.println("Starting war processing");
             while (ze != null)
             {
-                Map<Resource.Type, List<Resource>> resources = resourceProcessor
-                    .processResource(ze);
+                Map<Resource.Type, List<Resource>> resources = entryProcessor
+                    .processWarEntry(ze);
 
                 //TODO add found resources to inventory report
 

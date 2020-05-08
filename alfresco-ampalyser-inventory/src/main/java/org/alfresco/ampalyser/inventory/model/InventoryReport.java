@@ -15,10 +15,10 @@ import java.util.Objects;
 public class InventoryReport
 {
     private String version;
-    private List<String> resources = new ArrayList<>();
-    private List<ClasspathElement> classpath = new ArrayList<>();
-    private List<Bean> beans = new ArrayList<>();
-    private List<String> alfrescoPublicApi = new ArrayList<>();
+    private List<String> files = new ArrayList<>(); // TODO become List<FileResource>
+    private List<ClasspathElementResource> classpath = new ArrayList<>();
+    private List<BeanResource> beanResources = new ArrayList<>();
+    private List<String> alfrescoPublicApi = new ArrayList<>(); // TODO become List<AlfrescoPublicApiResource>
 
     public String getVersion()
     {
@@ -30,34 +30,34 @@ public class InventoryReport
         this.version = version;
     }
 
-    public List<String> getResources()
+    public List<String> getFiles()
     {
-        return resources;
+        return files;
     }
 
     public void addResource(String resource)
     {
-        this.resources.add(resource);
+        this.files.add(resource);
     }
 
-    public List<ClasspathElement> getClasspath()
+    public List<ClasspathElementResource> getClasspath()
     {
         return classpath;
     }
 
-    public void addClasspathElement(ClasspathElement classpathElement)
+    public void addClasspathElement(ClasspathElementResource classpathElementResource)
     {
-        this.classpath.add(classpathElement);
+        this.classpath.add(classpathElementResource);
     }
 
-    public List<Bean> getBeans()
+    public List<BeanResource> getBeanResources()
     {
-        return beans;
+        return beanResources;
     }
 
-    public void addBean(Bean bean)
+    public void addBean(BeanResource beanResource)
     {
-        this.beans.add(bean);
+        this.beanResources.add(beanResource);
     }
 
     public List<String> getAlfrescoPublicApi()
@@ -78,22 +78,23 @@ public class InventoryReport
         if (!(o instanceof InventoryReport))
             return false;
         InventoryReport that = (InventoryReport) o;
-        return Objects.equals(version, that.version) && Objects.equals(resources, that.resources)
-            && Objects.equals(classpath, that.classpath) && Objects.equals(beans, that.beans)
+        return Objects.equals(version, that.version) && Objects.equals(files, that.files)
+            && Objects.equals(classpath, that.classpath) && Objects.equals(
+            beanResources, that.beanResources)
             && Objects.equals(alfrescoPublicApi, that.alfrescoPublicApi);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(version, resources, classpath, beans, alfrescoPublicApi);
+        return Objects.hash(version, files, classpath, beanResources, alfrescoPublicApi);
     }
 
     @Override
     public String toString()
     {
-        return "InventoryReport{" + "version='" + version + '\'' + ", resources=" + resources
-            + ", classpath=" + classpath + ", beans=" + beans + ", alfrescoPublicApi="
+        return "InventoryReport{" + "version='" + version + '\'' + ", resources=" + files
+            + ", classpath=" + classpath + ", beans=" + beanResources + ", alfrescoPublicApi="
             + alfrescoPublicApi + '}';
     }
 }
