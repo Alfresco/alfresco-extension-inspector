@@ -111,7 +111,11 @@ public class AlfrescoWarInventory {
         ZipInputStream libZis = new ZipInputStream(bis);
         ZipEntry libZe = libZis.getNextEntry();
         while(libZe != null) {
-            if(!(libZe.isDirectory() || libZe.getName().startsWith("META-INF/") || libZe.getName().equals("module-info.class") || libZe.getName().equalsIgnoreCase("license.txt") || libZe.getName().equalsIgnoreCase("notice.txt"))) {
+            if(!(libZe.isDirectory() ||
+                    libZe.getName().startsWith("META-INF/") ||
+                    libZe.getName().equals("module-info.class") ||
+                    libZe.getName().equalsIgnoreCase("license.txt") ||
+                    libZe.getName().equalsIgnoreCase("notice.txt"))) {
                 addFileToClasspath(libZis, libZe, true, webArchiveElement.getName());
             }
             libZis.closeEntry();

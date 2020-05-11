@@ -26,7 +26,7 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
         //TODO add logic
         return emptyList();
