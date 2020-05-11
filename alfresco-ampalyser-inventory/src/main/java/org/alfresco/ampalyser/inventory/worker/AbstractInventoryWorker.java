@@ -21,14 +21,14 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 public abstract  class AbstractInventoryWorker implements InventoryWorker
 {
     @Override
-    public List<Resource> processZipEntry(ZipEntry entry)
+    public List<Resource> processZipEntry(ZipEntry entry, byte[] data)
     {
         if (this.canProcessEntry(entry))
         {
-            return processInternal(entry);
+            return processInternal(entry, data);
         }
         return emptyList();
     }
 
-    public abstract List<Resource> processInternal(ZipEntry entry);
+    public abstract List<Resource> processInternal(ZipEntry entry, byte[] data);
 }

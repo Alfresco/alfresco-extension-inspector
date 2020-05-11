@@ -41,7 +41,7 @@ public class InventoryServiceImpl implements InventoryService
             while (ze != null)
             {
                 Map<Resource.Type, List<Resource>> resources = entryProcessor
-                    .processWarEntry(ze);
+                    .processWarEntry(ze, zis);
 
                 //TODO add found resources to inventory report
 
