@@ -42,9 +42,10 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public boolean canProcessEntry(ZipEntry entry)
+    public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
-        return entry != null && !isJar(entry);
+        return !(entry == null || definingObject == null) &&
+            (entry.getName().startsWith(WEB_INF_CLASSES) || isFromJar(entry, definingObject));
     }
 
     private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
@@ -63,8 +64,13 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
         return List.of(new ClasspathElementResource(resourceName, definingObject));
     }
 
+    private boolean isFromJar(ZipEntry entry, String definingObject)
+    {
+        return !isJar(entry) && definingObject.startsWith(WEB_INF_LIB);
+    }
+
     private boolean isJar(ZipEntry entry)
     {
-        return entry.getName().startsWith("WEB-INF/lib/");
+        return entry.getName().startsWith(WEB_INF_LIB);
     }
 }

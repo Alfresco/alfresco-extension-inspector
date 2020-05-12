@@ -38,7 +38,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public boolean canProcessEntry(ZipEntry entry)
+    public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
         return false;
     }

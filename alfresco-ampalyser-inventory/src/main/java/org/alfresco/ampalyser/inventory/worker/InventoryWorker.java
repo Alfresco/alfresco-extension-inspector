@@ -19,5 +19,5 @@ public interface InventoryWorker
 
     Resource.Type getType();
 
-    boolean canProcessEntry(ZipEntry entry);
+    boolean canProcessEntry(ZipEntry entry, String definingObject);
 }
