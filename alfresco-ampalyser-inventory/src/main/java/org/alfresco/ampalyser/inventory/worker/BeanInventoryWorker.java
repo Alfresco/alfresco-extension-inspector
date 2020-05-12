@@ -127,7 +127,10 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
                         BeanResource beanResource = new BeanResource();
                         beanResource.setId(beanId);
                         beanResource.setName(beanName);
+                        beanResource.setDefiningObject(definingObject);
+
                         foundBeans.add(beanResource);
+                        LOG.debug("Added bean: " + beanId + " found in: " + definingObject);
                     }
                 }
             }

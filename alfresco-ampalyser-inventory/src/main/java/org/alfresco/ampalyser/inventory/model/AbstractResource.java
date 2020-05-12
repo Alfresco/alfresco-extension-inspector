@@ -16,7 +16,7 @@ public abstract class AbstractResource implements Resource
 {
     private String name;
     private Resource.Type type;
-    private String path; // TODO definingObject? or location?
+    private String definingObject;
 
     public String getName()
     {
@@ -62,13 +62,13 @@ public abstract class AbstractResource implements Resource
         return type == Type.CLASSPATH_ELEMENT;
     }
 
-    public String getPath()
+    public String getDefiningObject()
     {
-        return path;
+        return definingObject;
     }
 
-    public void setPath(String path)
+    public void setDefiningObject(String definingObject)
     {
-        this.path = path;
+        this.definingObject = definingObject;
     }
 }
