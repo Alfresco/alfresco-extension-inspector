@@ -8,8 +8,6 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
-
 import java.util.List;
 import java.util.zip.ZipEntry;
 
@@ -27,9 +25,9 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        return List.of(new FileResource(zipEntry.getName()));
+        return List.of(new FileResource(zipEntry.getName(), definingObject));
     }
 
     @Override
@@ -41,6 +39,6 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return !entry.isDirectory();
+        return entry != null && !entry.isDirectory();
     }
 }

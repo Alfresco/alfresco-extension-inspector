@@ -10,15 +10,8 @@ package org.alfresco.ampalyser.inventory.model;
 
 public class BeanResource extends AbstractResource
 {
-    private String id;
-
-    public String getId()
+    public BeanResource(String name, String definingObject)
     {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
+        super(name, Type.BEAN, definingObject);
     }
 }

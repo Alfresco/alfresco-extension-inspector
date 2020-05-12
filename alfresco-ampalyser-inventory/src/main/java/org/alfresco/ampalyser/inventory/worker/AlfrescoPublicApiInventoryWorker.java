@@ -26,7 +26,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         //TODO add logic
         return emptyList();

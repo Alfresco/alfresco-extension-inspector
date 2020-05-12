@@ -26,6 +26,11 @@ public class InventoryApplication implements CommandLineRunner
         }
 
         InventoryReport report = inventoryService.extractInventoryReport(args[0]);
+
+        System.out.println("all files: " + report.getFiles().size());
+        System.out.println("classpath: " + report.getClasspath().size());
+        System.out.println("beans: " + report.getBeanResources().size());
+        System.out.println("AlfrescoPublicApi: " + report.getAlfrescoPublicApi().size());
     }
 
     private void printUsage() {

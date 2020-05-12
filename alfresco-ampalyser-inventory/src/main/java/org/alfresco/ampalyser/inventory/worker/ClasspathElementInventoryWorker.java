@@ -27,9 +27,9 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        return processInternal(zipEntry);
+        return processInternal(zipEntry, definingObject);
     }
 
     @Override
@@ -41,16 +41,16 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return !entry.isDirectory();
+        return entry != null && !entry.isDirectory();
     }
 
-    private List<Resource> processInternal(ZipEntry zipEntry)
+    private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
     {
         String resourceName = zipEntry.getName();
         if (resourceName.startsWith(WEB_INF_CLASSES))
         {
             resourceName = resourceName.substring(WEB_INF_CLASSES.length());
         }
-        return List.of(new ClasspathElementResource(resourceName, "TODO"));
+        return List.of(new ClasspathElementResource(resourceName, definingObject));
     }
 }

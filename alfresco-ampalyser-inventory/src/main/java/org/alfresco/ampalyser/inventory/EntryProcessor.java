@@ -40,7 +40,7 @@ public class EntryProcessor
         Map<Resource.Type, List<Resource>> extractedResources = new HashMap<>();
 
         byte[] data = extract(zis);
-        processEntry(warEntry, data, extractedResources);
+        processEntry(warEntry, data, warEntry.getName(), extractedResources);
 
         if(isJar(warEntry))
         {
@@ -56,7 +56,7 @@ public class EntryProcessor
                         libZe.getName().equalsIgnoreCase("notice.txt")))
                 {
                     byte[] libData = extract(libZis);
-                    processEntry(libZe, libData, extractedResources);
+                    processEntry(libZe, libData, warEntry.getName(), extractedResources);
                 }
                 libZis.closeEntry();
                 libZe = libZis.getNextEntry();
@@ -70,10 +70,11 @@ public class EntryProcessor
         return entry.getName().startsWith("WEB-INF/lib/");
     }
 
-    private void processEntry(ZipEntry entry, byte[] data, Map<Resource.Type, List<Resource>> resources)
+    private void processEntry(ZipEntry entry, byte[] data, String definingObject,
+        Map<Resource.Type, List<Resource>> resources)
     {
-        inventoryWorkers.forEach(inventoryWorker -> resources
-            .merge(inventoryWorker.getType(), inventoryWorker.processZipEntry(entry, data),
+        inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
+            inventoryWorker.processZipEntry(entry, data, definingObject),
                 (v1, v2) -> {
                     if (v1 != null)
                     {

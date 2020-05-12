@@ -35,7 +35,7 @@ public class InventoryReport
         return files;
     }
 
-    public void addResource(FileResource file)
+    public void addFile(FileResource file)
     {
         this.files.add(file);
     }
