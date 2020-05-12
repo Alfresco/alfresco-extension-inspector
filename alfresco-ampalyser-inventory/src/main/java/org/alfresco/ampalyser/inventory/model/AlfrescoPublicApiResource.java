@@ -18,4 +18,14 @@ public class AlfrescoPublicApiResource extends AbstractResource
     {
         this.deprecated = deprecated;
     }
+
+    @Override
+    public String toString()
+    {
+        return "AlfrescoPublicApiResource{" +
+                "class=" + getName() +
+                ", deprecated=" + deprecated +
+                ", packageName='" + packageName + '\'' +
+                '}';
+    }
 }
