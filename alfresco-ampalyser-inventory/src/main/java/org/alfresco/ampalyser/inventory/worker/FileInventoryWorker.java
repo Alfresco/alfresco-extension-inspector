@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,11 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
-        //TODO add logic
-        return emptyList();
+        if (zipEntry.isDirectory())
+        {
+            return emptyList();
+        }
+        return List.of(new FileResource(zipEntry.getName()));
     }
 
     @Override

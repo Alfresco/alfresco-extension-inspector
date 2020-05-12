@@ -13,4 +13,8 @@ package org.alfresco.ampalyser.inventory.model;
  */
 public class FileResource extends AbstractResource
 {
+    public FileResource(String name)
+    {
+        this.name = name;
+    }
 }
