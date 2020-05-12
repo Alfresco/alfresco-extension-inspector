@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.List.of;
+
 import java.util.List;
 import java.util.zip.ZipEntry;
 
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
 {
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
+    public static final String WEB_INF_LIB = "WEB-INF/lib/";
 
     public ClasspathElementInventoryWorker(EntryProcessor processor)
     {
@@ -41,16 +44,27 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return entry != null && !entry.isDirectory();
+        return entry != null && !isJar(entry);
     }
 
     private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
     {
+        if (!(zipEntry.getName().startsWith(WEB_INF_CLASSES) || definingObject
+            .startsWith(WEB_INF_LIB)))
+        {
+            return of();
+        }
+
         String resourceName = zipEntry.getName();
         if (resourceName.startsWith(WEB_INF_CLASSES))
         {
             resourceName = resourceName.substring(WEB_INF_CLASSES.length());
         }
         return List.of(new ClasspathElementResource(resourceName, definingObject));
+    }
+
+    private boolean isJar(ZipEntry entry)
+    {
+        return entry.getName().startsWith("WEB-INF/lib/");
     }
 }

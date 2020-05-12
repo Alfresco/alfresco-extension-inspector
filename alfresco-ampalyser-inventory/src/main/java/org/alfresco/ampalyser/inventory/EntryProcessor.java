@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.inventory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,8 @@ public class EntryProcessor
         inventoryWorkers.add(inventoryWorker);
     }
 
-    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis) throws Exception
+    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis) throws
+        IOException
     {
         if( warEntry == null || zis == null )
         {
@@ -84,7 +86,7 @@ public class EntryProcessor
                 }));
     }
 
-    private byte[] extract(ZipInputStream zis) throws Exception
+    private byte[] extract(ZipInputStream zis) throws IOException
     {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
