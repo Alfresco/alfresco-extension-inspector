@@ -29,10 +29,6 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
-        if (zipEntry.isDirectory())
-        {
-            return emptyList();
-        }
         return List.of(new FileResource(zipEntry.getName()));
     }
 
@@ -45,6 +41,6 @@ public class FileInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return false;
+        return !entry.isDirectory();
     }
 }

@@ -8,18 +8,19 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
-
 import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
 {
+    public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
+
     public ClasspathElementInventoryWorker(EntryProcessor processor)
     {
         processor.attach(this);
@@ -28,8 +29,7 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
-        //TODO add logic
-        return emptyList();
+        return processInternal(zipEntry);
     }
 
     @Override
@@ -41,6 +41,16 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return false;
+        return !entry.isDirectory();
+    }
+
+    private List<Resource> processInternal(ZipEntry zipEntry)
+    {
+        String resourceName = zipEntry.getName();
+        if (resourceName.startsWith(WEB_INF_CLASSES))
+        {
+            resourceName = resourceName.substring(WEB_INF_CLASSES.length());
+        }
+        return List.of(new ClasspathElementResource(resourceName, "TODO"));
     }
 }
