@@ -65,10 +65,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
             }
             if (isAlfrescoPublicApi)
             {
-                AlfrescoPublicApiResource resource = new AlfrescoPublicApiResource();
-                resource.setName(jc.getClassName());
-                resource.setDeprecated(isDeprecated);
-
+                AlfrescoPublicApiResource resource = new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated);
                 publicApiClasses.add(resource);
 
                 LOG.debug("AlfrescoPublicApi: " + resource.toString());
