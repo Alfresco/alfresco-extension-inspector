@@ -40,6 +40,10 @@ public class EntryProcessor
             throw new IllegalArgumentException("Arguments should not be null.");
         }
         Map<Resource.Type, List<Resource>> extractedResources = new HashMap<>();
+        // add modifiable lists for each inventoryWorker type
+        // to be able to merge results later
+        inventoryWorkers.forEach(inventoryWorker -> extractedResources
+            .put(inventoryWorker.getType(), new ArrayList<>()));
 
         byte[] data = extract(zis);
         processEntry(warEntry, data, warEntry.getName(), extractedResources);
