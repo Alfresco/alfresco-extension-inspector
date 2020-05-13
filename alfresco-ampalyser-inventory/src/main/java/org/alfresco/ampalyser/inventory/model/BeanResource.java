@@ -8,15 +8,28 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
+import static org.alfresco.ampalyser.inventory.model.Resource.Type.BEAN;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class BeanResource extends AbstractResource
+public class BeanResource extends AbstractResource implements Serializable
 {
     private String id;
 
     public BeanResource(String id, String name, String definingObject)
     {
-        super(name, Type.BEAN, definingObject);
+        super(BEAN, name, definingObject);
+        this.id = id;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
         this.id = id;
     }
 
@@ -41,6 +54,8 @@ public class BeanResource extends AbstractResource
     {
         return "BeanResource{" +
                "id='" + id + '\'' +
+               ", name='" + name + '\'' +
+               ", definingObject='" + definingObject + '\'' +
                '}';
     }
 }

@@ -1,18 +1,21 @@
 package org.alfresco.ampalyser.inventory.model;
 
+import static org.alfresco.ampalyser.inventory.model.Resource.Type.ALFRESCO_PUBLIC_API;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Lucian Tuca
  * created on 08/05/2020
  */
-public class AlfrescoPublicApiResource extends AbstractResource
+public class AlfrescoPublicApiResource extends AbstractResource implements Serializable
 {
     private boolean deprecated;
 
     public AlfrescoPublicApiResource(String name, boolean deprecated)
     {
-        super(name, Type.ALFRESCO_PUBLIC_API, null);
+        super(ALFRESCO_PUBLIC_API, name, null);
         this.deprecated = deprecated;
     }
 
@@ -47,6 +50,8 @@ public class AlfrescoPublicApiResource extends AbstractResource
     {
         return "AlfrescoPublicApiResource{" +
                "deprecated=" + deprecated +
+               ", name='" + name + '\'' +
+               ", definingObject='" + definingObject + '\'' +
                '}';
     }
 }
