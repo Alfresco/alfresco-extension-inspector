@@ -23,7 +23,7 @@ public abstract  class AbstractInventoryWorker implements InventoryWorker
     @Override
     public List<Resource> processZipEntry(ZipEntry entry, byte[] data, String definingObject)
     {
-        if (this.canProcessEntry(entry))
+        if (this.canProcessEntry(entry, definingObject))
         {
             return processInternal(entry, data, definingObject);
         }
