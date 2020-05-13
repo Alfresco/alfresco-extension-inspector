@@ -30,4 +30,8 @@ public interface Resource
 
     boolean isClasspathElement();
 
+    String getDefiningObject();
+
+    void setDefiningObject(String definingObject);
+
 }

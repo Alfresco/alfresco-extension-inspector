@@ -10,16 +10,31 @@ package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Collections.emptyList;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.BeanResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 @Component
 public class BeanInventoryWorker extends AbstractInventoryWorker
 {
+    private static final Logger LOG = LoggerFactory.getLogger(BeanInventoryWorker.class);
+
     public BeanInventoryWorker(EntryProcessor processor)
     {
         processor.attach(this);
@@ -28,8 +43,21 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
-        //TODO add logic
-        return emptyList();
+        String xmlFileName = zipEntry.getName();
+        try
+        {
+            return analyseXmlFile(data, xmlFileName);
+        }
+        catch (IOException ioe)
+        {
+            LOG.warn("Failed to open and read from xml file: " + xmlFileName);
+            return emptyList();
+        }
+        catch (Exception e)
+        {
+            LOG.warn("Failed to analyse beans in xml file: " + xmlFileName);
+            return emptyList();
+        }
     }
 
     @Override
@@ -41,6 +69,73 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry)
     {
-        return entry.getName().endsWith(".xml");
+        return entry != null
+            && entry.getName() != null
+            && entry.getName().toLowerCase().endsWith(".xml");
+    }
+
+    /**
+     *
+     * @param xmlData
+     * @param definingObject
+     * @return
+     * @throws Exception
+     */
+    private List<Resource> analyseXmlFile(byte[] xmlData, String definingObject)
+        throws Exception
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new ByteArrayInputStream(xmlData));
+
+        if (doc.getDocumentElement().getNodeName().equals("beans"))
+        {
+            if (!definingObject.startsWith("alfresco/subsystems/"))
+            {
+                return findBeans(doc.getDocumentElement(), definingObject);
+            }
+        }
+        return emptyList();
+    }
+
+
+    private List<Resource> findBeans(Element docElem, String definingObject)
+    {
+        List<Resource> foundBeans = new ArrayList<>();
+
+        NodeList nodeList = docElem.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+            Node node = nodeList.item(i);
+            if (node instanceof Element)
+            {
+                Element elem = (Element) node;
+                if (elem.getTagName().equals("bean"))
+                {
+                    String beanId = elem.getAttribute("id");
+                    String beanName = elem.getAttribute("name");
+                    if (beanId == null || beanId.trim().length() == 0)
+                    {
+                        beanId = beanName;
+                    }
+                    if (beanId == null || beanId.trim().length() == 0)
+                    {
+                        LOG.warn("Found anonymous bean in XML resource " + definingObject);
+                    }
+                    else
+                    {
+                        BeanResource beanResource = new BeanResource();
+                        beanResource.setId(beanId);
+                        beanResource.setName(beanName);
+                        beanResource.setDefiningObject(definingObject);
+
+                        foundBeans.add(beanResource);
+                        LOG.debug("Added bean: " + beanId + " found in: " + definingObject);
+                    }
+                }
+            }
+        }
+
+        return foundBeans;
     }
 }
