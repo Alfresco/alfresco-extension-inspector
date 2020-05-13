@@ -77,13 +77,16 @@ public class EntryProcessor
     {
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
-                (v1, v2) -> {
-                    if (v1 != null)
-                    {
-                        v1.addAll(v2);
-                    }
-                    return v1;
-                }));
+            (v1, v2) -> mergeLists(v1, v2)));
+    }
+
+    private List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
+    {
+        if (v1 != null)
+        {
+            v1.addAll(v2);
+        }
+        return v1;
     }
 
     private byte[] extract(ZipInputStream zis) throws IOException
