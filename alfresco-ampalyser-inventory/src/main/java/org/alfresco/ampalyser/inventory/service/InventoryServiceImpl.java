@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.inventory.service;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -33,7 +34,7 @@ public class InventoryServiceImpl implements InventoryService
         if (zis == null)
             return null;
 
-        InventoryReport report = null;
+        InventoryReport report = new InventoryReport();
         try
         {
             ZipEntry ze = zis.getNextEntry();
@@ -49,7 +50,7 @@ public class InventoryServiceImpl implements InventoryService
                 ze = zis.getNextEntry();
             }
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             System.err.println("Failed reading web archive " + warPath);
             e.printStackTrace(System.err);

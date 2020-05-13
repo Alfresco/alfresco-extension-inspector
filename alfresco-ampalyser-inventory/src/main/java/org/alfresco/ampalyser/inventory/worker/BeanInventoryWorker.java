@@ -41,7 +41,7 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         String xmlFileName = zipEntry.getName();
         try
@@ -67,7 +67,7 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public boolean canProcessEntry(ZipEntry entry)
+    public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
         return entry != null
             && entry.getName() != null
@@ -124,10 +124,7 @@ public class BeanInventoryWorker extends AbstractInventoryWorker
                     }
                     else
                     {
-                        BeanResource beanResource = new BeanResource();
-                        beanResource.setId(beanId);
-                        beanResource.setName(beanName);
-                        beanResource.setDefiningObject(definingObject);
+                        BeanResource beanResource = new BeanResource(beanId, beanName, definingObject);
 
                         foundBeans.add(beanResource);
                         LOG.debug("Added bean: " + beanId + " found in: " + definingObject);

@@ -20,8 +20,6 @@ public interface Resource
 
     Type getType();
 
-    void setType(Type type);
-
     boolean isFile();
 
     boolean isBean();

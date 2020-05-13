@@ -15,9 +15,9 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 
 public interface InventoryWorker
 {
-    List<Resource> processZipEntry(ZipEntry entry, byte[] data);
+    List<Resource> processZipEntry(ZipEntry entry, byte[] data, String definingObject);
 
     Resource.Type getType();
 
-    boolean canProcessEntry(ZipEntry entry);
+    boolean canProcessEntry(ZipEntry entry, String definingObject);
 }
