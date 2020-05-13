@@ -14,16 +14,9 @@ package org.alfresco.ampalyser.inventory.model;
  */
 public abstract class AbstractResource implements Resource
 {
-    protected String name;
-    protected Resource.Type type;
-    protected String definingObject;
-
-    public AbstractResource(String name, Type type, String definingObject)
-    {
-        this.name = name;
-        this.type = type;
-        this.definingObject = definingObject;
-    }
+    private String name;
+    private Resource.Type type;
+    private String definingObject;
 
     public String getName()
     {
