@@ -1,5 +1,7 @@
 package org.alfresco.ampalyser.inventory.model;
 
+import java.util.Objects;
+
 /**
  * @author Lucian Tuca
  * created on 08/05/2020
@@ -25,10 +27,26 @@ public class AlfrescoPublicApiResource extends AbstractResource
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AlfrescoPublicApiResource that = (AlfrescoPublicApiResource) o;
+        return deprecated == that.deprecated;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(super.hashCode(), deprecated);
+    }
+
+    @Override
     public String toString()
     {
         return "AlfrescoPublicApiResource{" +
-                "class=" + getName() +
-                ", deprecated=" + deprecated + '}';
+               "deprecated=" + deprecated +
+               '}';
     }
 }

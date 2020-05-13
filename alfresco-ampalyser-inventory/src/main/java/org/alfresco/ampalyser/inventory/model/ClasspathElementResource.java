@@ -14,4 +14,10 @@ public class ClasspathElementResource extends AbstractResource
     {
         super(name, Type.CLASSPATH_ELEMENT, definingObject);
     }
+
+    @Override
+    public String toString()
+    {
+        return "ClasspathElementResource{}";
+    }
 }

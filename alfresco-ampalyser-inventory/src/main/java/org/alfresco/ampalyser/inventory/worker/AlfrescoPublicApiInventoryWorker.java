@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 
 @Component
-public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
+public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
 {
     private static final Logger LOG = LoggerFactory.getLogger(AlfrescoPublicApiInventoryWorker.class);
 

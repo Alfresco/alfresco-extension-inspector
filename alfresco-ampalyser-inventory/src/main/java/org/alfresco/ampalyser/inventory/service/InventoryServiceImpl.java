@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.inventory.service;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -18,25 +19,26 @@ import java.util.zip.ZipInputStream;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InventoryServiceImpl implements InventoryService
 {
+    private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
+
     @Autowired
     private EntryProcessor entryProcessor;
 
     @Override
-    public InventoryReport extractInventoryReport(String warPath)
+    public InventoryReport extractInventoryReport(final String warPath)
     {
-        ZipInputStream zis = openWarFile(warPath);
-        if (zis == null)
-            return null;
-
-        InventoryReport report = new InventoryReport();
-        try
+        try (final ZipInputStream zis = new ZipInputStream((new FileInputStream(warPath))))
         {
+            final InventoryReport report = new InventoryReport();
+
             ZipEntry ze = zis.getNextEntry();
             System.out.println("Starting war processing");
             while (ze != null)
@@ -49,59 +51,17 @@ public class InventoryServiceImpl implements InventoryService
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
+            return report;
+        }
+        catch (FileNotFoundException e)
+        {
+            logger.error("Failed opening file " + warPath, e);
+            throw new IllegalArgumentException("Failed to open file " + warPath, e);
         }
         catch (IOException e)
         {
-            System.err.println("Failed reading web archive " + warPath);
-            e.printStackTrace(System.err);
+            logger.error("Failed reading web archive " + warPath, e);
+            throw new RuntimeException("IO error while reading archive " + warPath, e);
         }
-        finally
-        {
-            try
-            {
-                zis.close();
-            }
-            catch (Exception e)
-            {
-                //
-            }
-        }
-        return report;
-    }
-
-    //TODO improve error handling
-    private ZipInputStream openWarFile(String warPath)
-    {
-        FileInputStream fis;
-        try
-        {
-            fis = new FileInputStream(warPath);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed opening file " + warPath);
-            e.printStackTrace(System.err);
-            return null;
-        }
-        ZipInputStream zis;
-        try
-        {
-            zis = new ZipInputStream(fis);
-        }
-        catch (Exception e)
-        {
-            try
-            {
-                fis.close();
-            }
-            catch (Exception ee)
-            {
-                //
-            }
-            System.err.println("Failed opening web archive " + warPath);
-            e.printStackTrace(System.err);
-            return null;
-        }
-        return zis;
     }
 }

@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
+import java.util.Objects;
+
 /**
  * @author Lucian Tuca
  * created on 07/05/2020
@@ -73,5 +75,32 @@ public abstract class AbstractResource implements Resource
     public void setDefiningObject(String definingObject)
     {
         this.definingObject = definingObject;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractResource that = (AbstractResource) o;
+        return Objects.equals(name, that.name) &&
+               type == that.type &&
+               Objects.equals(definingObject, that.definingObject);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(name, type, definingObject);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "AbstractResource{" +
+               "name='" + name + '\'' +
+               ", type=" + type +
+               ", definingObject='" + definingObject + '\'' +
+               '}';
     }
 }

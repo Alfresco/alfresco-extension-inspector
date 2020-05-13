@@ -17,4 +17,10 @@ public class FileResource extends AbstractResource
     {
         super(name, Type.FILE, definingObject);
     }
+
+    @Override
+    public String toString()
+    {
+        return "FileResource{}";
+    }
 }
