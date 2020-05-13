@@ -16,7 +16,14 @@ public abstract class AbstractResource implements Resource
 {
     private String name;
     private Resource.Type type;
-    private String definingObject;
+    protected String definingObject;
+
+    public AbstractResource(String name, Type type, String definingObject)
+    {
+        this.name = name;
+        this.type = type;
+        this.definingObject = definingObject;
+    }
 
     public String getName()
     {
