@@ -38,8 +38,11 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
     {
         List<Resource> publicApiClasses = new ArrayList<>();
+        if (data == null)
+        {
+            return publicApiClasses;
+        }
         ClassParser cp = new ClassParser(new ByteArrayInputStream(data), null);
-
         try
         {
             JavaClass jc = cp.parse();
@@ -87,7 +90,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     public boolean canProcessEntry(ZipEntry entry)
     {
         //Only process classes from alfresco code
-       return entry!=null && entry.getName()!=null &&
+        return entry != null && entry.getName() != null &&
                entry.getName().endsWith(".class") &&
                entry.getName().startsWith("org/alfresco");
     }

@@ -7,7 +7,6 @@ package org.alfresco.ampalyser.inventory.model;
 public class AlfrescoPublicApiResource extends AbstractResource
 {
     private boolean deprecated;
-    private String packageName;
 
     public boolean isDeprecated()
     {
@@ -24,8 +23,6 @@ public class AlfrescoPublicApiResource extends AbstractResource
     {
         return "AlfrescoPublicApiResource{" +
                 "class=" + getName() +
-                ", deprecated=" + deprecated +
-                ", packageName='" + packageName + '\'' +
-                '}';
+                ", deprecated=" + deprecated + '}';
     }
 }
