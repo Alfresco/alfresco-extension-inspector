@@ -8,11 +8,12 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class InventoryReport
+public class InventoryReport implements Serializable
 {
     private String version;
     private List<FileResource> files = new ArrayList<>();
@@ -40,6 +41,11 @@ public class InventoryReport
         this.files.add(file);
     }
 
+    public void addFiles(List<FileResource> files)
+    {
+        this.files.addAll(files);
+    }
+
     public List<ClasspathElementResource> getClasspath()
     {
         return classpath;
@@ -48,6 +54,11 @@ public class InventoryReport
     public void addClasspathElement(ClasspathElementResource classpathElementResource)
     {
         this.classpath.add(classpathElementResource);
+    }
+
+    public void addClasspathElements(List<ClasspathElementResource> classpathElementResources)
+    {
+        this.classpath.addAll(classpathElementResources);
     }
 
     public List<BeanResource> getBeanResources()
@@ -60,6 +71,11 @@ public class InventoryReport
         this.beanResources.add(beanResource);
     }
 
+    public void addBeans(List<BeanResource> beanResources)
+    {
+        this.beanResources.addAll(beanResources);
+    }
+
     public List<AlfrescoPublicApiResource> getAlfrescoPublicApi()
     {
         return alfrescoPublicApi;
@@ -68,6 +84,11 @@ public class InventoryReport
     public void addAlfrescoPublicApi(AlfrescoPublicApiResource alfrescoPublicApi)
     {
         this.alfrescoPublicApi.add(alfrescoPublicApi);
+    }
+
+    public void addAlfrescoPublicApis(List<AlfrescoPublicApiResource> alfrescoPublicApis)
+    {
+        this.alfrescoPublicApi.addAll(alfrescoPublicApis);
     }
 
     @Override

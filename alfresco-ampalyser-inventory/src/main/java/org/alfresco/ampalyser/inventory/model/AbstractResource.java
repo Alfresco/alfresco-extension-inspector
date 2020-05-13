@@ -14,9 +14,13 @@ package org.alfresco.ampalyser.inventory.model;
  */
 public abstract class AbstractResource implements Resource
 {
-    private String name;
-    private Resource.Type type;
+    protected String name;
+    protected Resource.Type type;
     protected String definingObject;
+
+    public AbstractResource()
+    {
+    }
 
     public AbstractResource(String name, Type type, String definingObject)
     {
@@ -39,30 +43,6 @@ public abstract class AbstractResource implements Resource
     public Resource.Type getType()
     {
         return type;
-    }
-
-    @Override
-    public boolean isFile()
-    {
-        return type == Type.FILE;
-    }
-
-    @Override
-    public boolean isBean()
-    {
-        return type == Type.BEAN;
-    }
-
-    @Override
-    public boolean isPublicApi()
-    {
-        return type == Type.ALFRESCO_PUBLIC_API;
-    }
-
-    @Override
-    public boolean isClasspathElement()
-    {
-        return type == Type.CLASSPATH_ELEMENT;
     }
 
     public String getDefiningObject()

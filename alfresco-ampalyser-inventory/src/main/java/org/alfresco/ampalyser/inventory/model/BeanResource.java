@@ -12,9 +12,18 @@ public class BeanResource extends AbstractResource
 {
     private String id;
 
+    public BeanResource()
+    {
+    }
+
     public BeanResource(String id, String name, String definingObject)
     {
         super(name, Type.BEAN, definingObject);
         this.id = id;
+    }
+
+    public String getId()
+    {
+        return id;
     }
 }

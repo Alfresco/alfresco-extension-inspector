@@ -8,14 +8,23 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.AlfrescoPublicApiResource;
+import org.alfresco.ampalyser.inventory.model.BeanResource;
+import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
+import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +33,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryServiceImpl implements InventoryService
 {
+    private static final ObjectWriter OBJECT_WRITER = new ObjectMapper().writer();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private EntryProcessor entryProcessor;
 
@@ -35,6 +47,7 @@ public class InventoryServiceImpl implements InventoryService
             return null;
 
         InventoryReport report = new InventoryReport();
+
         try
         {
             ZipEntry ze = zis.getNextEntry();
@@ -44,7 +57,36 @@ public class InventoryServiceImpl implements InventoryService
                 Map<Resource.Type, List<Resource>> resources = entryProcessor
                     .processWarEntry(ze, zis);
 
+                List<FileResource> fileResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.FILE),
+                        new TypeReference<List<FileResource>>()
+                        {
+                        });
+                report.addFiles(fileResourceList);
+                List<ClasspathElementResource> classpathResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.CLASSPATH_ELEMENT),
+                        new TypeReference<List<ClasspathElementResource>>()
+                        {
+                        });
+                report.addClasspathElements(classpathResourceList);
+                List<AlfrescoPublicApiResource> apiResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.ALFRESCO_PUBLIC_API),
+                        new TypeReference<List<AlfrescoPublicApiResource>>()
+                        {
+                        });
+                report.addAlfrescoPublicApis(apiResourceList);
+                List<BeanResource> beanResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.BEAN),
+                        new TypeReference<List<BeanResource>>()
+                        {
+                        });
+                report.addBeans(beanResourceList);
+
                 //TODO add found resources to inventory report
+                System.out.println("resources: "+resources.get(Resource.Type.FILE).size());
+                System.out.println("classpath: "+resources.get(Resource.Type.CLASSPATH_ELEMENT).size());
+                System.out.println("beans: "+resources.get(Resource.Type.BEAN).size());
+                System.out.println("AlfrescoPublicApi: "+resources.get(Resource.Type.ALFRESCO_PUBLIC_API).size());
 
                 zis.closeEntry();
                 ze = zis.getNextEntry();
@@ -65,6 +107,16 @@ public class InventoryServiceImpl implements InventoryService
             {
                 //
             }
+        }
+        try
+        {
+
+            objectMapper.writeValue(new File(
+                "report.json"), report);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
         return report;
     }

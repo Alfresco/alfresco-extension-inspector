@@ -86,7 +86,7 @@ public class EntryProcessor
 
     private List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
     {
-        if (v1 != null)
+        if (v1 != null && v2 != null && !v2.isEmpty())
         {
             v1.addAll(v2);
         }

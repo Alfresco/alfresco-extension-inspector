@@ -8,6 +8,11 @@ public class AlfrescoPublicApiResource extends AbstractResource
 {
     private boolean deprecated;
 
+    public AlfrescoPublicApiResource(boolean deprecated)
+    {
+        this.deprecated = deprecated;
+    }
+
     public AlfrescoPublicApiResource(String name, boolean deprecated)
     {
         super(name, Type.ALFRESCO_PUBLIC_API, null);

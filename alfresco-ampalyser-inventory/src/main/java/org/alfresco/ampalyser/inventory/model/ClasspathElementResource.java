@@ -10,6 +10,10 @@ package org.alfresco.ampalyser.inventory.model;
 
 public class ClasspathElementResource extends AbstractResource
 {
+    public ClasspathElementResource()
+    {
+    }
+
     public ClasspathElementResource(String name, String definingObject)
     {
         super(name, Type.CLASSPATH_ELEMENT, definingObject);
