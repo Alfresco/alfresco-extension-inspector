@@ -50,12 +50,6 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
 
     private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
     {
-        if (!(zipEntry.getName().startsWith(WEB_INF_CLASSES) || definingObject
-            .startsWith(WEB_INF_LIB)))
-        {
-            return of();
-        }
-
         String resourceName = zipEntry.getName();
         if (resourceName.startsWith(WEB_INF_CLASSES))
         {
