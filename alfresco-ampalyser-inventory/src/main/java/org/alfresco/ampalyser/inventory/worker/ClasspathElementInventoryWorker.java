@@ -66,11 +66,13 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
 
     private boolean isFromJar(ZipEntry entry, String definingObject)
     {
-        return !isJar(entry) && definingObject.startsWith(WEB_INF_LIB);
+        return !isJar(entry) && definingObject != null && definingObject.startsWith(WEB_INF_LIB);
     }
 
     private boolean isJar(ZipEntry entry)
     {
-        return entry.getName().startsWith(WEB_INF_LIB);
+        return entry != null &&
+            entry.getName().startsWith(WEB_INF_LIB) &&
+            entry.getName().endsWith(".jar");
     }
 }
