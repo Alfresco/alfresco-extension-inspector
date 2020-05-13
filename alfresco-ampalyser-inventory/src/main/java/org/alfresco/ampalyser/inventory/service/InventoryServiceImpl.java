@@ -82,12 +82,6 @@ public class InventoryServiceImpl implements InventoryService
                         });
                 report.addBeans(beanResourceList);
 
-                //TODO add found resources to inventory report
-                System.out.println("resources: "+resources.get(Resource.Type.FILE).size());
-                System.out.println("classpath: "+resources.get(Resource.Type.CLASSPATH_ELEMENT).size());
-                System.out.println("beans: "+resources.get(Resource.Type.BEAN).size());
-                System.out.println("AlfrescoPublicApi: "+resources.get(Resource.Type.ALFRESCO_PUBLIC_API).size());
-
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }

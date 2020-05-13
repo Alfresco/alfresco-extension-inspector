@@ -12,6 +12,7 @@ public class ClasspathElementResource extends AbstractResource
 {
     public ClasspathElementResource()
     {
+        this.type = Type.CLASSPATH_ELEMENT;
     }
 
     public ClasspathElementResource(String name, String definingObject)

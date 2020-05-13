@@ -8,12 +8,11 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class InventoryReport implements Serializable
+public class InventoryReport
 {
     private String version;
     private List<FileResource> files = new ArrayList<>();

@@ -14,6 +14,7 @@ public class BeanResource extends AbstractResource
 
     public BeanResource()
     {
+        this.type = Type.BEAN;
     }
 
     public BeanResource(String id, String name, String definingObject)
