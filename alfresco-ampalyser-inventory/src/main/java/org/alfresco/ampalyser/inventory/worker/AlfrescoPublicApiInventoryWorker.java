@@ -35,7 +35,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         List<Resource> publicApiClasses = new ArrayList<>();
         if (data == null)
@@ -87,7 +87,7 @@ public class AlfrescoPublicApiInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public boolean canProcessEntry(ZipEntry entry)
+    public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
         //Only process classes from alfresco code
         return entry != null && entry.getName() != null &&

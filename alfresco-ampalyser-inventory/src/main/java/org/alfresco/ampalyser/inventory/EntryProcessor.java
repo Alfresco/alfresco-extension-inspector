@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.inventory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,15 +32,19 @@ public class EntryProcessor
         inventoryWorkers.add(inventoryWorker);
     }
 
-    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis) throws Exception
+    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis) throws
+        IOException
     {
-        Map<Resource.Type, List<Resource>> resources = new HashMap<>();
+        if( warEntry == null || zis == null )
+        {
+            throw new IllegalArgumentException("Arguments should not be null.");
+        }
+        Map<Resource.Type, List<Resource>> extractedResources = new HashMap<>();
 
         byte[] data = extract(zis);
-        processEntry(warEntry, data, resources);
+        processEntry(warEntry, data, warEntry.getName(), extractedResources);
 
-        String resourceName = warEntry.getName();
-        if(resourceName.startsWith("WEB-INF/lib/"))
+        if(isJar(warEntry))
         {
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             ZipInputStream libZis = new ZipInputStream(bis);
@@ -52,23 +57,39 @@ public class EntryProcessor
                         libZe.getName().equalsIgnoreCase("license.txt") ||
                         libZe.getName().equalsIgnoreCase("notice.txt")))
                 {
-                    byte[] libdata = extract(libZis);
-                    processEntry(libZe, libdata, resources);
+                    byte[] libData = extract(libZis);
+                    processEntry(libZe, libData, warEntry.getName(), extractedResources);
                 }
                 libZis.closeEntry();
                 libZe = libZis.getNextEntry();
             }
         }
-        return resources;
+        return extractedResources;
     }
 
-    private void processEntry(ZipEntry warEntry, byte[] data, Map<Resource.Type, List<Resource>> resources) throws Exception
+    private boolean isJar(ZipEntry entry)
     {
-        inventoryWorkers.forEach(inventoryWorker ->
-                        resources.put(inventoryWorker.getType(), inventoryWorker.processZipEntry(warEntry, data)));
+        return entry.getName().startsWith("WEB-INF/lib/");
     }
 
-    private byte[] extract(ZipInputStream zis) throws Exception
+    private void processEntry(ZipEntry entry, byte[] data, String definingObject,
+        Map<Resource.Type, List<Resource>> resources)
+    {
+        inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
+            inventoryWorker.processZipEntry(entry, data, definingObject),
+            (v1, v2) -> mergeLists(v1, v2)));
+    }
+
+    private List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
+    {
+        if (v1 != null)
+        {
+            v1.addAll(v2);
+        }
+        return v1;
+    }
+
+    private byte[] extract(ZipInputStream zis) throws IOException
     {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

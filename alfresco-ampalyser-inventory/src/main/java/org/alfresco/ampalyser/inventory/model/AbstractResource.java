@@ -16,7 +16,14 @@ public abstract class AbstractResource implements Resource
 {
     private String name;
     private Resource.Type type;
-    private String path; // TODO definingObject? or location?
+    protected String definingObject;
+
+    public AbstractResource(String name, Type type, String definingObject)
+    {
+        this.name = name;
+        this.type = type;
+        this.definingObject = definingObject;
+    }
 
     public String getName()
     {
@@ -28,14 +35,10 @@ public abstract class AbstractResource implements Resource
         this.name = name;
     }
 
+    @Override
     public Resource.Type getType()
     {
         return type;
-    }
-
-    public void setType(Resource.Type type)
-    {
-        this.type = type;
     }
 
     @Override
@@ -62,13 +65,13 @@ public abstract class AbstractResource implements Resource
         return type == Type.CLASSPATH_ELEMENT;
     }
 
-    public String getPath()
+    public String getDefiningObject()
     {
-        return path;
+        return definingObject;
     }
 
-    public void setPath(String path)
+    public void setDefiningObject(String definingObject)
     {
-        this.path = path;
+        this.definingObject = definingObject;
     }
 }

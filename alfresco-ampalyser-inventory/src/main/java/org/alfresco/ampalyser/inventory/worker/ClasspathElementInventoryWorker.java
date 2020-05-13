@@ -8,28 +8,31 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
+import static java.util.List.of;
 
 import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
 {
+    public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
+    public static final String WEB_INF_LIB = "WEB-INF/lib/";
+
     public ClasspathElementInventoryWorker(EntryProcessor processor)
     {
         processor.attach(this);
     }
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data)
+    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        //TODO add logic
-        return emptyList();
+        return processInternal(zipEntry, definingObject);
     }
 
     @Override
@@ -39,8 +42,37 @@ public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
     }
 
     @Override
-    public boolean canProcessEntry(ZipEntry entry)
+    public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
-        return false;
+        return !(entry == null || definingObject == null) &&
+            (entry.getName().startsWith(WEB_INF_CLASSES) || isFromJar(entry, definingObject));
+    }
+
+    private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
+    {
+        if (!(zipEntry.getName().startsWith(WEB_INF_CLASSES) || definingObject
+            .startsWith(WEB_INF_LIB)))
+        {
+            return of();
+        }
+
+        String resourceName = zipEntry.getName();
+        if (resourceName.startsWith(WEB_INF_CLASSES))
+        {
+            resourceName = resourceName.substring(WEB_INF_CLASSES.length());
+        }
+        return List.of(new ClasspathElementResource(resourceName, definingObject));
+    }
+
+    private boolean isFromJar(ZipEntry entry, String definingObject)
+    {
+        return !isJar(entry) && definingObject != null && definingObject.startsWith(WEB_INF_LIB);
+    }
+
+    private boolean isJar(ZipEntry entry)
+    {
+        return entry != null &&
+            entry.getName().startsWith(WEB_INF_LIB) &&
+            entry.getName().endsWith(".jar");
     }
 }

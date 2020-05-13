@@ -20,8 +20,6 @@ public interface Resource
 
     Type getType();
 
-    void setType(Type type);
-
     boolean isFile();
 
     boolean isBean();
@@ -29,5 +27,9 @@ public interface Resource
     boolean isPublicApi();
 
     boolean isClasspathElement();
+
+    String getDefiningObject();
+
+    void setDefiningObject(String definingObject);
 
 }
