@@ -7,11 +7,15 @@
  */
 package org.alfresco.ampalyser.inventory.model;
 
+import static org.alfresco.ampalyser.inventory.model.Resource.Type.FILE;
+
+import java.io.Serializable;
+
 /**
  * @author Lucian Tuca
  * created on 08/05/2020
  */
-public class FileResource extends AbstractResource
+public class FileResource extends AbstractResource implements Serializable
 {
     public FileResource()
     {
@@ -20,6 +24,15 @@ public class FileResource extends AbstractResource
 
     public FileResource(String name, String definingObject)
     {
-        super(name, Type.FILE, definingObject);
+        super(FILE, name, definingObject);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "FileResource{" +
+               "name='" + name + '\'' +
+               ", definingObject='" + definingObject + '\'' +
+               '}';
     }
 }

@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.inventory.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.util.List;
@@ -34,23 +35,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryServiceImpl implements InventoryService
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private EntryProcessor entryProcessor;
 
     @Override
-    public InventoryReport extractInventoryReport(String warPath)
+    public InventoryReport extractInventoryReport(final String warPath)
     {
-        ZipInputStream zis = openWarFile(warPath);
-        if (zis == null)
-            return null;
-
-        InventoryReport report = new InventoryReport();
-
-        try
+        try (final ZipInputStream zis = new ZipInputStream((new FileInputStream(warPath))))
         {
+            final InventoryReport report = new InventoryReport();
+
             ZipEntry ze = zis.getNextEntry();
             System.out.println("Starting war processing");
             while (ze != null)
@@ -63,35 +60,27 @@ public class InventoryServiceImpl implements InventoryService
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-        }
-        catch (IOException e)
-        {
-            System.err.println("Failed reading web archive " + warPath);
-            e.printStackTrace(System.err);
-        }
-        finally
-        {
             try
             {
-                zis.close();
+                objectMapper.writeValue(new File(
+                    "report.json"), report);
             }
-            catch (Exception e)
+            catch (IOException e)
             {
-                //
+                logger.warn("Failed writing report to file " + report, e);
             }
+            return report;
         }
-        try
+        catch (FileNotFoundException e)
         {
-
-            objectMapper.writeValue(new File(
-                "report.json"), report);
+            logger.error("Failed opening file " + warPath, e);
+            throw new IllegalArgumentException("Failed to open file " + warPath, e);
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            logger.error("Failed reading web archive " + warPath, e);
+            throw new RuntimeException("IO error while reading archive " + warPath, e);
         }
-
-        return report;
     }
 
     private static void addResultsToReport(Map<Resource.Type, List<Resource>> resources,
@@ -133,44 +122,8 @@ public class InventoryServiceImpl implements InventoryService
                 report.addBeans(beanResourceList);
                 break;
             default:
-                LOGGER.info("Unknown resource type '" + type + "' won't be added to inventory report");
+                logger.info("Unknown resource type '" + type + "' won't be added to inventory report");
             }
         }
-    }
-
-    //TODO improve error handling
-    private ZipInputStream openWarFile(String warPath)
-    {
-        FileInputStream fis;
-        try
-        {
-            fis = new FileInputStream(warPath);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed opening file " + warPath);
-            e.printStackTrace(System.err);
-            return null;
-        }
-        ZipInputStream zis;
-        try
-        {
-            zis = new ZipInputStream(fis);
-        }
-        catch (Exception e)
-        {
-            try
-            {
-                fis.close();
-            }
-            catch (Exception ee)
-            {
-                //
-            }
-            System.err.println("Failed opening web archive " + warPath);
-            e.printStackTrace(System.err);
-            return null;
-        }
-        return zis;
     }
 }

@@ -13,29 +13,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.inventory.model.Resource.Type;
 import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EntryProcessor
 {
-    private List<InventoryWorker> inventoryWorkers = new ArrayList<>();
+    private Set<InventoryWorker> inventoryWorkers = new LinkedHashSet<>();
 
     public void attach(InventoryWorker inventoryWorker)
     {
         inventoryWorkers.add(inventoryWorker);
     }
 
-    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis) throws
-        IOException
+    public Map<Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
+        throws IOException
     {
-        if( warEntry == null || zis == null )
+        if (warEntry == null || zis == null)
         {
             throw new IllegalArgumentException("Arguments should not be null.");
         }
@@ -48,7 +51,7 @@ public class EntryProcessor
         byte[] data = extract(zis);
         processEntry(warEntry, data, warEntry.getName(), extractedResources);
 
-        if(isJar(warEntry))
+        if (isJar(warEntry))
         {
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             ZipInputStream libZis = new ZipInputStream(bis);
@@ -56,10 +59,10 @@ public class EntryProcessor
             while (libZe != null)
             {
                 if (!(libZe.isDirectory() ||
-                        libZe.getName().startsWith("META-INF/") ||
-                        libZe.getName().equals("module-info.class") ||
-                        libZe.getName().equalsIgnoreCase("license.txt") ||
-                        libZe.getName().equalsIgnoreCase("notice.txt")))
+                      libZe.getName().startsWith("META-INF/") ||
+                      libZe.getName().equals("module-info.class") ||
+                      libZe.getName().equalsIgnoreCase("license.txt") ||
+                      libZe.getName().equalsIgnoreCase("notice.txt")))
                 {
                     byte[] libData = extract(libZis);
                     processEntry(libZe, libData, warEntry.getName(), extractedResources);
@@ -81,10 +84,10 @@ public class EntryProcessor
     {
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
-            (v1, v2) -> mergeLists(v1, v2)));
+            EntryProcessor::mergeLists));
     }
 
-    private List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
+    private static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
     {
         if (v1 != null && v2 != null && !v2.isEmpty())
         {
@@ -93,7 +96,7 @@ public class EntryProcessor
         return v1;
     }
 
-    private byte[] extract(ZipInputStream zis) throws IOException
+    private static byte[] extract(ZipInputStream zis) throws IOException
     {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

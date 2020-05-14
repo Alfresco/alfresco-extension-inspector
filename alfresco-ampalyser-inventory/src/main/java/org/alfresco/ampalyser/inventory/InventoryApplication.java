@@ -13,7 +13,8 @@ public class InventoryApplication implements CommandLineRunner
     @Autowired
     private InventoryService inventoryService;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         SpringApplication.run(InventoryApplication.class, args);
     }
 
@@ -28,7 +29,8 @@ public class InventoryApplication implements CommandLineRunner
         InventoryReport report = inventoryService.extractInventoryReport(args[0]);
     }
 
-    private void printUsage() {
+    private void printUsage()
+    {
         System.out.println("usage:");
         System.out.println("java -jar alfresco-war-inventory.jar <alfresco-war-filename>");
     }
