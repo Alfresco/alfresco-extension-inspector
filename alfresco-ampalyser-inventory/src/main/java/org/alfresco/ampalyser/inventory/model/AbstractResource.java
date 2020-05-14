@@ -21,10 +21,10 @@ public abstract class AbstractResource implements Resource, Serializable
     protected String id;
     protected String definingObject;
 
-    protected AbstractResource(Type type, String name, String definingObject)
+    protected AbstractResource(Type type, String id, String definingObject)
     {
         this.type = type;
-        this.id = name;
+        this.id = id;
         this.definingObject = definingObject;
     }
 
