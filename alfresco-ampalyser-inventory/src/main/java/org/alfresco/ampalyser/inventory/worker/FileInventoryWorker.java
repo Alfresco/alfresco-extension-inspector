@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isFromJar;
+
 import java.util.List;
 import java.util.zip.ZipEntry;
 
@@ -39,6 +41,6 @@ public class FileInventoryWorker implements InventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
-        return entry != null && !entry.isDirectory();
+        return !(entry == null || entry.isDirectory() || isFromJar(entry, definingObject));
     }
 }
