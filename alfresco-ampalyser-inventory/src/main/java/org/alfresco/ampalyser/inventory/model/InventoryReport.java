@@ -18,7 +18,7 @@ import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 public class InventoryReport
 {
     private String version;
-    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>();
+    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(new SortByType());
 
     public String getVersion()
     {
