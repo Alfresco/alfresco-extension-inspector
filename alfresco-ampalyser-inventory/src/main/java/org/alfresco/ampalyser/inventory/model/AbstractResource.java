@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public abstract class AbstractResource implements Resource, Serializable
 {
-    private Type type;
+    private final Type type;
     protected String id;
     protected String definingObject;
 
