@@ -8,8 +8,6 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.List.of;
-
 import java.util.List;
 import java.util.zip.ZipEntry;
 
@@ -19,7 +17,7 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClasspathElementInventoryWorker extends AbstractInventoryWorker
+public class ClasspathElementInventoryWorker implements InventoryWorker
 {
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
     public static final String WEB_INF_LIB = "WEB-INF/lib/";

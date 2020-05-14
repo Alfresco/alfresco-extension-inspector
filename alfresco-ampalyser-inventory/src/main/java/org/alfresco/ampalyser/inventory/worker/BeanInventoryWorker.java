@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @Component
-public class BeanInventoryWorker extends AbstractInventoryWorker
+public class BeanInventoryWorker implements InventoryWorker
 {
     private static final Logger LOG = LoggerFactory.getLogger(BeanInventoryWorker.class);
 

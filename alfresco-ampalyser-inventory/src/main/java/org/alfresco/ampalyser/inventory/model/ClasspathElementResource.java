@@ -8,10 +8,23 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
-public class ClasspathElementResource extends AbstractResource
+import static org.alfresco.ampalyser.inventory.model.Resource.Type.CLASSPATH_ELEMENT;
+
+import java.io.Serializable;
+
+public class ClasspathElementResource extends AbstractResource implements Serializable
 {
     public ClasspathElementResource(String name, String definingObject)
     {
-        super(name, Type.CLASSPATH_ELEMENT, definingObject);
+        super(CLASSPATH_ELEMENT, name, definingObject);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ClasspathElementResource{" +
+               "name='" + name + '\'' +
+               ", definingObject='" + definingObject + '\'' +
+               '}';
     }
 }

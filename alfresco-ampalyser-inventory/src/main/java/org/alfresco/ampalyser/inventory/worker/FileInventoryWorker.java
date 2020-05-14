@@ -17,7 +17,7 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FileInventoryWorker extends AbstractInventoryWorker
+public class FileInventoryWorker implements InventoryWorker
 {
     public FileInventoryWorker(EntryProcessor processor)
     {

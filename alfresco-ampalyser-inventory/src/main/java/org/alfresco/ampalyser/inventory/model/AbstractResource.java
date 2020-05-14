@@ -8,21 +8,30 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  * @author Lucian Tuca
  * created on 07/05/2020
  */
-public abstract class AbstractResource implements Resource
+public abstract class AbstractResource implements Resource, Serializable
 {
-    private String name;
-    private Resource.Type type;
+    private final Type type;
+    protected String name;
     protected String definingObject;
 
-    public AbstractResource(String name, Type type, String definingObject)
+    protected AbstractResource(Type type, String name, String definingObject)
     {
-        this.name = name;
         this.type = type;
+        this.name = name;
         this.definingObject = definingObject;
+    }
+
+    @Override
+    public Resource.Type getType()
+    {
+        return type;
     }
 
     public String getName()
@@ -35,36 +44,6 @@ public abstract class AbstractResource implements Resource
         this.name = name;
     }
 
-    @Override
-    public Resource.Type getType()
-    {
-        return type;
-    }
-
-    @Override
-    public boolean isFile()
-    {
-        return type == Type.FILE;
-    }
-
-    @Override
-    public boolean isBean()
-    {
-        return type == Type.BEAN;
-    }
-
-    @Override
-    public boolean isPublicApi()
-    {
-        return type == Type.ALFRESCO_PUBLIC_API;
-    }
-
-    @Override
-    public boolean isClasspathElement()
-    {
-        return type == Type.CLASSPATH_ELEMENT;
-    }
-
     public String getDefiningObject()
     {
         return definingObject;
@@ -73,5 +52,32 @@ public abstract class AbstractResource implements Resource
     public void setDefiningObject(String definingObject)
     {
         this.definingObject = definingObject;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractResource that = (AbstractResource) o;
+        return type == that.type &&
+               Objects.equals(name, that.name) &&
+               Objects.equals(definingObject, that.definingObject);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(type, name, definingObject);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "AbstractResource{" +
+               "type=" + type +
+               ", name='" + name + '\'' +
+               ", definingObject='" + definingObject + '\'' +
+               '}';
     }
 }
