@@ -13,9 +13,9 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
 {
     private boolean deprecated;
 
-    public AlfrescoPublicApiResource(String name, boolean deprecated)
+    public AlfrescoPublicApiResource(String id, boolean deprecated)
     {
-        super(ALFRESCO_PUBLIC_API, name, null);
+        super(ALFRESCO_PUBLIC_API, id, null);
         this.deprecated = deprecated;
     }
 
@@ -50,7 +50,7 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
     {
         return "AlfrescoPublicApiResource{" +
                "deprecated=" + deprecated +
-               ", name='" + name + '\'' +
+               ", id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';
     }

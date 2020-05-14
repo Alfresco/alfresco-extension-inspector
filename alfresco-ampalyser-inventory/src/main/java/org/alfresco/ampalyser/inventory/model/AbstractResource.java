@@ -18,13 +18,13 @@ import java.util.Objects;
 public abstract class AbstractResource implements Resource, Serializable
 {
     private final Type type;
-    protected String name;
+    protected String id;
     protected String definingObject;
 
-    protected AbstractResource(Type type, String name, String definingObject)
+    protected AbstractResource(Type type, String id, String definingObject)
     {
         this.type = type;
-        this.name = name;
+        this.id = id;
         this.definingObject = definingObject;
     }
 
@@ -34,14 +34,14 @@ public abstract class AbstractResource implements Resource, Serializable
         return type;
     }
 
-    public String getName()
+    public String getId()
     {
-        return name;
+        return id;
     }
 
-    public void setName(String name)
+    public void setId(String id)
     {
-        this.name = name;
+        this.id = id;
     }
 
     public String getDefiningObject()
@@ -61,14 +61,14 @@ public abstract class AbstractResource implements Resource, Serializable
         if (o == null || getClass() != o.getClass()) return false;
         AbstractResource that = (AbstractResource) o;
         return type == that.type &&
-               Objects.equals(name, that.name) &&
+               Objects.equals(id, that.id) &&
                Objects.equals(definingObject, that.definingObject);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, name, definingObject);
+        return Objects.hash(type, id, definingObject);
     }
 
     @Override
@@ -76,7 +76,7 @@ public abstract class AbstractResource implements Resource, Serializable
     {
         return "AbstractResource{" +
                "type=" + type +
-               ", name='" + name + '\'' +
+               ", id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';
     }

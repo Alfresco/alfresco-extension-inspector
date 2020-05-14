@@ -8,14 +8,18 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 public class InventoryServiceImpl implements InventoryService
 {
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private EntryProcessor entryProcessor;
@@ -46,10 +51,20 @@ public class InventoryServiceImpl implements InventoryService
                 Map<Resource.Type, List<Resource>> resources = entryProcessor
                     .processWarEntry(ze, zis);
 
-                //TODO add found resources to inventory report
+                report.addResources(resources);
 
                 zis.closeEntry();
                 ze = zis.getNextEntry();
+            }
+            try
+            {
+                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+                objectMapper.writeValue(new File(
+                    "report.json"), report);
+            }
+            catch (IOException e)
+            {
+                logger.warn("Failed writing report to file " + report, e);
             }
             return report;
         }

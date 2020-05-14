@@ -42,7 +42,7 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
-        return !(entry == null || definingObject == null) &&
+        return !(entry == null || definingObject == null) && !entry.isDirectory() &&
             (entry.getName().startsWith(WEB_INF_CLASSES) || isFromJar(entry, definingObject));
     }
 

@@ -22,6 +22,7 @@ import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.alfresco.ampalyser.inventory.model.Resource.Type;
+import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
 import org.springframework.stereotype.Component;
 
@@ -84,16 +85,7 @@ public class EntryProcessor
     {
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
-            EntryProcessor::mergeLists));
-    }
-
-    private static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
-    {
-        if (v1 != null)
-        {
-            v1.addAll(v2);
-        }
-        return v1;
+            InventoryUtils::mergeLists));
     }
 
     private static byte[] extract(ZipInputStream zis) throws IOException
