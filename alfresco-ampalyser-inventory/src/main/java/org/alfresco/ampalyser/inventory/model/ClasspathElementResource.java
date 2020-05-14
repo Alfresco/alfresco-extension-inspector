@@ -16,7 +16,7 @@ public class ClasspathElementResource extends AbstractResource implements Serial
 {
     public ClasspathElementResource()
     {
-        this.type = Type.CLASSPATH_ELEMENT;
+        this.type = CLASSPATH_ELEMENT;
     }
 
     public ClasspathElementResource(String name, String definingObject)

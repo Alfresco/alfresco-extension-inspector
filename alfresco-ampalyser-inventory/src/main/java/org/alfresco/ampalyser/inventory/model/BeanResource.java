@@ -19,6 +19,7 @@ public class BeanResource extends AbstractResource implements Serializable
 
     public BeanResource()
     {
+        this.type = BEAN;
     }
 
     public BeanResource(String id, String name, String definingObject)

@@ -15,7 +15,7 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
 
     public AlfrescoPublicApiResource()
     {
-        this.type = Type.ALFRESCO_PUBLIC_API;
+        this.type = ALFRESCO_PUBLIC_API;
     }
 
     public AlfrescoPublicApiResource(String name, boolean deprecated)

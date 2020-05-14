@@ -19,7 +19,7 @@ public class FileResource extends AbstractResource implements Serializable
 {
     public FileResource()
     {
-        this.type = Type.FILE;
+        this.type = FILE;
     }
 
     public FileResource(String name, String definingObject)
