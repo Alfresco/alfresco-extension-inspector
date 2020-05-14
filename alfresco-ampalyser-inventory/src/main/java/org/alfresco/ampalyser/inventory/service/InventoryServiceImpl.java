@@ -53,6 +53,14 @@ public class InventoryServiceImpl implements InventoryService
             System.out.println("Starting war processing");
             while (ze != null)
             {
+                if (ze.getName().endsWith("MANIFEST.MF"))
+                {
+                    Map<String, String> versions = InventoryUtils.parseManifestForVersion(ze, zis);
+                    if (versions != null)
+                    {
+                        report.setAlfrescoVersion(versions.get(InventoryReport.IMPLEMENTATION_VERSION));
+                    }
+                }
                 Map<Resource.Type, List<Resource>> resources = entryProcessor.processWarEntry(ze, zis);
                 report.addResources(resources);
 

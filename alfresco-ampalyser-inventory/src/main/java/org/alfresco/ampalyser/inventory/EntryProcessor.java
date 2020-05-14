@@ -51,7 +51,7 @@ public class EntryProcessor
         inventoryWorkers.forEach(inventoryWorker -> extractedResources
             .put(inventoryWorker.getType(), new ArrayList<>()));
 
-        byte[] data = extract(zis);
+        byte[] data = InventoryUtils.extract(zis);
         processEntry(warEntry, data, warEntry.getName(), extractedResources);
 
         if (isJar(warEntry))
@@ -67,7 +67,7 @@ public class EntryProcessor
                       libZe.getName().equalsIgnoreCase("license.txt") ||
                       libZe.getName().equalsIgnoreCase("notice.txt")))
                 {
-                    byte[] libData = extract(libZis);
+                    byte[] libData = InventoryUtils.extract(libZis);
                     processEntry(libZe, libData, warEntry.getName(), extractedResources);
                 }
                 libZis.closeEntry();
@@ -83,18 +83,5 @@ public class EntryProcessor
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
             InventoryUtils::mergeLists));
-    }
-
-    private static byte[] extract(ZipInputStream zis) throws IOException
-    {
-        byte[] buffer = new byte[1024];
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int len;
-        while ((len = zis.read(buffer)) > 0)
-        {
-            bos.write(buffer, 0, len);
-        }
-        bos.close();
-        return bos.toByteArray();
     }
 }
