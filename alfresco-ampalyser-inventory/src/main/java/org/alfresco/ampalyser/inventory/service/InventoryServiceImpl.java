@@ -12,21 +12,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Service
 public class InventoryServiceImpl implements InventoryService
@@ -48,23 +53,11 @@ public class InventoryServiceImpl implements InventoryService
             System.out.println("Starting war processing");
             while (ze != null)
             {
-                Map<Resource.Type, List<Resource>> resources = entryProcessor
-                    .processWarEntry(ze, zis);
-
+                Map<Resource.Type, List<Resource>> resources = entryProcessor.processWarEntry(ze, zis);
                 report.addResources(resources);
 
                 zis.closeEntry();
                 ze = zis.getNextEntry();
-            }
-            try
-            {
-                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                objectMapper.writeValue(new File(
-                    "report.json"), report);
-            }
-            catch (IOException e)
-            {
-                logger.warn("Failed writing report to file " + report, e);
             }
             return report;
         }
@@ -79,4 +72,26 @@ public class InventoryServiceImpl implements InventoryService
             throw new RuntimeException("IO error while reading archive " + warPath, e);
         }
     }
+
+    public void generateInventoryReport(final String warPath, final String outputPath)
+    {
+        Path path = Paths.get(outputPath);
+        try
+        {
+            Files.createDirectories(path.toAbsolutePath().getParent());
+            Files.createFile(path);
+
+            InventoryReport report = extractInventoryReport(warPath);
+
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            objectMapper.writeValue(path.toFile(), report);
+
+            logger.warn("Inventory report - " + path.toAbsolutePath());
+        }
+        catch (IOException e)
+        {
+            logger.error("Failed writing report to file " + path.toAbsolutePath(), e);
+        }
+    }
+
 }

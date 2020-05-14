@@ -13,4 +13,6 @@ import org.alfresco.ampalyser.inventory.model.InventoryReport;
 public interface InventoryService
 {
     InventoryReport extractInventoryReport(String warPath);
+
+    void generateInventoryReport(String warPath, String outputPath);
 }
