@@ -19,7 +19,6 @@ import java.util.zip.ZipInputStream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.inventory.model.BeanResource;
@@ -27,13 +26,15 @@ import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
 import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InventoryServiceImpl implements InventoryService
 {
-    private static final ObjectWriter OBJECT_WRITER = new ObjectMapper().writer();
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryServiceImpl.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -57,30 +58,7 @@ public class InventoryServiceImpl implements InventoryService
                 Map<Resource.Type, List<Resource>> resources = entryProcessor
                     .processWarEntry(ze, zis);
 
-                List<FileResource> fileResourceList = objectMapper
-                    .convertValue(resources.get(Resource.Type.FILE),
-                        new TypeReference<List<FileResource>>()
-                        {
-                        });
-                report.addFiles(fileResourceList);
-                List<ClasspathElementResource> classpathResourceList = objectMapper
-                    .convertValue(resources.get(Resource.Type.CLASSPATH_ELEMENT),
-                        new TypeReference<List<ClasspathElementResource>>()
-                        {
-                        });
-                report.addClasspathElements(classpathResourceList);
-                List<AlfrescoPublicApiResource> apiResourceList = objectMapper
-                    .convertValue(resources.get(Resource.Type.ALFRESCO_PUBLIC_API),
-                        new TypeReference<List<AlfrescoPublicApiResource>>()
-                        {
-                        });
-                report.addAlfrescoPublicApis(apiResourceList);
-                List<BeanResource> beanResourceList = objectMapper
-                    .convertValue(resources.get(Resource.Type.BEAN),
-                        new TypeReference<List<BeanResource>>()
-                        {
-                        });
-                report.addBeans(beanResourceList);
+                addResultsToReport(resources, report);
 
                 zis.closeEntry();
                 ze = zis.getNextEntry();
@@ -112,7 +90,52 @@ public class InventoryServiceImpl implements InventoryService
         {
             e.printStackTrace();
         }
+
         return report;
+    }
+
+    private static void addResultsToReport(Map<Resource.Type, List<Resource>> resources,
+        InventoryReport report)
+    {
+        for (Resource.Type type: resources.keySet())
+        {
+            switch (type){
+            case FILE:
+                List<FileResource> fileResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.FILE),
+                        new TypeReference<List<FileResource>>()
+                        {
+                        });
+                report.addFiles(fileResourceList);
+                break;
+            case CLASSPATH_ELEMENT:
+                List<ClasspathElementResource> classpathResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.CLASSPATH_ELEMENT),
+                        new TypeReference<List<ClasspathElementResource>>()
+                        {
+                        });
+                report.addClasspathElements(classpathResourceList);
+                break;
+            case ALFRESCO_PUBLIC_API:
+                List<AlfrescoPublicApiResource> apiResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.ALFRESCO_PUBLIC_API),
+                        new TypeReference<List<AlfrescoPublicApiResource>>()
+                        {
+                        });
+                report.addAlfrescoPublicApis(apiResourceList);
+                break;
+            case BEAN:
+                List<BeanResource> beanResourceList = objectMapper
+                    .convertValue(resources.get(Resource.Type.BEAN),
+                        new TypeReference<List<BeanResource>>()
+                        {
+                        });
+                report.addBeans(beanResourceList);
+                break;
+            default:
+                LOGGER.info("Unknown resource type '" + type + "' won't be added to inventory report");
+            }
+        }
     }
 
     //TODO improve error handling
