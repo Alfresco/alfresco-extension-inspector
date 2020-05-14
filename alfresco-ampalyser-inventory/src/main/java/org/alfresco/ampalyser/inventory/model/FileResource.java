@@ -17,21 +17,16 @@ import java.io.Serializable;
  */
 public class FileResource extends AbstractResource implements Serializable
 {
-    public FileResource()
+    public FileResource(String id, String definingObject)
     {
-        this.type = FILE;
-    }
-
-    public FileResource(String name, String definingObject)
-    {
-        super(FILE, name, definingObject);
+        super(FILE, id, definingObject);
     }
 
     @Override
     public String toString()
     {
         return "FileResource{" +
-               "name='" + name + '\'' +
+               "id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';
     }

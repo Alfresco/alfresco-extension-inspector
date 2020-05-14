@@ -14,21 +14,16 @@ import java.io.Serializable;
 
 public class ClasspathElementResource extends AbstractResource implements Serializable
 {
-    public ClasspathElementResource()
+    public ClasspathElementResource(String id, String definingObject)
     {
-        this.type = CLASSPATH_ELEMENT;
-    }
-
-    public ClasspathElementResource(String name, String definingObject)
-    {
-        super(CLASSPATH_ELEMENT, name, definingObject);
+        super(CLASSPATH_ELEMENT, id, definingObject);
     }
 
     @Override
     public String toString()
     {
         return "ClasspathElementResource{" +
-               "name='" + name + '\'' +
+               "id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';
     }

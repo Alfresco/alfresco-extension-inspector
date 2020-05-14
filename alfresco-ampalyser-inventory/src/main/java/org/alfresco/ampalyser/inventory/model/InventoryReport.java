@@ -8,17 +8,17 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+
+import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 
 public class InventoryReport
 {
     private String version;
-    private List<FileResource> files = new ArrayList<>();
-    private List<ClasspathElementResource> classpath = new ArrayList<>();
-    private List<BeanResource> beanResources = new ArrayList<>();
-    private List<AlfrescoPublicApiResource> alfrescoPublicApi = new ArrayList<>();
+    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>();
 
     public String getVersion()
     {
@@ -30,64 +30,20 @@ public class InventoryReport
         this.version = version;
     }
 
-    public List<FileResource> getFiles()
+    public Map<Resource.Type, List<Resource>> getResources()
     {
-        return files;
+        return resources;
     }
 
-    public void addFile(FileResource file)
+    public void setResources(Map<Resource.Type, List<Resource>> resources)
     {
-        this.files.add(file);
+        this.resources = resources;
     }
 
-    public void addFiles(List<FileResource> files)
+    public void addResources(Map<Resource.Type, List<Resource>> resources)
     {
-        this.files.addAll(files);
-    }
-
-    public List<ClasspathElementResource> getClasspath()
-    {
-        return classpath;
-    }
-
-    public void addClasspathElement(ClasspathElementResource classpathElementResource)
-    {
-        this.classpath.add(classpathElementResource);
-    }
-
-    public void addClasspathElements(List<ClasspathElementResource> classpathElementResources)
-    {
-        this.classpath.addAll(classpathElementResources);
-    }
-
-    public List<BeanResource> getBeanResources()
-    {
-        return beanResources;
-    }
-
-    public void addBean(BeanResource beanResource)
-    {
-        this.beanResources.add(beanResource);
-    }
-
-    public void addBeans(List<BeanResource> beanResources)
-    {
-        this.beanResources.addAll(beanResources);
-    }
-
-    public List<AlfrescoPublicApiResource> getAlfrescoPublicApi()
-    {
-        return alfrescoPublicApi;
-    }
-
-    public void addAlfrescoPublicApi(AlfrescoPublicApiResource alfrescoPublicApi)
-    {
-        this.alfrescoPublicApi.add(alfrescoPublicApi);
-    }
-
-    public void addAlfrescoPublicApis(List<AlfrescoPublicApiResource> alfrescoPublicApis)
-    {
-        this.alfrescoPublicApi.addAll(alfrescoPublicApis);
+        resources.keySet().stream().forEach(
+            type -> this.resources.merge(type, resources.get(type), InventoryUtils::mergeLists));
     }
 
     @Override
@@ -97,24 +53,20 @@ public class InventoryReport
             return true;
         if (!(o instanceof InventoryReport))
             return false;
-        InventoryReport that = (InventoryReport) o;
-        return Objects.equals(version, that.version) && Objects.equals(files, that.files)
-            && Objects.equals(classpath, that.classpath) && Objects.equals(
-            beanResources, that.beanResources)
-            && Objects.equals(alfrescoPublicApi, that.alfrescoPublicApi);
+        InventoryReport report = (InventoryReport) o;
+        return Objects.equals(version, report.version) && Objects
+            .equals(resources, report.resources);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(version, files, classpath, beanResources, alfrescoPublicApi);
+        return Objects.hash(version, resources);
     }
 
     @Override
     public String toString()
     {
-        return "InventoryReport{" + "version='" + version + '\'' + ", resources=" + files
-            + ", classpath=" + classpath + ", beans=" + beanResources + ", alfrescoPublicApi="
-            + alfrescoPublicApi + '}';
+        return "InventoryReport{" + "version='" + version + '\'' + ", resources=" + resources + '}';
     }
 }
