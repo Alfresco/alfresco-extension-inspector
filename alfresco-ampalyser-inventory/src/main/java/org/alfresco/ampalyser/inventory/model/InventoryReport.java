@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.model;
 
+import static java.util.Comparator.comparing;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +20,7 @@ import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 public class InventoryReport
 {
     private String version;
-    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(new SortByType());
+    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(comparing(Enum::name));
 
     public String getVersion()
     {
@@ -42,8 +44,7 @@ public class InventoryReport
 
     public void addResources(Map<Resource.Type, List<Resource>> resources)
     {
-        resources.keySet().stream().forEach(
-            type -> this.resources.merge(type, resources.get(type), InventoryUtils::mergeLists));
+        resources.forEach((k, v) -> this.resources.merge(k, v, InventoryUtils::mergeLists));
     }
 
     @Override
