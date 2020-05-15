@@ -15,18 +15,14 @@ import org.alfresco.ampalyser.inventory.model.Resource;
 
 public class InventoryUtils
 {
-    public static final String WEB_INF_LIB = "WEB-INF/lib/";
-
     public static boolean isFromJar(ZipEntry entry, String definingObject)
     {
-        return !isJar(entry) && definingObject != null && definingObject.startsWith(WEB_INF_LIB);
+        return entry != null && !isJar(entry.getName()) && isJar(definingObject);
     }
 
-    public static boolean isJar(ZipEntry entry)
+    public static boolean isJar(String definingObject)
     {
-        return entry != null &&
-            entry.getName().startsWith(WEB_INF_LIB) &&
-            entry.getName().endsWith(".jar");
+        return definingObject != null && definingObject.endsWith(".jar");
     }
 
     public static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)

@@ -54,7 +54,7 @@ public class EntryProcessor
         byte[] data = extract(zis);
         processEntry(warEntry, data, warEntry.getName(), extractedResources);
 
-        if (isJar(warEntry))
+        if (isJar(warEntry.getName()))
         {
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             ZipInputStream libZis = new ZipInputStream(bis);
