@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory;
 
+import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isJar;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,11 +75,6 @@ public class EntryProcessor
             }
         }
         return extractedResources;
-    }
-
-    private boolean isJar(ZipEntry entry)
-    {
-        return entry.getName().startsWith("WEB-INF/lib/");
     }
 
     private void processEntry(ZipEntry entry, byte[] data, String definingObject,

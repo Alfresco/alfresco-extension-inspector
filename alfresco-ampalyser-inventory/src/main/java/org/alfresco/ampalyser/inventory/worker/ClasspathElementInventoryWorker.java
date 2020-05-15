@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isFromJar;
+
 import java.util.List;
 import java.util.zip.ZipEntry;
 
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Component;
 public class ClasspathElementInventoryWorker implements InventoryWorker
 {
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
-    public static final String WEB_INF_LIB = "WEB-INF/lib/";
 
     public ClasspathElementInventoryWorker(EntryProcessor processor)
     {
@@ -56,15 +57,4 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
         return List.of(new ClasspathElementResource(resourceName, definingObject));
     }
 
-    private boolean isFromJar(ZipEntry entry, String definingObject)
-    {
-        return !isJar(entry) && definingObject != null && definingObject.startsWith(WEB_INF_LIB);
-    }
-
-    private boolean isJar(ZipEntry entry)
-    {
-        return entry != null &&
-            entry.getName().startsWith(WEB_INF_LIB) &&
-            entry.getName().endsWith(".jar");
-    }
 }
