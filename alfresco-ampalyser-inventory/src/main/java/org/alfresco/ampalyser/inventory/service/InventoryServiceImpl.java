@@ -8,7 +8,6 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -94,7 +92,7 @@ public class InventoryServiceImpl implements InventoryService
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             objectMapper.writeValue(path.toFile(), report);
 
-            logger.warn("Inventory report - " + path.toAbsolutePath());
+            logger.info("Inventory report generated - " + path.toAbsolutePath());
         }
         catch (IOException e)
         {

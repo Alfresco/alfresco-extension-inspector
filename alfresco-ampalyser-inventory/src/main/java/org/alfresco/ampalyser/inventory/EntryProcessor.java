@@ -11,7 +11,6 @@ package org.alfresco.ampalyser.inventory;
 import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isJar;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

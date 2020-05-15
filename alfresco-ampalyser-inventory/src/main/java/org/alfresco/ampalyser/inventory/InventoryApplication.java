@@ -1,3 +1,11 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+
 package org.alfresco.ampalyser.inventory;
 
 import org.alfresco.ampalyser.inventory.service.InventoryService;
@@ -29,7 +37,6 @@ public class InventoryApplication implements ApplicationRunner
             printUsage();
             return;
         }
-
         String warPath = args.getNonOptionArgs().get(0);
         String reportPath = DEFAULT_REPORT_PATH;
 
@@ -46,13 +53,12 @@ public class InventoryApplication implements ApplicationRunner
                 return;
             }
         }
-
         inventoryService.generateInventoryReport(warPath, reportPath);
     }
 
     private void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println("java -jar alfresco-war-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
+        System.out.println("java -jar alfresco-ampalyser-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
     }
 }
