@@ -147,12 +147,13 @@ public class BeanInventoryWorker implements InventoryWorker
                         beanId = beanClass;
                     }
 
-
-
-                    BeanResource beanResource = new BeanResource(beanId, filename + "@" + definingObject);
-                    foundBeans.add(beanResource);
-
-                    LOG.debug("Added bean: " + beanId + " found in file: " + filename + " parent: " + definingObject);
+                    // Anonymous beans will not be added to the report.
+                    if (beanId != null && !beanId.isEmpty())
+                    {
+                        BeanResource beanResource = new BeanResource(beanId, filename + "@" + definingObject);
+                        foundBeans.add(beanResource);
+                        LOG.debug("Added bean: " + beanId + " found in file: " + filename + " parent: " + definingObject);
+                    }
                 }
             }
         }

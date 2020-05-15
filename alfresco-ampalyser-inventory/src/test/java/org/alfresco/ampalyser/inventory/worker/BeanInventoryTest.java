@@ -55,9 +55,10 @@ public class BeanInventoryTest
     public void happyFlowForBeans()
     {
         ZipEntry zipEntry = new ZipEntry("file.xml");
-        byte[] data = ("<beans>\n"
-            + "    <bean id='bean-with-id' name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'>\n"
-            + "    </bean>\n" + "</beans>").getBytes();
+        byte[] data = (
+            "<beans>"
+            + "    <bean id='bean-with-id' name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
         List<Resource> resources = beanInventoryWorker
@@ -75,9 +76,10 @@ public class BeanInventoryTest
     public void happyFlowForBeansWithoutId()
     {
         ZipEntry zipEntry = new ZipEntry("file.xml");
-        byte[] data = ("<beans>\n"
-            + "    <bean name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'>\n"
-            + "    </bean>\n" + "</beans>").getBytes();
+        byte[] data = (
+            "<beans>"
+            + "    <bean name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
         List<Resource> resources = beanInventoryWorker
@@ -95,9 +97,32 @@ public class BeanInventoryTest
     public void happyFlowForBeansWithoutIdAndWithoutName()
     {
         ZipEntry zipEntry = new ZipEntry("file.xml");
-        byte[] data = ("<beans>\n"
-            + "    <bean class='org.alfresco.ampalyser.inventory.Test'>\n"
-            + "    </bean>\n" + "</beans>").getBytes();
+        byte[] data = (
+            "<beans>"
+            + "    <bean class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "</beans>").getBytes();
+
+        String definingObject = "unicorn-jar-for-tests.jar";
+        List<Resource> resources = beanInventoryWorker
+            .processZipEntry(zipEntry, data, definingObject);
+
+        assertEquals(1, resources.size());
+        assertTrue(resources.get(0) instanceof BeanResource);
+
+        BeanResource br = (BeanResource) resources.get(0);
+        assertEquals("org.alfresco.ampalyser.inventory.Test", br.getId());
+        assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
+    }
+
+    @Test
+    public void happyFlowForBeansWithoutIdAndWithoutNameAndAnonymousBeans()
+    {
+        ZipEntry zipEntry = new ZipEntry("file.xml");
+        byte[] data = (
+            "<beans>"
+            + "    <bean class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "    <bean parent='only-parent-defined'>I should be anonymous</bean>"
+            + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
         List<Resource> resources = beanInventoryWorker
