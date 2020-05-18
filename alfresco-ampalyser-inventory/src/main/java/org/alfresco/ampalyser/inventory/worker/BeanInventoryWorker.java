@@ -127,7 +127,7 @@ public class BeanInventoryWorker implements InventoryWorker
                         BeanResource beanResource = new BeanResource(beanId, definingObject);
 
                         foundBeans.add(beanResource);
-                        LOG.debug("Added bean: " + beanId + " found in: " + definingObject);
+                        LOG.trace("Added bean: " + beanId + " found in: " + definingObject);
                     }
                 }
             }

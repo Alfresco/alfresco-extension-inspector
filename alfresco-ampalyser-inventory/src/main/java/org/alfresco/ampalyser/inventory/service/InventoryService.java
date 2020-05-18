@@ -9,10 +9,11 @@
 package org.alfresco.ampalyser.inventory.service;
 
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
+import org.alfresco.ampalyser.inventory.output.InventoryOutput;
 
 public interface InventoryService
 {
     InventoryReport extractInventoryReport(String warPath);
 
-    void generateInventoryReport(String warPath, String outputPath);
+    void generateInventoryReport(String warPath, InventoryOutput output);
 }

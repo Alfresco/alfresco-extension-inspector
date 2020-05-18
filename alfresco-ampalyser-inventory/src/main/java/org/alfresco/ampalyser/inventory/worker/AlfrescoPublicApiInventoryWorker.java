@@ -68,7 +68,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
                 AlfrescoPublicApiResource resource = new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated);
                 publicApiClasses.add(resource);
 
-                LOG.debug("AlfrescoPublicApi: " + resource.toString());
+                LOG.trace("AlfrescoPublicApi: " + resource.toString());
             }
         }
         catch (IOException e)
