@@ -1,3 +1,11 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+
 package org.alfresco.ampalyser.inventory.output;
 
 import java.io.File;
@@ -40,7 +48,10 @@ public class JSONInventoryOutput implements InventoryOutput
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             objectMapper.writeValue(reportFile, report);
 
-            logger.info("Inventory report generated - " + reportFile.getAbsolutePath());
+            if (logger.isInfoEnabled())
+            {
+                logger.info("Inventory report generated - " + reportFile.getAbsolutePath());
+            }
         }
         catch (IOException e)
         {
@@ -64,7 +75,10 @@ public class JSONInventoryOutput implements InventoryOutput
             path = path.resolve(defaultPath);
         }
 
-        logger.debug("Output file - " + path);
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Output file - " + path);
+        }
 
         return path;
     }

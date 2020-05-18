@@ -40,10 +40,11 @@ public class InventoryServiceImpl implements InventoryService
     {
         try (final ZipInputStream zis = new ZipInputStream((new FileInputStream(warPath))))
         {
+            logger.info("Starting war processing");
+
             final InventoryReport report = new InventoryReport();
 
             ZipEntry ze = zis.getNextEntry();
-            System.out.println("Starting war processing");
             while (ze != null)
             {
                 if (ze.getName().endsWith("MANIFEST.MF"))
@@ -60,6 +61,8 @@ public class InventoryServiceImpl implements InventoryService
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
+            logger.info("War processing finished");
+
             return report;
         }
         catch (FileNotFoundException e)
