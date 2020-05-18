@@ -43,19 +43,20 @@ public class BeanInventoryWorker implements InventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        String xmlFileName = zipEntry.getName();
+        String filename = zipEntry.getName();
+
         try
         {
-            return analyseXmlFile(data, xmlFileName);
+            return analyseXmlFile(data, filename, definingObject);
         }
         catch (IOException ioe)
         {
-            LOG.warn("Failed to open and read from xml file: " + xmlFileName);
+            LOG.warn("Failed to open and read from xml file: " + filename);
             return emptyList();
         }
         catch (Exception e)
         {
-            LOG.warn("Failed to analyse beans in xml file: " + xmlFileName);
+            LOG.warn("Failed to analyse beans in xml file: " + filename);
             return emptyList();
         }
     }
@@ -75,13 +76,17 @@ public class BeanInventoryWorker implements InventoryWorker
     }
 
     /**
+     * Analyses a .xml file, looking for Alfresco beans
      *
-     * @param xmlData
-     * @param definingObject
-     * @return
+     * @param xmlData the content of the .xml file
+     * @param filename the name of the .xml file
+     * @param definingObject the name of the parent of the .xml file (e.g. the .jar)
+     *
+     * @return a list of {@link BeanResource} found in the .xml file
+     *
      * @throws Exception
      */
-    private List<Resource> analyseXmlFile(byte[] xmlData, String definingObject)
+    private List<Resource> analyseXmlFile(byte[] xmlData, String filename, String definingObject)
         throws Exception
     {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -92,14 +97,22 @@ public class BeanInventoryWorker implements InventoryWorker
         {
             if (!definingObject.startsWith("alfresco/subsystems/"))
             {
-                return findBeans(doc.getDocumentElement(), definingObject);
+                return findBeans(doc.getDocumentElement(), filename, definingObject);
             }
         }
         return emptyList();
     }
 
-
-    private List<Resource> findBeans(Element docElem, String definingObject)
+    /**
+     * Builds a list of Alfresco {@link BeanResource} objects that are present in the pr
+     *
+     * @param docElem the 'beans' tag in the .xml file
+     * @param filename the .xml filename
+     * @param definingObject the name of the parent of the .xml file (e.g. the .jar)
+     *
+     * @return a list of {@link BeanResource} found in the .xml file
+     */
+    private List<Resource> findBeans(Element docElem, String filename, String definingObject)
     {
         List<Resource> foundBeans = new ArrayList<>();
 
@@ -114,20 +127,33 @@ public class BeanInventoryWorker implements InventoryWorker
                 {
                     String beanId = elem.getAttribute("id");
                     String beanName = elem.getAttribute("name");
+                    String beanClass = elem.getAttribute("class");
+
+                    // If the bean does not have an id, use the name
                     if (beanId == null || beanId.trim().length() == 0)
                     {
                         beanId = beanName;
                     }
+
+                    // If the bean does not have an id or a name, use the class
                     if (beanId == null || beanId.trim().length() == 0)
                     {
                         LOG.warn("Found anonymous bean in XML resource " + definingObject);
-                    }
-                    else
-                    {
-                        BeanResource beanResource = new BeanResource(beanId, definingObject);
+                        LOG.warn("Falling back and setting the id as the class: " + beanClass);
 
+                        // The code might find beans that have none of the id/name/class defined. Tough luck
+                        // The parent tag might be present and could be used.
+
+                        beanId = beanClass;
+                    }
+
+                    // Anonymous beans will not be added to the report.
+                    if (beanId != null && !beanId.isEmpty())
+                    {
+                        BeanResource beanResource = new BeanResource(beanId, filename + "@" + definingObject);
                         foundBeans.add(beanResource);
-                        LOG.trace("Added bean: " + beanId + " found in: " + definingObject);
+
+                        LOG.debug("Added bean: " + beanId + " found in file: " + filename + " parent: " + definingObject);
                     }
                 }
             }
