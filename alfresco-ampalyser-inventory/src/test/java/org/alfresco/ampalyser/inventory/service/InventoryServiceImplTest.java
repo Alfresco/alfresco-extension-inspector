@@ -25,8 +25,8 @@ import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -44,7 +44,7 @@ public class InventoryServiceImplTest
     @InjectMocks
     private InventoryServiceImpl inventoryService;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
@@ -56,8 +56,7 @@ public class InventoryServiceImplTest
         try
         {
             inventoryService.extractInventoryReport("no-war-here");
-            fail(
-                "Processing should fail with IllegalArgumentException when war cannot be found at given path.");
+            fail("Processing should fail with IllegalArgumentException when war cannot be found at given path.");
         }
         catch (IllegalArgumentException e)
         {
