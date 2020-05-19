@@ -8,31 +8,29 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.inventory.output.InventoryOutput;
+import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class InventoryServiceImpl implements InventoryService
 {
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private EntryProcessor entryProcessor;
@@ -42,30 +40,29 @@ public class InventoryServiceImpl implements InventoryService
     {
         try (final ZipInputStream zis = new ZipInputStream((new FileInputStream(warPath))))
         {
+            logger.info("Starting war processing");
+
             final InventoryReport report = new InventoryReport();
 
             ZipEntry ze = zis.getNextEntry();
-            System.out.println("Starting war processing");
             while (ze != null)
             {
-                Map<Resource.Type, List<Resource>> resources = entryProcessor
-                    .processWarEntry(ze, zis);
-
+                if (ze.getName().endsWith("MANIFEST.MF"))
+                {
+                    Map<String, String> versions = InventoryUtils.parseManifestForVersion(ze, zis);
+                    if (versions != null)
+                    {
+                        report.setAlfrescoVersion(versions.get(InventoryReport.IMPLEMENTATION_VERSION));
+                    }
+                }
+                Map<Resource.Type, List<Resource>> resources = entryProcessor.processWarEntry(ze, zis);
                 report.addResources(resources);
 
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            try
-            {
-                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                objectMapper.writeValue(new File(
-                    "report.json"), report);
-            }
-            catch (IOException e)
-            {
-                logger.warn("Failed writing report to file " + report, e);
-            }
+            logger.info("War processing finished");
+
             return report;
         }
         catch (FileNotFoundException e)
@@ -78,5 +75,11 @@ public class InventoryServiceImpl implements InventoryService
             logger.error("Failed reading web archive " + warPath, e);
             throw new RuntimeException("IO error while reading archive " + warPath, e);
         }
+    }
+
+    public void generateInventoryReport(final String warPath, final InventoryOutput output)
+    {
+        InventoryReport report = extractInventoryReport(warPath);
+        output.generateOutput(report);
     }
 }

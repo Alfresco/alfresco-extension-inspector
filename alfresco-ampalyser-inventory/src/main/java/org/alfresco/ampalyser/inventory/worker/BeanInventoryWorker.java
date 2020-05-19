@@ -138,8 +138,11 @@ public class BeanInventoryWorker implements InventoryWorker
                     // If the bean does not have an id or a name, use the class
                     if (beanId == null || beanId.trim().length() == 0)
                     {
-                        LOG.warn("Found anonymous bean in XML resource " + definingObject);
-                        LOG.warn("Falling back and setting the id as the class: " + beanClass);
+                        if (LOG.isTraceEnabled())
+                        {
+                            LOG.trace("Found anonymous bean in XML resource " + definingObject);
+                            LOG.trace("Falling back and setting the id as the class: " + beanClass);
+                        }
 
                         // The code might find beans that have none of the id/name/class defined. Tough luck
                         // The parent tag might be present and could be used.
@@ -152,7 +155,11 @@ public class BeanInventoryWorker implements InventoryWorker
                     {
                         BeanResource beanResource = new BeanResource(beanId, filename + "@" + definingObject);
                         foundBeans.add(beanResource);
-                        LOG.debug("Added bean: " + beanId + " found in file: " + filename + " parent: " + definingObject);
+
+                        if (LOG.isTraceEnabled())
+                        {
+                            LOG.trace("Added bean: " + beanId + " found in file: " + filename + " parent: " + definingObject);
+                        }
                     }
                 }
             }

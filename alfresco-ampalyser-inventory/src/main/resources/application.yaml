@@ -6,3 +6,4 @@ spring:
 logging:
   level:
     root: warn
+    org.alfresco.ampalyser.inventory: info

@@ -19,17 +19,37 @@ import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 
 public class InventoryReport
 {
-    private String version;
+    public static final String SCHEMA_VERSION = "1.0";
+    public static final String IMPLEMENTATION_VERSION = "IMPLEMENTATION_VERSION";
+    public static final String SPECIFICATION_VERSION = "SPECIFICATION_VERSION";
+
+    private String schemaVersion;
+    private String alfrescoVersion;
     private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(comparing(Enum::name));
 
-    public String getVersion()
+    public InventoryReport()
     {
-        return version;
+        this.schemaVersion = SCHEMA_VERSION;
     }
 
-    public void setVersion(String version)
+    public String getSchemaVersion()
     {
-        this.version = version;
+        return this.schemaVersion;
+    }
+
+    public void setSchemaVersion(String schemaVersion)
+    {
+        this.schemaVersion = schemaVersion;
+    }
+
+    public String getAlfrescoVersion()
+    {
+        return alfrescoVersion;
+    }
+
+    public void setAlfrescoVersion(String alfrescoVersion)
+    {
+        this.alfrescoVersion = alfrescoVersion;
     }
 
     public Map<Resource.Type, List<Resource>> getResources()
@@ -55,19 +75,19 @@ public class InventoryReport
         if (!(o instanceof InventoryReport))
             return false;
         InventoryReport report = (InventoryReport) o;
-        return Objects.equals(version, report.version) && Objects
-            .equals(resources, report.resources);
+        return Objects.equals(alfrescoVersion, report.alfrescoVersion) &&
+                Objects.equals(resources, report.resources);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(version, resources);
+        return Objects.hash(alfrescoVersion, resources);
     }
 
     @Override
     public String toString()
     {
-        return "InventoryReport{" + "version='" + version + '\'' + ", resources=" + resources + '}';
+        return "InventoryReport{" + "alfrescoVersion='" + alfrescoVersion + '\'' + ", resources=" + resources + '}';
     }
 }
