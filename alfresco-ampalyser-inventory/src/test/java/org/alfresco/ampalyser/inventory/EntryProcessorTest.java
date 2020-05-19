@@ -1,10 +1,5 @@
 package org.alfresco.ampalyser.inventory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.Set;
 
@@ -19,6 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 public class EntryProcessorTest
@@ -41,10 +41,10 @@ public class EntryProcessorTest
             BeanInventoryWorker.class,
             AlfrescoPublicApiInventoryWorker.class);
 
-        assertEquals("Registered worker number doesn't match", expectedWorkers.size(), workers.size());
+        assertEquals(expectedWorkers.size(), workers.size(), "Registered worker number doesn't match");
         expectedWorkers.forEach(ew -> assertTrue(
-            "No worker of type " + ew.getSimpleName() + " found",
-            workers.stream().anyMatch(w -> ew.isAssignableFrom(w.getClass()))
+            workers.stream().anyMatch(w -> ew.isAssignableFrom(w.getClass())),
+                "No worker of type " + ew.getSimpleName() + " found"
         ));
     }
 
