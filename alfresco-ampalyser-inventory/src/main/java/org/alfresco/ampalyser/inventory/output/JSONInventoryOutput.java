@@ -65,6 +65,7 @@ public class JSONInventoryOutput implements InventoryOutput
         {
             outputPath = "";
         }
+        outputPath = outputPath.trim();
         Path path = Paths.get(outputPath);
         if (StringUtils.isEmpty(outputPath) ||
                 FilenameUtils.getExtension(outputPath).isEmpty())
@@ -82,4 +83,10 @@ public class JSONInventoryOutput implements InventoryOutput
 
         return path;
     }
+
+    public Path getOutputPath()
+    {
+        return outputPath;
+    }
+
 }
