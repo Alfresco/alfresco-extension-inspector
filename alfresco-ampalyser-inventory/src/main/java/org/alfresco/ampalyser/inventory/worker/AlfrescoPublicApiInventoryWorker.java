@@ -53,7 +53,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             {
                 for (AnnotationEntry ae : aes)
                 {
-                    if (ae.getAnnotationType().equals("Lorg/alfresco/api/AlfrescoPublicApi;"))
+                    if (ae.getAnnotationType().equals(getPublicAnnotationType()))
                     {
                         isAlfrescoPublicApi = true;
                     }
@@ -92,6 +92,16 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
         //Only process classes from alfresco code
         return entry != null && entry.getName() != null &&
                entry.getName().endsWith(".class") &&
-               entry.getName().startsWith("org/alfresco");
+               entry.getName().startsWith(getPackageFilterText());
+    }
+
+    private String getPackageFilterText()
+    {
+        return "org/alfresco";
+    }
+
+    protected String getPublicAnnotationType()
+    {
+        return "Lorg/alfresco/api/AlfrescoPublicApi;";
     }
 }
