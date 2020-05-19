@@ -20,9 +20,9 @@ public class InventoryUtils
         return entry != null && !isJar(entry.getName()) && isJar(definingObject);
     }
 
-    public static boolean isJar(String definingObject)
+    public static boolean isJar(String path)
     {
-        return definingObject != null && definingObject.endsWith(".jar");
+        return path != null && path.endsWith(".jar");
     }
 
     public static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)

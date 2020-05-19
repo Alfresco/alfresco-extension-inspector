@@ -8,12 +8,17 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.inventory.model.FileResource;
+import org.alfresco.ampalyser.inventory.model.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -34,10 +39,20 @@ public class FileInventoryWorkerTest
     }
 
     @Test
-    public void testCanProcessTxtEntry()
+    public void testProcessTxtEntry()
     {
-        assertTrue(
-            fileInventoryWorker.canProcessEntry(new ZipEntry("TestEntry.txt"), "TestEntry.txt"));
+        ZipEntry entry = new ZipEntry("TestEntry.txt");
+        assertTrue(fileInventoryWorker.canProcessEntry(entry, entry.getName()));
+
+        List<Resource> resourceList = fileInventoryWorker
+            .processZipEntry(entry, null, entry.getName());
+        assertTrue(!resourceList.isEmpty());
+        assertEquals(1, resourceList.size());
+        assertTrue(resourceList.get(0) instanceof FileResource);
+
+        assertEquals(Resource.Type.FILE, resourceList.get(0).getType());
+        assertEquals(entry.getName(), resourceList.get(0).getId());
+        assertEquals(entry.getName(), resourceList.get(0).getDefiningObject());
     }
 
     @Test
@@ -50,8 +65,11 @@ public class FileInventoryWorkerTest
     @Test
     public void testCannotProcessEntryFromJar()
     {
-        assertFalse(
-            fileInventoryWorker.canProcessEntry(new ZipEntry("TestEntry.class"), "testEntry.jar"));
+        ZipEntry entry = new ZipEntry("TestEntry.class");
+        String definingObject = "testEntry.jar";
+        assertFalse(fileInventoryWorker.canProcessEntry(entry, definingObject));
+
+        assertEquals(emptyList(), fileInventoryWorker.processZipEntry(entry, null, definingObject));
     }
 
     @Test

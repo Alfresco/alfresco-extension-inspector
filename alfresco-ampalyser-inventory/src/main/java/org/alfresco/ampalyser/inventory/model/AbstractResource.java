@@ -34,21 +34,25 @@ public abstract class AbstractResource implements Resource, Serializable
         return type;
     }
 
+    @Override
     public String getId()
     {
         return id;
     }
 
+    @Override
     public void setId(String id)
     {
         this.id = id;
     }
 
+    @Override
     public String getDefiningObject()
     {
         return definingObject;
     }
 
+    @Override
     public void setDefiningObject(String definingObject)
     {
         this.definingObject = definingObject;
