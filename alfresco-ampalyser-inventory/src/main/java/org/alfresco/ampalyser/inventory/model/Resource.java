@@ -31,6 +31,10 @@ public interface Resource extends Serializable
 
     void setDefiningObject(String definingObject);
 
+    String getId();
+
+    void setId(String id);
+
     static boolean isFile(final Resource r)
     {
         return r != null && r.getType() == FILE;
