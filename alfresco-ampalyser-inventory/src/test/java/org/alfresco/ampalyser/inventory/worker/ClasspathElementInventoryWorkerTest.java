@@ -19,8 +19,8 @@ import java.util.zip.ZipEntry;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -32,7 +32,7 @@ public class ClasspathElementInventoryWorkerTest
     @InjectMocks
     private ClasspathElementInventoryWorker worker;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
