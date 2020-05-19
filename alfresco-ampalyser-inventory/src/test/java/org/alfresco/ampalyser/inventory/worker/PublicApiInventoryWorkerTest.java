@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class PublicApiInventoryWorkerTest
 {
+    private static final String TEST_ALFRESCO_PUBLIC_API = "Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;";
     @Spy
     private AlfrescoPublicApiInventoryWorker worker = new AlfrescoPublicApiInventoryWorker(new EntryProcessor());
 
@@ -73,8 +74,7 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn("Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;").
-                when(worker).getPublicAnnotationType();
+        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
@@ -92,8 +92,7 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn("Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;").
-                when(worker).getPublicAnnotationType();
+        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
@@ -111,8 +110,7 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn("Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;").
-                when(worker).getPublicAnnotationType();
+        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(0, resources.size());
     }
