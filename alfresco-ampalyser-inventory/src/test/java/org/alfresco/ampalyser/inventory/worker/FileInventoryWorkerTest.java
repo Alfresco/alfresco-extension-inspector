@@ -9,9 +9,9 @@
 package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -19,24 +19,19 @@ import java.util.zip.ZipEntry;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class FileInventoryWorkerTest
 {
     @Mock
     private EntryProcessor processor;
     @InjectMocks
     private FileInventoryWorker fileInventoryWorker;
-
-    @Before
-    public void setup()
-    {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testProcessTxtEntry()

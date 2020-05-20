@@ -8,8 +8,8 @@
 
 package org.alfresco.ampalyser.inventory.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,15 +25,16 @@ import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
+@ExtendWith(MockitoExtension.class)
 public class InventoryServiceImplTest
 {
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImplTest.class);
@@ -44,20 +45,13 @@ public class InventoryServiceImplTest
     @InjectMocks
     private InventoryServiceImpl inventoryService;
 
-    @Before
-    public void setup()
-    {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testWhenWarCannotBeOpenedThenIAExceptionShouldBeThrown()
     {
         try
         {
             inventoryService.extractInventoryReport("no-war-here");
-            fail(
-                "Processing should fail with IllegalArgumentException when war cannot be found at given path.");
+            fail("Processing should fail with IllegalArgumentException when war cannot be found at given path.");
         }
         catch (IllegalArgumentException e)
         {

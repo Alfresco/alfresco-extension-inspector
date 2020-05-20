@@ -28,6 +28,8 @@ import java.util.zip.ZipEntry;
 public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
 {
     private static final Logger LOG = LoggerFactory.getLogger(AlfrescoPublicApiInventoryWorker.class);
+    private static final String ALFRESCO_SOURCE = "org/alfresco";
+    private static final String ALFRESCO_PUBLIC_API_ANNOTATION = "Lorg/alfresco/api/AlfrescoPublicApi;";
 
     public AlfrescoPublicApiInventoryWorker(EntryProcessor processor)
     {
@@ -53,7 +55,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             {
                 for (AnnotationEntry ae : aes)
                 {
-                    if (ae.getAnnotationType().equals("Lorg/alfresco/api/AlfrescoPublicApi;"))
+                    if (ae.getAnnotationType().equals(getPublicAnnotationType()))
                     {
                         isAlfrescoPublicApi = true;
                     }
@@ -92,6 +94,11 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
         //Only process classes from alfresco code
         return entry != null && entry.getName() != null &&
                entry.getName().endsWith(".class") &&
-               entry.getName().startsWith("org/alfresco");
+               entry.getName().startsWith(ALFRESCO_SOURCE);
+    }
+
+    protected String getPublicAnnotationType()
+    {
+        return ALFRESCO_PUBLIC_API_ANNOTATION;
     }
 }
