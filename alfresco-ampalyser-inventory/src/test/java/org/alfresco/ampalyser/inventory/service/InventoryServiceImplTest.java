@@ -25,15 +25,16 @@ import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.model.FileResource;
 import org.alfresco.ampalyser.inventory.model.InventoryReport;
 import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
+@ExtendWith(MockitoExtension.class)
 public class InventoryServiceImplTest
 {
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImplTest.class);
@@ -43,12 +44,6 @@ public class InventoryServiceImplTest
 
     @InjectMocks
     private InventoryServiceImpl inventoryService;
-
-    @BeforeEach
-    public void setup()
-    {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testWhenWarCannotBeOpenedThenIAExceptionShouldBeThrown()

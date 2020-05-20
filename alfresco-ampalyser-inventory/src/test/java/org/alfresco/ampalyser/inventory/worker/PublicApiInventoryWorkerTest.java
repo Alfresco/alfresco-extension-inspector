@@ -21,7 +21,6 @@ import org.alfresco.ampalyser.inventory.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.inventory.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class PublicApiInventoryWorkerTest
@@ -74,14 +74,16 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
+        doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
         assertTrue(resources.get(0) instanceof AlfrescoPublicApiResource);
+
         AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.get(0);
         assertEquals(Resource.Type.ALFRESCO_PUBLIC_API, resource.getType());
         assertEquals(testClass.getName(), resource.getId(), testClass.getName() + " is part of AlfrescoPublicApi");
+        assertFalse(resource.isDeprecated());
     }
 
     @Test
@@ -92,12 +94,13 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
+        doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
         assertTrue(resources.get(0) instanceof AlfrescoPublicApiResource);
-        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource)resources.get(0);
+
+        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.get(0);
         assertEquals(testClass.getName(), resource.getId(), testClass.getName() + " is part of AlfrescoPublicApi");
         assertTrue(resource.isDeprecated());
     }
@@ -110,7 +113,7 @@ public class PublicApiInventoryWorkerTest
         ZipEntry zipEntry = new ZipEntry(getClassRelativePath(testClass));
         byte[] data = getClassData(testClass);
 
-        Mockito.doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
+        doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(0, resources.size());
     }
