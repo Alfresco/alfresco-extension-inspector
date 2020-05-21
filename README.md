@@ -1,8 +1,8 @@
 # amp-a-lyser
 
-amp-a-lyser is a tool that scans and validates an Alfresco extension (amp or jar) against an alfresco.war file.
+**amp-a-lyser** is a tool that scans and validates an Alfresco extension (amp or jar) against an `alfresco.war` file.
 
-The tool parses an extension and generates a report on possible overrides, discouraged useage of non-public API, Alfresco's 3rd-party libraries.
+The tool parses an extension and generates a report on possible overrides, discouraged usage of non-public API, Alfresco's 3rd-party libraries.
 
 The tools has two modules, one for parsing the war files - the **Inventory**, and one for analysing custom extensions against the inventory - the **Analyser**.
 
