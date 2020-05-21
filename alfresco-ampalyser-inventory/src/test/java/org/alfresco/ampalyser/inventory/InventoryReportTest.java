@@ -117,6 +117,8 @@ public class InventoryReportTest
         File reportFile = output.getOutputPath().toFile();
         assertTrue(reportFile.exists());
         assertTrue(FileUtils.sizeOf(reportFile) > 0);
+
+        reportFile.delete();
     }
 
     @Test
