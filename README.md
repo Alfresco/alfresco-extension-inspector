@@ -1,10 +1,10 @@
 # amp-a-lyser
 
-Alfresco amp-a-lyser is a tool that scans and validates an Alfresco extension (amp or jar) against an alfresco.war file.
+amp-a-lyser is a tool that scans and validates an Alfresco extension (amp or jar) against an alfresco.war file.
 
 The tool parses an extension and generates a report on possible overrides, discouraged useage of non-public API, Alfresco's 3rd-party libraries.
 
-The tools has two modules, one for parsing the war files - the **Inventory**, and another one for analysing the custom extension against the inventory - the **Analyser**.
+The tools has two modules, one for parsing the war files - the **Inventory**, and one for analysing custom extensions against the inventory - the **Analyser**.
 
 ## Inventory
 
@@ -12,7 +12,7 @@ The `InventoryApplication` is a Spring Boot application, implemented in the modu
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
-This generates an executable jar, `alfresco-ampalyser-inventory-0.0.1.jar`.
+This creates an executable jar, `alfresco-ampalyser-inventory-0.0.1.jar`.
 
 Usage:
 ```shell script
@@ -30,17 +30,17 @@ Example structure of the report:
     {
       "ALFRESCO_PUBLIC_API" : 
       [ 
-       {
-        "type" : "ALFRESCO_PUBLIC_API",
-        "id" : "package.ClassName1",
-        "deprecated" : false
-       },
-              {
-        "type" : "ALFRESCO_PUBLIC_API",
-        "id" : "package.ClassName2",
-        "deprecated" : true
-       }
-       ...
+        {
+         "type" : "ALFRESCO_PUBLIC_API",
+         "id" : "package.ClassName1",
+         "deprecated" : false
+        },
+        {
+         "type" : "ALFRESCO_PUBLIC_API",
+         "id" : "package.ClassName2",
+         "deprecated" : true
+        },
+        ...
       ],
       "CLASSPATH_ELEMENT" : 
       [
@@ -53,7 +53,7 @@ Example structure of the report:
           "type" : "CLASSPATH_ELEMENT",
           "id" : "com/3rdparty/packageA/AClass.class",
           "definingObject" : "WEB-INF/lib/3rdparty-library.jar"
-        }
+        },
         ...
       ],
       "BEAN" : 
@@ -62,10 +62,10 @@ Example structure of the report:
          "type" : "BEAN",
          "id" : "beanName",
          "definingObject" : "alfresco/aContext.xml@WEB-INF/lib/alfresco-library.jar"
-       }
+        },
        ...
       ],
-       "FILE" : 
+      "FILE" : 
       [
         {
           "type" : "FILE",
@@ -76,7 +76,7 @@ Example structure of the report:
           "type" : "FILE",
           "id" : "WEB-INF/lib/aLibrary.jar",
           "definingObject" : "WEB-INF/lib/aLibrary.jar"
-        }
+        },
         ...
       ]
 }
