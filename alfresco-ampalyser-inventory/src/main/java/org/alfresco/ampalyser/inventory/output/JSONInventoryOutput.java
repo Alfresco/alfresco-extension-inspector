@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -29,6 +30,11 @@ public class JSONInventoryOutput implements InventoryOutput
 
     private static final OutputType type = OutputType.JSON;
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    static
+    {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     private Path outputPath;
 
@@ -45,7 +51,6 @@ public class JSONInventoryOutput implements InventoryOutput
         {
             FileUtils.touch(outputPath.toFile());
 
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             objectMapper.writeValue(reportFile, report);
 
             if (logger.isInfoEnabled())
@@ -65,7 +70,6 @@ public class JSONInventoryOutput implements InventoryOutput
         {
             outputPath = "";
         }
-        outputPath = outputPath.trim();
         Path path = Paths.get(outputPath);
         if (StringUtils.isEmpty(outputPath) ||
                 FilenameUtils.getExtension(outputPath).isEmpty())
