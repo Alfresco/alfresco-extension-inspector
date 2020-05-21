@@ -74,8 +74,8 @@ Example structure of the report:
         },
         {
           "type" : "FILE",
-          "id" : "WEB-INF/lib/commons-pool-1.6.jar",
-          "definingObject" : "WEB-INF/lib/commons-pool-1.6.jar"
+          "id" : "WEB-INF/lib/aLibrary.jar",
+          "definingObject" : "WEB-INF/lib/aLibrary.jar"
         }
         ...
       ]
