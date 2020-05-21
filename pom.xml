@@ -40,5 +40,6 @@
     <modules>
         <module>alfresco-ampalyser-inventory</module>
         <module>alfresco-ampalyser-analyser</module>
+        <module>alfresco-ampalyser-test</module>
     </modules>
 </project>
