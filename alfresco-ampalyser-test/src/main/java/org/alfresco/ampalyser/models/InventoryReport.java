@@ -2,47 +2,68 @@ package org.alfresco.ampalyser.models;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-import static java.util.Comparator.comparing;
+public class InventoryReport
+{
 
-public class InventoryReport {
+        private String schemaVersion;
+        private String alfrescoVersion;
+        private Map<String, List<Resource>> resources;
 
-    private String schemaVersion;
-    private String alfrescoVersion;
-    private Map<String, List<Resource>> resources;
+        public Resource getResource(String resourceType, String resourceId)
+        {
+                List<Resource> items = this.resources.get(resourceType);
 
-    @Override
-    public String toString()
-    {
-        return "InventoryReport{" +
-                "schemaVersion='" + schemaVersion + '\'' +
-                ", alfrescoVersion='" + alfrescoVersion + '\'' +
-                ", resources='" + resources + '\'' +
-                '}';
-    }
+                for (Resource resource : items)
+                {
+                        if (resource.getId().equals(resourceId))
+                        {
+                                return resource;
+                        }
+                }
+                return null;
+        }
 
-    public String getSchemaVersion() {
-        return schemaVersion;
-    }
+        public List<Resource> getResources(String resourceType)
+        {
+                List<Resource> items = this.resources.get(resourceType);
+                return items;
+        }
 
-    public void setSchemaVersion(String schemaVersion) {
-        this.schemaVersion = schemaVersion;
-    }
+        @Override
+        public String toString()
+        {
+                return "InventoryReport{" + "schemaVersion='" + schemaVersion + '\'' + ", alfrescoVersion='" + alfrescoVersion + '\'' + ", resources='"
+                        + resources + '\'' + '}';
+        }
 
-    public String getAlfrescoVersion() {
-        return alfrescoVersion;
-    }
+        public String getSchemaVersion()
+        {
+                return schemaVersion;
+        }
 
-    public void setAlfrescoVersion(String alfrescoVersion) {
-        this.alfrescoVersion = alfrescoVersion;
-    }
+        public void setSchemaVersion(String schemaVersion)
+        {
+                this.schemaVersion = schemaVersion;
+        }
 
-    public Map<String, List<Resource>> getResources() {
-        return resources;
-    }
+        public String getAlfrescoVersion()
+        {
+                return alfrescoVersion;
+        }
 
-    public void setResources(Map<String, List<Resource>> resources) {
-        this.resources = resources;
-    }
+        public void setAlfrescoVersion(String alfrescoVersion)
+        {
+                this.alfrescoVersion = alfrescoVersion;
+        }
+
+        public Map<String, List<Resource>> getResources()
+        {
+                return resources;
+        }
+
+        public void setResources(Map<String, List<Resource>> resources)
+        {
+                this.resources = resources;
+        }
 }

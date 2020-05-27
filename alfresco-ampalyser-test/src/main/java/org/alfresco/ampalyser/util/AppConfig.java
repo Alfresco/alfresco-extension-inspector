@@ -13,6 +13,7 @@ import java.util.List;
 
 @Configuration
 @ComponentScan("org.alfresco.ampalyser.command")
+@ComponentScan("org.alfresco.ampalyser.util")
 @PropertySource(value="application.properties")
 public class AppConfig
 {
