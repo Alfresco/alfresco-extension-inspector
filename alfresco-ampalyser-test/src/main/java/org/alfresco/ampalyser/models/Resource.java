@@ -5,6 +5,7 @@ public class Resource
         private String type;
         private String id;
         private String definingObject;
+        private String deprecated;
 
         @Override
         public String toString()
@@ -40,5 +41,15 @@ public class Resource
         public void setDefiningObject(String definingObject)
         {
                 this.definingObject = definingObject;
+        }
+
+        public String getDeprecated()
+        {
+                return deprecated;
+        }
+
+        public void setDeprecated(String deprecated)
+        {
+                this.deprecated = deprecated;
         }
 }

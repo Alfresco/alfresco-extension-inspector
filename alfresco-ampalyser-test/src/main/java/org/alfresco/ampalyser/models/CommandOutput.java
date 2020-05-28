@@ -27,4 +27,9 @@ public class CommandOutput
         {
                 this.exitCode = exitCode;
         }
+
+        public boolean containsMessage(String message)
+        {
+                return output.stream().anyMatch(s -> s.contains(message));
+        }
 }
