@@ -72,11 +72,28 @@ public class AmpalyserInventoryTests
         }
 
         @Test
-        public void checkBeanType()
+        public void checkBeanTypeSize()
         {
                 List<Resource> report = client.getInventoryResources(BEAN_TYPE, inventoryReport);
                 Assert.assertEquals(report.size(), 7);
         }
+
+        @Test
+        public void checkBeanTypeContent()
+        {
+                //check bean with ID
+                Resource bean1 = client.getInventoryResource(BEAN_TYPE, "controlDAO", inventoryReport);
+                Assert.assertEquals(bean1.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+
+                //check bean without ID only with class, class should be displayed as id
+                Resource bean2 = client.getInventoryResource(BEAN_TYPE, "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl", inventoryReport);
+                Assert.assertEquals(bean2.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+
+                //check bean without ID and class only with name, name should be displayed as id
+                Resource bean3 = client.getInventoryResource(BEAN_TYPE, "sqlSessionTemplate", inventoryReport);
+                Assert.assertEquals(bean3.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+        }
+
 
         @Test
         public void checkClassPathType()
