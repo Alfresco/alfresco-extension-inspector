@@ -7,6 +7,8 @@
  */
 package org.alfresco.ampalyser.model;
 
+import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+
 import java.io.Serializable;
 
 /**
@@ -16,7 +18,7 @@ public class FileResource extends AbstractResource implements Serializable
 {
     public FileResource(String id, String definingObject)
     {
-        super(Type.FILE, id, definingObject);
+        super(FILE, id, definingObject);
     }
 
     @Override

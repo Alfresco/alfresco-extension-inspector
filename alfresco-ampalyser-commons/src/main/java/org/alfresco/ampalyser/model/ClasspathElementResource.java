@@ -8,13 +8,15 @@
 
 package org.alfresco.ampalyser.model;
 
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+
 import java.io.Serializable;
 
 public class ClasspathElementResource extends AbstractResource implements Serializable
 {
     public ClasspathElementResource(String id, String definingObject)
     {
-        super(Type.CLASSPATH_ELEMENT, id, definingObject);
+        super(CLASSPATH_ELEMENT, id, definingObject);
     }
 
     @Override

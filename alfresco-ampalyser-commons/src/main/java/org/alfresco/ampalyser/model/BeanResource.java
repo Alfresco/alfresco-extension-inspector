@@ -8,13 +8,15 @@
 
 package org.alfresco.ampalyser.model;
 
+import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
+
 import java.io.Serializable;
 
 public class BeanResource extends AbstractResource implements Serializable
 {
     public BeanResource(String id, String definingObject)
     {
-        super(Type.BEAN, id, definingObject);
+        super(BEAN, id, definingObject);
     }
 
     @Override
