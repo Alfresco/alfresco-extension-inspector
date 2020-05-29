@@ -34,6 +34,7 @@ public class JSONInventoryParser implements InventoryParser
     {
         try
         {
+            // TODO: ACS-76 depending on how deep we want to dive, we can read line by line and only parse the types that we're interested in to save memory and time.
             return objectMapper.readValue(new File(path), InventoryReport.class);
         }
         catch (IOException ioe)
