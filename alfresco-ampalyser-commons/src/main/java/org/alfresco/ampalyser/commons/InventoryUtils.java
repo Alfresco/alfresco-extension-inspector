@@ -19,8 +19,8 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.model.AbstractResource;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 
 public class InventoryUtils
 {
@@ -34,7 +34,7 @@ public class InventoryUtils
         return path != null && path.endsWith(".jar");
     }
 
-    public static List<AbstractResource> mergeLists(List<AbstractResource> v1, List<AbstractResource> v2)
+    public static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
     {
         if (v1 != null && v2 != null && !v2.isEmpty())
         {

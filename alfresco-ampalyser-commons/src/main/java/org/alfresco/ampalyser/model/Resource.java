@@ -14,9 +14,25 @@ import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author Lucian Tuca
  */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "type",
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AlfrescoPublicApiResource.class, name = Resource.Type.Constants.ALFRESCO_PUBLIC_API),
+    @JsonSubTypes.Type(value = BeanResource.class, name = Resource.Type.Constants.BEAN),
+    @JsonSubTypes.Type(value = ClasspathElementResource.class, name = Resource.Type.Constants.CLASSPATH_ELEMENT),
+    @JsonSubTypes.Type(value = FileResource.class, name = Resource.Type.Constants.FILE),
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface Resource extends Serializable
 {
     enum Type
