@@ -5,12 +5,12 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.BEAN;
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.FILE;
+import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.io.Serializable;
 

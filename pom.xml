@@ -10,9 +10,12 @@
 
     <groupId>org.alfresco.ampalyser</groupId>
     <artifactId>alfresco-ampalyser</artifactId>
-    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>alfresco-ampalyser</name>
+
+    <packaging>pom</packaging>
+
     <description>Alfresco Amp-a-lyser</description>
 
     <properties>
@@ -40,5 +43,6 @@
     <modules>
         <module>alfresco-ampalyser-inventory</module>
         <module>alfresco-ampalyser-analyser</module>
+        <module>alfresco-ampalyser-commons</module>
     </modules>
 </project>

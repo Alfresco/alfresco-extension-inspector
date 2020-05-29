@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.ClasspathElementResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

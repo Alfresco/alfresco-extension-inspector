@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
 import java.io.Serializable;
 import java.util.Objects;

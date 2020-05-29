@@ -1,6 +1,6 @@
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.io.Serializable;
 import java.util.Objects;

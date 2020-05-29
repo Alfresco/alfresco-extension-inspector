@@ -13,7 +13,7 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.Resource;
 
 /**
  * @author Denis Ungureanu

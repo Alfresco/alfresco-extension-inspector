@@ -8,9 +8,9 @@
 
 package org.alfresco.ampalyser.inventory.output;
 
-import org.alfresco.ampalyser.inventory.model.InventoryReport;
-
 import static java.text.MessageFormat.format;
+
+import org.alfresco.ampalyser.model.InventoryReport;
 
 public interface InventoryOutput
 {
