@@ -14,6 +14,10 @@ import java.io.Serializable;
 
 public class ClasspathElementResource extends AbstractResource implements Serializable
 {
+    public ClasspathElementResource()
+    {
+    }
+
     public ClasspathElementResource(String id, String definingObject)
     {
         super(CLASSPATH_ELEMENT, id, definingObject);

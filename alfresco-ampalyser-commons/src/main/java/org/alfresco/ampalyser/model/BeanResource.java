@@ -14,6 +14,10 @@ import java.io.Serializable;
 
 public class BeanResource extends AbstractResource implements Serializable
 {
+    public BeanResource()
+    {
+    }
+
     public BeanResource(String id, String definingObject)
     {
         super(BEAN, id, definingObject);

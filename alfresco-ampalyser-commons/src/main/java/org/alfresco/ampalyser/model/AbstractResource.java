@@ -8,17 +8,42 @@
 
 package org.alfresco.ampalyser.model;
 
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.BEAN;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.CLASSPATH_ELEMENT;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.FILE;
+
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * @author Lucian Tuca
  */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "type",
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AlfrescoPublicApiResource.class, name = ALFRESCO_PUBLIC_API),
+    @JsonSubTypes.Type(value = BeanResource.class, name = BEAN),
+    @JsonSubTypes.Type(value = ClasspathElementResource.class, name = CLASSPATH_ELEMENT),
+    @JsonSubTypes.Type(value = FileResource.class, name = FILE),
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractResource implements Resource, Serializable
 {
-    private final Type type;
+    private Type type;
     protected String id;
     protected String definingObject;
+
+    public AbstractResource()
+    {
+    }
 
     protected AbstractResource(Type type, String id, String definingObject)
     {
@@ -28,9 +53,15 @@ public abstract class AbstractResource implements Resource, Serializable
     }
 
     @Override
-    public Resource.Type getType()
+    public Type getType()
     {
         return type;
+    }
+
+    @Override
+    public void setType(Type type)
+    {
+        this.type = type;
     }
 
     @Override

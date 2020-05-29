@@ -21,10 +21,35 @@ public interface Resource extends Serializable
 {
     enum Type
     {
-        FILE, BEAN, ALFRESCO_PUBLIC_API, CLASSPATH_ELEMENT
+        FILE(Constants.FILE),
+        BEAN(Constants.BEAN),
+        ALFRESCO_PUBLIC_API(Constants.ALFRESCO_PUBLIC_API),
+        CLASSPATH_ELEMENT(Constants.CLASSPATH_ELEMENT);
+
+        public static class Constants
+        {
+            public static final String FILE = "FILE";
+            public static final String BEAN = "BEAN";
+            public static final String ALFRESCO_PUBLIC_API = "ALFRESCO_PUBLIC_API";
+            public static final String CLASSPATH_ELEMENT = "CLASSPATH_ELEMENT";
+        }
+
+        private final String value;
+
+        Type(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
     }
 
     Type getType();
+
+    void setType(Type type);
 
     String getDefiningObject();
 

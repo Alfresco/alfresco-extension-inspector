@@ -16,6 +16,10 @@ import java.io.Serializable;
  */
 public class FileResource extends AbstractResource implements Serializable
 {
+    public FileResource()
+    {
+    }
+
     public FileResource(String id, String definingObject)
     {
         super(FILE, id, definingObject);

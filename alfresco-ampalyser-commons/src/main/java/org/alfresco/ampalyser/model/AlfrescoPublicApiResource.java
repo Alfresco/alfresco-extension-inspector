@@ -12,6 +12,10 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
 {
     private boolean deprecated;
 
+    public AlfrescoPublicApiResource()
+    {
+    }
+
     public AlfrescoPublicApiResource(String id, boolean deprecated)
     {
         super(ALFRESCO_PUBLIC_API, id, null);

@@ -25,7 +25,7 @@ public class InventoryReport
 
     private String schemaVersion;
     private String alfrescoVersion;
-    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(comparing(Enum::name));
+    private Map<Resource.Type, List<AbstractResource>> resources = new TreeMap<>(comparing(Enum::name));
 
     public InventoryReport()
     {
@@ -52,17 +52,17 @@ public class InventoryReport
         this.alfrescoVersion = alfrescoVersion;
     }
 
-    public Map<Resource.Type, List<Resource>> getResources()
+    public Map<Resource.Type, List<AbstractResource>> getResources()
     {
         return resources;
     }
 
-    public void setResources(Map<Resource.Type, List<Resource>> resources)
+    public void setResources(Map<Resource.Type, List<AbstractResource>> resources)
     {
         this.resources = resources;
     }
 
-    public void addResources(Map<Resource.Type, List<Resource>> resources)
+    public void addResources(Map<Resource.Type, List<AbstractResource>> resources)
     {
         resources.forEach((k, v) -> this.resources.merge(k, v, InventoryUtils::mergeLists));
     }
