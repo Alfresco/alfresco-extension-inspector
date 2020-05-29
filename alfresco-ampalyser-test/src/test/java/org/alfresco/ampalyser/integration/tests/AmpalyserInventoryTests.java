@@ -82,14 +82,14 @@ public class AmpalyserInventoryTests
         public void checkClassPathType()
         {
                 List<Resource> report = client.getInventoryResources(CLASSPATH_ELEMENT_TYPE, inventoryReport);
-                Assert.assertEquals(report.size(), 399);
+                Assert.assertEquals(report.size(), 11);
         }
 
         @Test
         public void checkFileType()
         {
                 List<Resource> report = client.getInventoryResources(FILE_TYPE, inventoryReport);
-                Assert.assertEquals(report.size(), 7);
+                Assert.assertEquals(report.size(), 10);
 
                 Resource resource = client.getInventoryResource(FILE_TYPE, "META-INF/MANIFEST.MF", inventoryReport);
                 Assert.assertEquals(resource.getDefiningObject().equals("META-INF/MANIFEST.MF"), true, "");
