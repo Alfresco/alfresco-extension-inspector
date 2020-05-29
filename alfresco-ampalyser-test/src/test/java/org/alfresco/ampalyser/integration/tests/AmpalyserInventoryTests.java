@@ -92,8 +92,11 @@ public class AmpalyserInventoryTests
                 //check bean without ID and class only with name, name should be displayed as id
                 Resource bean3 = client.getInventoryResource(BEAN_TYPE, "sqlSessionTemplate", inventoryReport);
                 Assert.assertEquals(bean3.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
-        }
 
+                //check bean without ID,with class and name, name should be displayed as id
+                Resource bean4 = client.getInventoryResource(BEAN_TYPE, "beanName", inventoryReport);
+                Assert.assertEquals(bean4.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+        }
 
         @Test
         public void checkClassPathType()
