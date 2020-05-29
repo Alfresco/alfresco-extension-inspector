@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Lucian Tuca
- * created on 29/05/2020
  */
 @Component
 public class JSONInventoryParser implements InventoryParser

@@ -11,7 +11,6 @@ import org.alfresco.ampalyser.model.InventoryReport;
 
 /**
  * @author Lucian Tuca
- * created on 29/05/2020
  */
 public interface InventoryParser
 {

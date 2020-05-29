@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @author Lucian Tuca
- * created on 15/05/2020
  */
 
 public class BeanInventoryTest

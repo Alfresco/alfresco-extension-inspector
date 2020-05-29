@@ -7,7 +7,6 @@ import java.util.Objects;
 
 /**
  * @author Lucian Tuca
- * created on 08/05/2020
  */
 public class AlfrescoPublicApiResource extends AbstractResource implements Serializable
 {

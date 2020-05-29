@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 /**
  * @author Lucian Tuca
- * created on 07/05/2020
  */
 public interface Resource extends Serializable
 {

@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 /**
  * @author Lucian Tuca
- * created on 08/05/2020
  */
 public class FileResource extends AbstractResource implements Serializable
 {

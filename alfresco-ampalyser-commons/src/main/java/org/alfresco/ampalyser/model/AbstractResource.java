@@ -13,7 +13,6 @@ import java.util.Objects;
 
 /**
  * @author Lucian Tuca
- * created on 07/05/2020
  */
 public abstract class AbstractResource implements Resource, Serializable
 {

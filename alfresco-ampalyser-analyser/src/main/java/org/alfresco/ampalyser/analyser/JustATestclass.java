@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author Lucian Tuca
- * created on 29/05/2020
  */
 @Component
 public class JustATestclass
