@@ -14,7 +14,13 @@ import java.util.List;
 
 public class AmpalyserInventoryTests
 {
+        private static final String PUBLIC_API_TYPE = "ALFRESCO_PUBLIC_API";
+        private static final String BEAN_TYPE = "BEAN";
+        private static final String CLASSPATH_ELEMENT_TYPE = "CLASSPATH_ELEMENT";
+        private static final String FILE_TYPE = "FILE";
+
         private static final String SUCCESS_MESSAGE = "Inventory report generated";
+
         AmpalyserClient client = new AmpalyserClient();
 
         File inventoryReport;
@@ -45,39 +51,47 @@ public class AmpalyserInventoryTests
         }
 
         @Test
-        public void jsonReportExists()
+        public void testJsonReportExists()
         {
                 Assert.assertEquals(inventoryReport.exists(), true);
         }
 
         @Test
-        public void readJson()
+        public void testPublicApiAnnotation()
         {
-                List<Resource> report = client.getInventoryResources("ALFRESCO_PUBLIC_API", inventoryReport);
-                Assert.assertEquals(report.size(), 0);
+                List<Resource> publicApiRs = client.getInventoryResources(PUBLIC_API_TYPE, inventoryReport);
+                Assert.assertEquals(publicApiRs.size(), 2);
+
+                Resource publicApiRs1 = client.getInventoryResource(PUBLIC_API_TYPE, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);
+                Assert.assertNotNull(publicApiRs1);
+                Assert.assertFalse(publicApiRs1.getDeprecated());
+
+                Resource publicApiRs2 = client.getInventoryResource(PUBLIC_API_TYPE, "org.alfresco.repo.content.transform.TransformerConfig", inventoryReport);
+                Assert.assertNotNull(publicApiRs2);
+                Assert.assertTrue(publicApiRs2.getDeprecated());
         }
 
         @Test
         public void checkBeanType()
         {
-                List<Resource> report = client.getInventoryResources("BEAN", inventoryReport);
-                Assert.assertEquals(report.size(), 2);
+                List<Resource> report = client.getInventoryResources(BEAN_TYPE, inventoryReport);
+                Assert.assertEquals(report.size(), 7);
         }
 
         @Test
         public void checkClassPathType()
         {
-                List<Resource> report = client.getInventoryResources("CLASSPATH_ELEMENT", inventoryReport);
+                List<Resource> report = client.getInventoryResources(CLASSPATH_ELEMENT_TYPE, inventoryReport);
                 Assert.assertEquals(report.size(), 399);
         }
 
         @Test
         public void checkFileType()
         {
-                List<Resource> report = client.getInventoryResources("FILE", inventoryReport);
+                List<Resource> report = client.getInventoryResources(FILE_TYPE, inventoryReport);
                 Assert.assertEquals(report.size(), 7);
 
-                Resource resource = client.getInventoryResource("FILE", "META-INF/MANIFEST.MF", inventoryReport);
+                Resource resource = client.getInventoryResource(FILE_TYPE, "META-INF/MANIFEST.MF", inventoryReport);
                 Assert.assertEquals(resource.getDefiningObject().equals("META-INF/MANIFEST.MF"), true, "");
                 Assert.assertEquals(resource.getId().equals("META-INF/MANIFEST.MF"), true, "");
         }

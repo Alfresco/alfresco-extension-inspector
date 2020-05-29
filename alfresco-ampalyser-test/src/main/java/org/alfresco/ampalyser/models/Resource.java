@@ -5,7 +5,7 @@ public class Resource
         private String type;
         private String id;
         private String definingObject;
-        private String deprecated;
+        private Boolean deprecated;
 
         @Override
         public String toString()
@@ -43,12 +43,12 @@ public class Resource
                 this.definingObject = definingObject;
         }
 
-        public String getDeprecated()
+        public Boolean getDeprecated()
         {
                 return deprecated;
         }
 
-        public void setDeprecated(String deprecated)
+        public void setDeprecated(Boolean deprecated)
         {
                 this.deprecated = deprecated;
         }
