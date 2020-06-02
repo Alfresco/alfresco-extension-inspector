@@ -83,18 +83,22 @@ public class AmpalyserInventoryTests
         {
                 //check bean with ID
                 Resource bean1 = client.getInventoryResource(BEAN_TYPE, "controlDAO", inventoryReport);
+                Assert.assertNotNull(bean1);
                 Assert.assertEquals(bean1.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID only with class, class should be displayed as id
                 Resource bean2 = client.getInventoryResource(BEAN_TYPE, "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl", inventoryReport);
+                Assert.assertNotNull(bean2);
                 Assert.assertEquals(bean2.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID and class only with name, name should be displayed as id
                 Resource bean3 = client.getInventoryResource(BEAN_TYPE, "sqlSessionTemplate", inventoryReport);
+                Assert.assertNotNull(bean3);
                 Assert.assertEquals(bean3.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID,with class and name, name should be displayed as id
                 Resource bean4 = client.getInventoryResource(BEAN_TYPE, "beanName", inventoryReport);
+                Assert.assertNotNull(bean4);
                 Assert.assertEquals(bean4.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
         }
 
