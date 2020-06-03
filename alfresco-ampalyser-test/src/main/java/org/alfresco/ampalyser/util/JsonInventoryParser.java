@@ -2,6 +2,7 @@ package org.alfresco.ampalyser.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.alfresco.ampalyser.models.InventoryReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -10,8 +11,8 @@ import java.io.IOException;
 @Component
 public class JsonInventoryParser {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public InventoryReport getInventoryReportFromJson(File jsonInventoryReport)
     {

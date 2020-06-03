@@ -1,21 +1,26 @@
 package org.alfresco.ampalyser.integration.tests;
 
 import org.alfresco.ampalyser.AmpalyserClient;
+import org.alfresco.ampalyser.models.CommandOutput;
+import org.alfresco.ampalyser.util.AppConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import java.io.File;
 
-public class AmpalyserInventoryTests
+@ContextConfiguration(classes = AppConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class AmpalyserInventoryTests extends AbstractTestNGSpringContextTests
 {
-        protected static final String PUBLIC_API_TYPE = "ALFRESCO_PUBLIC_API";
-        protected static final String BEAN_TYPE = "BEAN";
-        protected static final String CLASSPATH_ELEMENT_TYPE = "CLASSPATH_ELEMENT";
-        protected static final String FILE_TYPE = "FILE";
-
         protected static final String SUCCESS_MESSAGE = "Inventory report generated";
         protected static final String INVALID_XML_MESSAGE = "Failed to analyse beans in xml file: ";
         protected static final String INVALID_XML = "alfresco/invalidXML.xml";
 
-        protected AmpalyserClient client = new AmpalyserClient();
+        @Autowired
+        protected AmpalyserClient client;
 
         protected File inventoryReport;
+        protected CommandOutput cmdOut;
 }

@@ -1,6 +1,6 @@
 package org.alfresco.ampalyser.command;
 
-import org.alfresco.ampalyser.models.Command;
+import org.alfresco.ampalyser.models.InventoryCommand;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ public class CommandReceiver
 {
         CommandOutput cmdOut;
 
-        public CommandOutput runInventoryCmd(Command comm)
+        public CommandOutput runInventoryCmd(InventoryCommand comm)
         {
                 cmdOut = new CommandOutput();
 

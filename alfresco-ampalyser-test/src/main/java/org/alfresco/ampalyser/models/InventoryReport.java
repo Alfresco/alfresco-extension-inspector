@@ -5,14 +5,13 @@ import java.util.Map;
 
 public class InventoryReport
 {
-
         private String schemaVersion;
         private String alfrescoVersion;
         private Map<String, List<Resource>> resources;
 
-        public Resource getResource(String resourceType, String resourceId)
+        public Resource getResource(Resource.Type resourceType, String resourceId)
         {
-                List<Resource> items = this.resources.get(resourceType);
+                List<Resource> items = this.resources.get(resourceType.name());
 
                 for (Resource resource : items)
                 {
@@ -24,9 +23,9 @@ public class InventoryReport
                 return null;
         }
 
-        public List<Resource> getResources(String resourceType)
+        public List<Resource> getResources(Resource.Type resourceType)
         {
-                List<Resource> items = this.resources.get(resourceType);
+                List<Resource> items = this.resources.get(resourceType.name());
                 return items;
         }
 

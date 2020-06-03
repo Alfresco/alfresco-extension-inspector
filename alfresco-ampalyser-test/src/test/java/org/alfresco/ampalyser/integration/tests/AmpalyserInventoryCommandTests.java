@@ -1,6 +1,5 @@
 package org.alfresco.ampalyser.integration.tests;
 
-import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.util.TestResource;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -23,7 +22,7 @@ public class AmpalyserInventoryCommandTests extends AmpalyserInventoryTests
                 }};
 
                 // Generate new inventory report
-                CommandOutput cmdOut = client.runInventoryAnalyserCommand(cmdOptions);
+                cmdOut = client.runInventoryAnalyserCommand(cmdOptions);
                 File inventoryReport = new File(inventoryReportPath + File.separator + TestResource.getTestInventoryReport().getName());
 
                 Assert.assertEquals(cmdOut.getExitCode(), 0);

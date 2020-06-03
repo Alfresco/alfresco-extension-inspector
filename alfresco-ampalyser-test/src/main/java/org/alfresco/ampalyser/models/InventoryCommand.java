@@ -1,12 +1,14 @@
 package org.alfresco.ampalyser.models;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
-public class Command
+public class InventoryCommand
 {
         private List<String> commandOptions;
 
-        public Command(List<String> commandOptions)
+        public InventoryCommand(List<String> commandOptions)
         {
                 this.commandOptions = commandOptions;
         }

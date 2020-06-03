@@ -1,46 +1,27 @@
 package org.alfresco.ampalyser.models;
 
-public class Resource
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.alfresco.ampalyser.inventory.model.AbstractResource;
+
+public class Resource extends AbstractResource
 {
-        private String type;
-        private String id;
-        private String definingObject;
         private Boolean deprecated;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        public Resource(@JsonProperty("type") Type type,
+                        @JsonProperty("id") String id,
+                        @JsonProperty("definingObject") String definingObject,
+                        @JsonProperty("deprecated") Boolean deprecated)
+        {
+                super(type, id, definingObject);
+                this.deprecated = deprecated;
+        }
 
         @Override
         public String toString()
         {
-                return "Resource{" + "type='" + type + '\'' + ", id='" + id + '\'' + ", definingObject='" + definingObject + '\'' + '}';
-        }
-
-        public String getType()
-        {
-                return type;
-        }
-
-        public void setType(String type)
-        {
-                this.type = type;
-        }
-
-        public String getId()
-        {
-                return id;
-        }
-
-        public void setId(String id)
-        {
-                this.id = id;
-        }
-
-        public String getDefiningObject()
-        {
-                return definingObject;
-        }
-
-        public void setDefiningObject(String definingObject)
-        {
-                this.definingObject = definingObject;
+                return "Resource{" + " type='" + this.getType().name() + '\'' + " id='" + id + '\'' + ", definingObject='" + definingObject + '\'' + '}';
         }
 
         public Boolean getDeprecated()

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandExecutor
 {
-        public CommandOutput execute(ICommand serviceCommand)
+        public CommandOutput execute(Command serviceCommand)
         {
                 return serviceCommand.execute();
         }

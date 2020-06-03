@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.util;
 
-import org.alfresco.ampalyser.models.Command;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.alfresco.ampalyser.models.InventoryCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,20 +13,25 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@ComponentScan("org.alfresco.ampalyser.command")
-@ComponentScan("org.alfresco.ampalyser.util")
+@ComponentScan("org.alfresco.ampalyser")
 @PropertySource(value="application.properties")
 public class AppConfig
 {
         static final String JAVA_COM = "java -jar";
 
         @Bean
-        public Command initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
+        public InventoryCommand initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
         {
                 List<String> comOptions = new ArrayList<>(Arrays.asList(JAVA_COM.split(" ")));
                 comOptions.add(pathToInventoryJar);
 
-                Command comm = new Command(comOptions);
-                return comm;
+                InventoryCommand cmd = new InventoryCommand(comOptions);
+                return cmd;
+        }
+
+        @Bean
+        public ObjectMapper mapper()
+        {
+                return new ObjectMapper();
         }
 }

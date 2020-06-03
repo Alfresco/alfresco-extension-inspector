@@ -1,6 +1,5 @@
 package org.alfresco.ampalyser.integration.tests;
 
-import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.models.Resource;
 import org.alfresco.ampalyser.util.TestResource;
 import org.testng.Assert;
@@ -12,8 +11,6 @@ import java.util.List;
 
 public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
 {
-        CommandOutput cmdOut;
-
         @BeforeClass
         public void executeCommand()
         {
@@ -48,14 +45,14 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
         @Test
         public void testPublicApiAnnotation()
         {
-                List<Resource> publicApiRs = client.getInventoryResources(PUBLIC_API_TYPE, inventoryReport);
+                List<Resource> publicApiRs = client.retrieveInventoryResources(Resource.Type.ALFRESCO_PUBLIC_API, inventoryReport);
                 Assert.assertEquals(publicApiRs.size(), 2);
 
-                Resource publicApiRs1 = client.getInventoryResource(PUBLIC_API_TYPE, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);
+                Resource publicApiRs1 = client.retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);
                 Assert.assertNotNull(publicApiRs1);
                 Assert.assertFalse(publicApiRs1.getDeprecated());
 
-                Resource publicApiRs2 = client.getInventoryResource(PUBLIC_API_TYPE, "org.alfresco.repo.content.transform.TransformerConfig", inventoryReport);
+                Resource publicApiRs2 = client.retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.content.transform.TransformerConfig", inventoryReport);
                 Assert.assertNotNull(publicApiRs2);
                 Assert.assertTrue(publicApiRs2.getDeprecated());
         }
@@ -64,22 +61,22 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
         public void checkBeanTypeContent()
         {
                 //check bean with ID
-                Resource bean = client.getInventoryResource(BEAN_TYPE, "controlDAO", inventoryReport);
+                Resource bean = client.retrieveInventoryResource(Resource.Type.BEAN, "controlDAO", inventoryReport);
                 Assert.assertNotNull(bean);
                 Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID only with class, class should be displayed as id
-                bean = client.getInventoryResource(BEAN_TYPE, "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl", inventoryReport);
+                bean = client.retrieveInventoryResource(Resource.Type.BEAN, "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl", inventoryReport);
                 Assert.assertNotNull(bean);
                 Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID and class only with name, name should be displayed as id
-                bean = client.getInventoryResource(BEAN_TYPE, "sqlSessionTemplate", inventoryReport);
+                bean = client.retrieveInventoryResource(Resource.Type.BEAN, "sqlSessionTemplate", inventoryReport);
                 Assert.assertNotNull(bean);
                 Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
 
                 //check bean without ID,with class and name, name should be displayed as id
-                bean = client.getInventoryResource(BEAN_TYPE, "beanName", inventoryReport);
+                bean = client.retrieveInventoryResource(Resource.Type.BEAN, "beanName", inventoryReport);
                 Assert.assertNotNull(bean);
                 Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
         }
@@ -89,21 +86,21 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
         {
                 // Check that invalid xml file is not loaded and and error is displayed in command output
                 Assert.assertTrue(cmdOut.containsMessage(INVALID_XML_MESSAGE + INVALID_XML), "Invalid xml message not displayed in command output");
-                Resource bean = client.getInventoryResource(BEAN_TYPE, "invalidXML1", inventoryReport);
+                Resource bean = client.retrieveInventoryResource(Resource.Type.BEAN, "invalidXML1", inventoryReport);
                 Assert.assertNull(bean);
         }
 
         @Test
         public void testClassPathType()
         {
-                List<Resource> classPathRs = client.getInventoryResources(CLASSPATH_ELEMENT_TYPE, inventoryReport);
+                List<Resource> classPathRs = client.retrieveInventoryResources(Resource.Type.CLASSPATH_ELEMENT, inventoryReport);
                 Assert.assertEquals(classPathRs.size(), 12);
 
-                Resource classPathResource = client.getInventoryResource(CLASSPATH_ELEMENT_TYPE, "org/alfresco/repo/node/NodeServicePolicies.class", inventoryReport);
+                Resource classPathResource = client.retrieveInventoryResource(Resource.Type.CLASSPATH_ELEMENT, "org/alfresco/repo/node/NodeServicePolicies.class", inventoryReport);
                 Assert.assertNotNull(classPathResource);
                 Assert.assertEquals(classPathResource.getDefiningObject(), "WEB-INF/lib/alfresco-repository-0.0.1.jar");
 
-                classPathResource = client.getInventoryResource(CLASSPATH_ELEMENT_TYPE, "log4j.properties", inventoryReport);
+                classPathResource = client.retrieveInventoryResource(Resource.Type.CLASSPATH_ELEMENT, "log4j.properties", inventoryReport);
                 Assert.assertNotNull(classPathResource);
                 Assert.assertEquals(classPathResource.getDefiningObject(), "WEB-INF/classes/log4j.properties");
         }
@@ -111,10 +108,10 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
         @Test
         public void checkFileType()
         {
-                List<Resource> report = client.getInventoryResources(FILE_TYPE, inventoryReport);
+                List<Resource> report = client.retrieveInventoryResources(Resource.Type.FILE, inventoryReport);
                 Assert.assertEquals(report.size(), 10);
 
-                Resource resource = client.getInventoryResource(FILE_TYPE, "META-INF/MANIFEST.MF", inventoryReport);
+                Resource resource = client.retrieveInventoryResource(Resource.Type.FILE, "META-INF/MANIFEST.MF", inventoryReport);
                 Assert.assertEquals(resource.getDefiningObject().equals("META-INF/MANIFEST.MF"), true, "");
                 Assert.assertEquals(resource.getId().equals("META-INF/MANIFEST.MF"), true, "");
         }
