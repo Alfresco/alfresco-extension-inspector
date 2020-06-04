@@ -59,6 +59,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <configuration>
+                            <!--  This helps us reuse the logic in the inventory by specifying this module as a dependency -->
+                            <!-- while allowing to create a fat jar with the 'application' suffix-->
+                            <classifier>application</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
