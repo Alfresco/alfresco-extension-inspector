@@ -35,7 +35,7 @@ public class FileOverridingChecker implements Checker
     }
 
     @Override
-    public boolean canProcessEntry(InventoryReport warReport, InventoryReport ampRepor)
+    public boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport)
     {
         return false;
     }
