@@ -8,7 +8,6 @@
 package org.alfresco.ampalyser.analyser;
 
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
-import org.alfresco.ampalyser.inventory.InventoryApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootApplication
 @ComponentScan(
 	basePackages = {"org.alfresco.ampalyser.inventory", "org.alfresco.ampalyser.analyser"},
-	excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {AlfrescoWarInventory.class, InventoryApplication.class})})
+	excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {AlfrescoWarInventory.class})})
 public class AnalyserApplication
 {
 	public static void main(String[] args) {
