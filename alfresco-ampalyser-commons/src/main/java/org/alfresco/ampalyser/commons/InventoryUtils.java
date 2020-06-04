@@ -6,9 +6,11 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.utils;
+package org.alfresco.ampalyser.commons;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,8 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.inventory.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 
 public class InventoryUtils
 {

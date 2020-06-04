@@ -8,14 +8,14 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isFromJar;
+import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
 
 import java.util.List;
 import java.util.zip.ZipEntry;
 
+import org.alfresco.ampalyser.model.FileResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.FileResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component

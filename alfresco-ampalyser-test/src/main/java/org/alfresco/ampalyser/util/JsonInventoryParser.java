@@ -1,7 +1,7 @@
 package org.alfresco.ampalyser.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.alfresco.ampalyser.models.InventoryReport;
+import org.alfresco.ampalyser.models.InventoryTestReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +14,12 @@ public class JsonInventoryParser {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public InventoryReport getInventoryReportFromJson(File jsonInventoryReport)
+    public InventoryTestReport getInventoryReportFromJson(File jsonInventoryReport)
     {
-        InventoryReport invReport = new InventoryReport();
+        InventoryTestReport invReport = new InventoryTestReport();
         try
         {
-            invReport = objectMapper.readValue(jsonInventoryReport, InventoryReport.class);
+            invReport = objectMapper.readValue(jsonInventoryReport, InventoryTestReport.class);
         }
         catch (IOException e)
         {

@@ -8,6 +8,12 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,18 +23,12 @@ import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.data.classes.ClassDeprecated;
 import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotation;
 import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotationDeprecated;
-import org.alfresco.ampalyser.inventory.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class PublicApiInventoryWorkerTest

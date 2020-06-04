@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.FileResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.FileResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +41,7 @@ public class FileInventoryWorkerTest
 
         List<Resource> resourceList = fileInventoryWorker
             .processZipEntry(entry, null, entry.getName());
-        assertTrue(!resourceList.isEmpty());
+        assertFalse(resourceList.isEmpty());
         assertEquals(1, resourceList.size());
         assertTrue(resourceList.get(0) instanceof FileResource);
 

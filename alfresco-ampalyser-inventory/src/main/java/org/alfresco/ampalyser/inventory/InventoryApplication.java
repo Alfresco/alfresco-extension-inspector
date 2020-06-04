@@ -57,6 +57,7 @@ public class InventoryApplication implements ApplicationRunner
         try
         {
             String reportPath = getOutputReportPath(args, warPath);
+            // TODO: Make it a bean and inject it?
             InventoryOutput output = new JSONInventoryOutput(warPath, reportPath);
             inventoryService.generateInventoryReport(warPath, output);
         }

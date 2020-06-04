@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.FileResource;
-import org.alfresco.ampalyser.inventory.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.model.Resource;
+import org.alfresco.ampalyser.model.FileResource;
+import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

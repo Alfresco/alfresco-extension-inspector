@@ -8,7 +8,7 @@
 
 package org.alfresco.ampalyser.inventory;
 
-import static org.alfresco.ampalyser.inventory.utils.InventoryUtils.isJar;
+import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,10 +21,9 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.inventory.model.Resource;
-import org.alfresco.ampalyser.inventory.model.Resource.Type;
-import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
+import org.alfresco.ampalyser.commons.InventoryUtils;
 import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
+import org.alfresco.ampalyser.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,7 +36,7 @@ public class EntryProcessor
         inventoryWorkers.add(inventoryWorker);
     }
 
-    public Map<Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
+    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
         throws IOException
     {
         if (warEntry == null || zis == null)

@@ -3,10 +3,10 @@ package org.alfresco.ampalyser;
 import org.alfresco.ampalyser.command.CommandExecutor;
 import org.alfresco.ampalyser.command.CommandImpl;
 import org.alfresco.ampalyser.command.CommandReceiver;
+import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.models.InventoryCommand;
-import org.alfresco.ampalyser.models.InventoryReport;
-import org.alfresco.ampalyser.models.Resource;
+import org.alfresco.ampalyser.models.InventoryTestReport;
 import org.alfresco.ampalyser.util.JsonInventoryParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,15 +40,15 @@ public class AmpalyserClient
 
         public Resource retrieveInventoryResource(Resource.Type resourceType, String resourceId, File jsonReport)
         {
-                InventoryReport inventoryReport = jsonInventory.getInventoryReportFromJson(jsonReport);
+                InventoryTestReport inventoryTestReport = jsonInventory.getInventoryReportFromJson(jsonReport);
 
-                return inventoryReport.getResource(resourceType, resourceId);
+                return inventoryTestReport.getResource(resourceType, resourceId);
         }
 
         public List<Resource> retrieveInventoryResources(Resource.Type resourceType, File jsonReport)
         {
-                InventoryReport inventoryReport = jsonInventory.getInventoryReportFromJson(jsonReport);
+                InventoryTestReport inventoryTestReport = jsonInventory.getInventoryReportFromJson(jsonReport);
 
-                return inventoryReport.getResources(resourceType);
+                return inventoryTestReport.getResources(resourceType);
         }
 }

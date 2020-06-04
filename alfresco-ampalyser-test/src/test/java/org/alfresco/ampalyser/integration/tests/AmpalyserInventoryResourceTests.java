@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.integration.tests;
 
-import org.alfresco.ampalyser.models.Resource;
+import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.util.TestResource;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -45,16 +46,18 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
         @Test
         public void testPublicApiAnnotation()
         {
-                List<Resource> publicApiRs = client.retrieveInventoryResources(Resource.Type.ALFRESCO_PUBLIC_API, inventoryReport);
-                Assert.assertEquals(publicApiRs.size(), 2);
+                List<Resource> publicApiResources = client.retrieveInventoryResources(Resource.Type.ALFRESCO_PUBLIC_API, inventoryReport);
+                Assert.assertEquals(publicApiResources.size(), 2);
 
-                Resource publicApiRs1 = client.retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);
-                Assert.assertNotNull(publicApiRs1);
-                Assert.assertFalse(publicApiRs1.getDeprecated());
+                AlfrescoPublicApiResource publicApiRs = (AlfrescoPublicApiResource) client
+                        .retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);
+                Assert.assertNotNull(publicApiRs);
+                Assert.assertFalse(publicApiRs.isDeprecated());
 
-                Resource publicApiRs2 = client.retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.content.transform.TransformerConfig", inventoryReport);
-                Assert.assertNotNull(publicApiRs2);
-                Assert.assertTrue(publicApiRs2.getDeprecated());
+                publicApiRs = (AlfrescoPublicApiResource) client
+                        .retrieveInventoryResource(Resource.Type.ALFRESCO_PUBLIC_API, "org.alfresco.repo.content.transform.TransformerConfig", inventoryReport);
+                Assert.assertNotNull(publicApiRs);
+                Assert.assertTrue(publicApiRs.isDeprecated());
         }
 
         @Test

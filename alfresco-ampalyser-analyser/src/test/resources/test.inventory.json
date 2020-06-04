@@ -1,0 +1,13 @@
+{
+  "schemaVersion" : "1.0",
+  "resources" : {
+    "ALFRESCO_PUBLIC_API" : [ ],
+    "BEAN" : [ ],
+    "CLASSPATH_ELEMENT" : [ ],
+    "FILE" : [ {
+      "type" : "FILE",
+      "id" : "WEB-INF/.DS_Store",
+      "definingObject" : "WEB-INF/.DS_Store"
+    } ]
+  }
+}

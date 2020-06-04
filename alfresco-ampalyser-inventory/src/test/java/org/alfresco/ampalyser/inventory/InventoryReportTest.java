@@ -8,18 +8,19 @@
 
 package org.alfresco.ampalyser.inventory;
 
-import org.alfresco.ampalyser.inventory.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.output.JSONInventoryOutput;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.alfresco.ampalyser.inventory.output.JSONInventoryOutput;
+import org.alfresco.ampalyser.model.InventoryReport;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
 public class InventoryReportTest
 {

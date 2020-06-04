@@ -1,17 +1,20 @@
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Lucian Tuca
- * created on 08/05/2020
  */
 public class AlfrescoPublicApiResource extends AbstractResource implements Serializable
 {
     private boolean deprecated;
+
+    public AlfrescoPublicApiResource()
+    {
+    }
 
     public AlfrescoPublicApiResource(String id, boolean deprecated)
     {

@@ -8,21 +8,21 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+
+import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
 import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipEntry;
 
 @Component
 public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
