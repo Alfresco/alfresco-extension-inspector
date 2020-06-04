@@ -5,15 +5,14 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-
-package org.alfresco.ampalyser.inventory.service;
+package org.alfresco.ampalyser.analyser.parser;
 
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.output.InventoryOutput;
 
-public interface InventoryService
+/**
+ * @author Lucian Tuca
+ */
+public interface InventoryParser
 {
-    InventoryReport extractInventoryReport(String warPath);
-
-    void generateInventoryReport(String warPath, InventoryOutput output);
+    InventoryReport parseReport(String path);
 }

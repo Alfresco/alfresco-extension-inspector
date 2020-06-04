@@ -5,24 +5,30 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
+package org.alfresco.ampalyser.model;
 
-package org.alfresco.ampalyser.inventory.model;
-
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.io.Serializable;
 
-public class ClasspathElementResource extends AbstractResource implements Serializable
+/**
+ * @author Lucian Tuca
+ */
+public class FileResource extends AbstractResource implements Serializable
 {
-    public ClasspathElementResource(String id, String definingObject)
+    public FileResource()
     {
-        super(CLASSPATH_ELEMENT, id, definingObject);
+    }
+
+    public FileResource(String id, String definingObject)
+    {
+        super(FILE, id, definingObject);
     }
 
     @Override
     public String toString()
     {
-        return "ClasspathElementResource{" +
+        return "FileResource{" +
                "id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';

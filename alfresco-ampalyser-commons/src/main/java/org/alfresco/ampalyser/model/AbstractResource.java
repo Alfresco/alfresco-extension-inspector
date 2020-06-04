@@ -6,20 +6,23 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Lucian Tuca
- * created on 07/05/2020
  */
 public abstract class AbstractResource implements Resource, Serializable
 {
-    private final Type type;
+    private Type type;
     protected String id;
     protected String definingObject;
+
+    public AbstractResource()
+    {
+    }
 
     protected AbstractResource(Type type, String id, String definingObject)
     {
@@ -29,9 +32,15 @@ public abstract class AbstractResource implements Resource, Serializable
     }
 
     @Override
-    public Resource.Type getType()
+    public Type getType()
     {
         return type;
+    }
+
+    @Override
+    public void setType(Type type)
+    {
+        this.type = type;
     }
 
     @Override

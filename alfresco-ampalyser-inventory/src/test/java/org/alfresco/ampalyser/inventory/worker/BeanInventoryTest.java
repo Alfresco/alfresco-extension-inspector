@@ -7,22 +7,21 @@
  */
 package org.alfresco.ampalyser.inventory.worker;
 
-import java.util.List;
-import java.util.zip.ZipEntry;
-
-import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.BeanResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.zip.ZipEntry;
+
+import org.alfresco.ampalyser.inventory.EntryProcessor;
+import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.model.Resource;
+import org.junit.jupiter.api.Test;
+
 /**
  * @author Lucian Tuca
- * created on 15/05/2020
  */
 
 public class BeanInventoryTest

@@ -16,11 +16,11 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.commons.InventoryUtils;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.model.Resource;
 import org.alfresco.ampalyser.inventory.output.InventoryOutput;
-import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

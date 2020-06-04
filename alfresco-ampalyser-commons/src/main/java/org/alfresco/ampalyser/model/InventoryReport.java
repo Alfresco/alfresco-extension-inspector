@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
 import static java.util.Comparator.comparing;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import org.alfresco.ampalyser.inventory.utils.InventoryUtils;
+import org.alfresco.ampalyser.commons.InventoryUtils;
 
 public class InventoryReport
 {

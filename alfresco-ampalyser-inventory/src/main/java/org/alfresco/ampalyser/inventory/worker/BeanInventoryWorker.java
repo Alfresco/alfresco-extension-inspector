@@ -19,9 +19,9 @@ import java.util.zip.ZipEntry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.model.BeanResource;
-import org.alfresco.ampalyser.inventory.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

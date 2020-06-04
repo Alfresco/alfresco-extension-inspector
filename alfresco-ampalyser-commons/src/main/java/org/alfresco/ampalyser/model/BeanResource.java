@@ -6,15 +6,18 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.model;
+package org.alfresco.ampalyser.model;
 
-import static org.alfresco.ampalyser.inventory.model.Resource.Type.BEAN;
+import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class BeanResource extends AbstractResource implements Serializable
 {
+    public BeanResource()
+    {
+    }
+
     public BeanResource(String id, String definingObject)
     {
         super(BEAN, id, definingObject);
