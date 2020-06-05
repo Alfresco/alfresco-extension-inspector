@@ -1,3 +1,11 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+
 package org.alfresco.ampalyser.integration.tests;
 
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
@@ -66,22 +74,22 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
                 //check bean with ID
                 Resource bean = client.retrieveInventoryResource(Resource.Type.BEAN, "controlDAO", inventoryReport);
                 Assert.assertNotNull(bean);
-                Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+                Assert.assertEquals(bean.getDefiningObject(), "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar");
 
                 //check bean without ID only with class, class should be displayed as id
                 bean = client.retrieveInventoryResource(Resource.Type.BEAN, "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl", inventoryReport);
                 Assert.assertNotNull(bean);
-                Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+                Assert.assertEquals(bean.getDefiningObject(), "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar");
 
                 //check bean without ID and class only with name, name should be displayed as id
                 bean = client.retrieveInventoryResource(Resource.Type.BEAN, "sqlSessionTemplate", inventoryReport);
                 Assert.assertNotNull(bean);
-                Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+                Assert.assertEquals(bean.getDefiningObject(), "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar");
 
                 //check bean without ID,with class and name, name should be displayed as id
                 bean = client.retrieveInventoryResource(Resource.Type.BEAN, "beanName", inventoryReport);
                 Assert.assertNotNull(bean);
-                Assert.assertEquals(bean.getDefiningObject().equals("alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar"), true);
+                Assert.assertEquals(bean.getDefiningObject(), "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar");
         }
 
         @Test
@@ -115,8 +123,8 @@ public class AmpalyserInventoryResourceTests extends AmpalyserInventoryTests
                 Assert.assertEquals(report.size(), 10);
 
                 Resource resource = client.retrieveInventoryResource(Resource.Type.FILE, "META-INF/MANIFEST.MF", inventoryReport);
-                Assert.assertEquals(resource.getDefiningObject().equals("META-INF/MANIFEST.MF"), true, "");
-                Assert.assertEquals(resource.getId().equals("META-INF/MANIFEST.MF"), true, "");
+                Assert.assertEquals(resource.getDefiningObject(), "META-INF/MANIFEST.MF");
+                Assert.assertEquals(resource.getId(), "META-INF/MANIFEST.MF");
         }
 
 }

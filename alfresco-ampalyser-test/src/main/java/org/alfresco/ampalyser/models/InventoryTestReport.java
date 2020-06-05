@@ -1,3 +1,11 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+
 package org.alfresco.ampalyser.models;
 
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -24,7 +32,6 @@ public class InventoryTestReport extends InventoryReport
 
         public List<Resource> getResources(Resource.Type resourceType)
         {
-                List<Resource> items = this.getResources().get(resourceType);
-                return items;
+                return this.getResources().get(resourceType);
         }
 }
