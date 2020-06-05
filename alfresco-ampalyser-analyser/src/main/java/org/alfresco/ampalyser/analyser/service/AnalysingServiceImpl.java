@@ -7,12 +7,26 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.alfresco.ampalyser.analyser.Analyser;
 import org.alfresco.ampalyser.analyser.parser.InventoryParser;
 import org.alfresco.ampalyser.inventory.service.InventoryService;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +76,64 @@ public class AnalysingServiceImpl implements AnalysingService
             return 2;
         }
 
+        // Create a map of extraInfo that might be required by each checker.
+        // e.g. the FileOverwritingChecker needs the content of the 'file-mapping.properties' file
+
+        Map<String, Object> extraInfo = new HashMap<>();
+        extraInfo.put(FILE_MAPPING_NAME, findFileMappingFiles(ampPath));
+
         try
         {
-            analyser.startAnalysis(warInventoryReport, ampInventoryReport);
+            analyser.startAnalysis(warInventoryReport, ampInventoryReport, extraInfo);
         }
         catch (IOException e)
         {
-
+            // TODO : Handle the exception
         }
 
         return 0;
+    }
+
+    private List<Properties> findFileMappingFiles(String ampPath)
+    {
+        List<Properties> foundProperties = new ArrayList<>();
+
+        // Look for "file-mapping.properties"
+        List<Resource> mappingResources = ampInventoryReport.getResources().get(Resource.Type.FILE).stream()
+            .filter(fileResource -> (fileResource.getId() != null && fileResource.getId().contains(FILE_MAPPING_NAME)))
+            .collect(toUnmodifiableList());
+
+        if (mappingResources.size() < 1)
+        {
+            LOGGER.info(FILE_MAPPING_NAME + " was not found in the provided .amp. Continuing with default mapping.");
+            return emptyList();
+        }
+
+        // TODO : Is it ok to have multiple mapping files?
+        for (Resource resource : mappingResources)
+        {
+            try
+            {
+                ZipFile zipFile = new ZipFile(ampPath);
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+                while(entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    if (FILE_MAPPING_NAME.equals(entry.getName()))
+                    {
+                        InputStream is = zipFile.getInputStream(entry);
+                        Properties properties = new Properties();
+                        properties.load(is);
+                        foundProperties.add(properties);
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                LOGGER.warn("Failed to read from the " + FILE_MAPPING_NAME + " although it was found.");
+                return emptyList();
+            }
+        }
+        return foundProperties;
     }
 }

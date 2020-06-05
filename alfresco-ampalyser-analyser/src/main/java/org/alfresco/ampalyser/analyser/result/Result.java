@@ -11,6 +11,27 @@ package org.alfresco.ampalyser.analyser.result;
  * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
  * @author Lucian Tuca
  */
-public class Result
+public interface Result
 {
+    enum Type
+    {
+        FILE_OVERWRITE(Constants.FILE_OVERWRITE);
+
+        public static class Constants
+        {
+            public static final String FILE_OVERWRITE= "FILE_OVERWRITE";
+        }
+
+        private final String value;
+
+        Type(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
 }

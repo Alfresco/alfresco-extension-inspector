@@ -10,10 +10,10 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.Collections.emptyList;
 
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.ampalyser.analyser.result.Result;
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
 
 /**
  * Defines how a checker should work.
@@ -22,18 +22,19 @@ import org.alfresco.ampalyser.model.Resource;
  */
 public interface Checker
 {
-    default List<Result> process(InventoryReport warReport, InventoryReport ampReport)
+    default List<Result> process(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
     {
-        if (this.canProcessEntry(warReport, ampReport))
+        if (this.canProcessEntry(warReport, ampReport, extraInfo))
         {
-            return processInternal(warReport, ampReport);
+            return processInternal(warReport, ampReport, extraInfo);
         }
         return emptyList();
     }
 
-    List<Result> processInternal(InventoryReport warReport, InventoryReport ampRepor);
+    List<Result> processInternal(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
 
-    Resource.Type getType();
+    // TODO: Do we need this? Maybe create a type for the checker to correlate it with a field in a Result class?
+    Result.Type getType();
 
-    boolean canProcessEntry(InventoryReport warReport, InventoryReport ampRepor);
+    boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
 }

@@ -54,7 +54,7 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
         {
             resourceName = resourceName.substring(WEB_INF_CLASSES.length());
         }
-        return List.of(new ClasspathElementResource(resourceName, definingObject));
+        return List.of(new ClasspathElementResource("/" + resourceName, "/" + definingObject));
     }
 
 }
