@@ -7,14 +7,15 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.alfresco.ampalyser.analyser.result.FileOverwriteResult;
 import org.alfresco.ampalyser.analyser.result.Result;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -46,12 +47,12 @@ public class FileOverwritingChecker implements Checker
         "/web/php", "/php"
     );
 
-    private Map<String, String> completeMappingProperties = new HashMap<>();
-
     @Override
     public List<Result> processInternal(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
     {
+        List<Result> results = new LinkedList<>();
         List<Properties> foundMappingProperties = (List<Properties>) extraInfo.get(FILE_MAPPING_NAME);
+        Map<String, String> completeMappingProperties = new HashMap<>();
 
         // Flatten the Properties objects
         for (Properties properties : foundMappingProperties)
@@ -75,13 +76,41 @@ public class FileOverwritingChecker implements Checker
             }
         }
 
-        //
-        for (Resource resource : ampReport.getResources().get(FILE))
+        // Check every resource for conflicts
+        for (Resource ampResource : ampReport.getResources().get(FILE))
         {
+            // Find the most specific/deepest mapping that we can use
+            String matchingSourceMapping = "";
+            for (String sourceMapping : completeMappingProperties.keySet())
+            {
+                if (ampResource.getId().startsWith(sourceMapping) && sourceMapping.length() > matchingSourceMapping.length())
+                {
+                    matchingSourceMapping = sourceMapping;
+                }
+            }
 
+            // We now know the mapping that should apply and we can calculate the destination
+            String destination = matchingSourceMapping.isEmpty() ? ampResource.getId() :
+                    ampResource.getId().replace(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping));
+
+            // If the mapping points to 'root' we might have 2 double '/'
+            destination = destination.startsWith("//") ? destination.substring(1) : destination;
+
+            // Iterate through the war FILE resources and check if the calculated destination matches any of the existing resources
+            for (Resource warResource : warReport.getResources().get(FILE))
+            {
+                if (warResource.getId().equals(destination))
+                {
+                    FileOverwriteResult newResult = new FileOverwriteResult(
+                        ampResource,
+                        warResource,
+                        matchingSourceMapping.isEmpty() ? null : Map.of(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping)));
+                    results.add(newResult);
+                }
+            }
         }
 
-        return emptyList();
+        return results;
     }
 
     @Override

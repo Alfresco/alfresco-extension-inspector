@@ -7,6 +7,8 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
+import org.alfresco.ampalyser.model.Resource;
+
 /**
  * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
  * @author Lucian Tuca
@@ -15,23 +17,23 @@ public interface Result
 {
     enum Type
     {
-        FILE_OVERWRITE(Constants.FILE_OVERWRITE);
+        FILE_OVERWRITE;
 
         public static class Constants
         {
             public static final String FILE_OVERWRITE= "FILE_OVERWRITE";
         }
-
-        private final String value;
-
-        Type(String value)
-        {
-            this.value = value;
-        }
-
-        public String getValue()
-        {
-            return value;
-        }
     }
+
+    String getId();
+    void setId(String id);
+
+    Type getType();
+    void setType(Type type);
+
+    Resource getAmpResourceInConflict();
+    void setAmpResourceInConflict(Resource ampResourceInConflict);
+
+    Resource getWarResourceInConflict();
+    void setWarResourceInConflict(Resource warResourceInConflict);
 }

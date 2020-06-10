@@ -24,6 +24,7 @@ import java.util.zip.ZipFile;
 
 import org.alfresco.ampalyser.analyser.Analyser;
 import org.alfresco.ampalyser.analyser.parser.InventoryParser;
+import org.alfresco.ampalyser.analyser.result.Result;
 import org.alfresco.ampalyser.inventory.service.InventoryService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -31,6 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * The backbone of the application. Triggers the workflow for the analysis process.
@@ -83,11 +87,17 @@ public class AnalysingServiceImpl implements AnalysingService
 
         try
         {
-            analyser.startAnalysis(warInventoryReport, ampInventoryReport, extraInfo);
+            List<Result> results = analyser
+                .startAnalysis(warInventoryReport, ampInventoryReport, extraInfo);
+
+            // TODO: remove once we have a reporting mechanism (e.g. write to json file)
+            ObjectMapper om = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            System.out.println(om.writeValueAsString(results));
+            //
         }
-        catch (IOException e)
+        catch (IOException ioe)
         {
-            // TODO : Handle the exception
+            LOGGER.error("Analysis could not be performed.", ioe);
         }
 
         return 0;
