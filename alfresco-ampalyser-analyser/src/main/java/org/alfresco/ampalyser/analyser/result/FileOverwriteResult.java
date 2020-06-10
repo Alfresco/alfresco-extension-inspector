@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.result;
 import static org.alfresco.ampalyser.analyser.result.Result.Type.FILE_OVERWRITE;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.alfresco.ampalyser.model.Resource;
 
@@ -43,5 +44,36 @@ public class FileOverwriteResult extends AbstractResult
     public void setUsedMapping(Map<String, String> usedMapping)
     {
         this.usedMapping = usedMapping;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getId(), getType(), getAmpResourceInConflict(), getWarResourceInConflict(), getUsedMapping());
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileOverwriteResult that = (FileOverwriteResult) o;
+        return getType() == that.getType() &&
+            Objects.equals(getId(), that.getId()) &&
+            Objects.equals(getAmpResourceInConflict(), that.getAmpResourceInConflict()) &&
+            Objects.equals(getWarResourceInConflict(), that.getWarResourceInConflict()) &&
+            Objects.equals(getUsedMapping(), that.getUsedMapping());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "FileOverwriteResult{" +
+            "type=" + getType() +
+            ", id='" + getId() + '\'' +
+            ", ampResourceInConflict='" + getAmpResourceInConflict() + '\'' +
+            ", warResourceInConflict='" + getWarResourceInConflict() + '\'' +
+            ", usedMapping='" + getUsedMapping() + '\'' +
+            '}';
     }
 }

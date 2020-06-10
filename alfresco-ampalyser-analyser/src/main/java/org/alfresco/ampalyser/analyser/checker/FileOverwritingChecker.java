@@ -36,7 +36,7 @@ public class FileOverwritingChecker implements Checker
     public static final String FILE_MAPPING_NAME = "file-mapping.properties";
     private static final String INCLUDE_DEFAULT_PROPERTY_KEY = "include.default";
 
-    private Map<String, String> defaultMappingProperties = Map.of(
+    private static final Map<String, String> DEFAULT_MAPPINGS = Map.of(
         "/config","/WEB-INF/classes",
         "/lib", "/WEB-INF/lib",
         "/licenses", "/WEB-INF/licenses",
@@ -52,46 +52,17 @@ public class FileOverwritingChecker implements Checker
     {
         List<Result> results = new LinkedList<>();
         List<Properties> foundMappingProperties = (List<Properties>) extraInfo.get(FILE_MAPPING_NAME);
-        Map<String, String> completeMappingProperties = new HashMap<>();
-
-        // Flatten the Properties objects
-        for (Properties properties : foundMappingProperties)
-        {
-
-            for (Map.Entry entry : properties.entrySet())
-            {
-                // Add the default mappings if the 'include.default' is set to true
-                String key = entry.getKey().toString();
-                String value = entry.getValue().toString();
-                if (INCLUDE_DEFAULT_PROPERTY_KEY.equals(key) && Boolean.parseBoolean(value))
-                {
-                    completeMappingProperties.putAll(defaultMappingProperties);
-                }
-
-                // and filter to only keep entries that refer to path mappings
-                if (key.startsWith("/") && value.startsWith("/"))
-                {
-                    completeMappingProperties.put(key, value);
-                }
-            }
-        }
+        Map<String, String> completeMappingProperties = computeMappings(foundMappingProperties);
 
         // Check every resource for conflicts
         for (Resource ampResource : ampReport.getResources().get(FILE))
         {
             // Find the most specific/deepest mapping that we can use
-            String matchingSourceMapping = "";
-            for (String sourceMapping : completeMappingProperties.keySet())
-            {
-                if (ampResource.getId().startsWith(sourceMapping + "/") && sourceMapping.length() > matchingSourceMapping.length())
-                {
-                    matchingSourceMapping = sourceMapping;
-                }
-            }
+            String matchingSourceMapping = findMostSpecificMapping(completeMappingProperties, ampResource);
 
             // We now know the mapping that should apply and we can calculate the destination
             String destination = matchingSourceMapping.isEmpty() ? ampResource.getId() :
-                    ampResource.getId().replace(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping));
+                    ampResource.getId().replaceFirst(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping));
 
             // If the mapping points to 'root' we might have 2 double '/'
             destination = destination.startsWith("//") ? destination.substring(1) : destination;
@@ -113,9 +84,61 @@ public class FileOverwritingChecker implements Checker
         return results;
     }
 
+    /**
+     * Finds the the most specific (deepest in the file tree) mapping that can apply for the give .amp resource
+     * @param completeMappingProperties all the mappings
+     * @param ampResource the .amp resource
+     * @return the most specific mapping.
+     */
+    private static String findMostSpecificMapping(Map<String, String> completeMappingProperties, Resource ampResource)
+    {
+        String matchingSourceMapping = "";
+        for (String sourceMapping : completeMappingProperties.keySet())
+        {
+            if (ampResource.getId().startsWith(sourceMapping + "/") && sourceMapping.length() > matchingSourceMapping.length())
+            {
+                matchingSourceMapping = sourceMapping;
+            }
+        }
+        return matchingSourceMapping;
+    }
+
     @Override
     public boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
     {
         return true;
+    }
+
+    /**
+     * Computes all the mappings based on the found files and the boolean flags.
+     *
+     * @param foundMappingProperties
+     * @return A map where the key is the amp (source) location and the value the war (target) location.
+     */
+    private static Map<String, String> computeMappings(List<Properties> foundMappingProperties)
+    {
+        Map<String, String> mappings = new HashMap<>();
+        // Flatten the Properties objects
+        for (Properties properties : foundMappingProperties)
+        {
+
+            for (Map.Entry entry : properties.entrySet())
+            {
+                // Add the default mappings if the 'include.default' is set to true
+                String key = entry.getKey().toString();
+                String value = entry.getValue().toString();
+                if (INCLUDE_DEFAULT_PROPERTY_KEY.equals(key) && Boolean.parseBoolean(value))
+                {
+                    mappings.putAll(DEFAULT_MAPPINGS);
+                }
+
+                // and filter to only keep entries that refer to path mappings
+                if (key.startsWith("/") && value.startsWith("/"))
+                {
+                    mappings.put(key, value);
+                }
+            }
+        }
+        return mappings;
     }
 }

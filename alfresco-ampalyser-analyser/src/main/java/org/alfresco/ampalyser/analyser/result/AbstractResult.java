@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.alfresco.ampalyser.model.Resource;
@@ -83,5 +84,34 @@ public abstract class AbstractResult implements Result
     public void setWarResourceInConflict(Resource warResourceInConflict)
     {
         this.warResourceInConflict = warResourceInConflict;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, type, ampResourceInConflict, warResourceInConflict);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractResult that = (AbstractResult) o;
+        return type == that.type &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
+            Objects.equals(warResourceInConflict, that.warResourceInConflict);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "AbstractResult{" +
+            "type=" + type +
+            ", id='" + id + '\'' +
+            ", ampResourceInConflict='" + ampResourceInConflict + '\'' +
+            ", warResourceInConflict='" + warResourceInConflict + '\'' +
+            '}';
     }
 }
