@@ -14,6 +14,6 @@ package org.alfresco.ampalyser.analyser.service;
  */
 public interface AnalysingService
 {
-    // TODO: int return type for exit code? Can be changed based on review
+    // TODO: Update to ExitCodeGenerator in ACS-285
     public int analyse(String ampPath, String warInventoryReport);
 }

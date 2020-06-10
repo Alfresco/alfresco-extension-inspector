@@ -51,13 +51,12 @@ public class AnalysingServiceImpl implements AnalysingService
     @Autowired
     private Analyser analyser;
 
-    private InventoryReport warInventoryReport;
-    private InventoryReport ampInventoryReport;
-
-
     @Override
     public int analyse(String ampPath, String warInventoryReportPath)
     {
+        InventoryReport warInventoryReport;
+        InventoryReport ampInventoryReport;
+
         // Load the report for the target war
         warInventoryReport = inventoryParser.parseReport(warInventoryReportPath);
         if (warInventoryReport == null)
@@ -80,7 +79,7 @@ public class AnalysingServiceImpl implements AnalysingService
         // e.g. the FileOverwritingChecker needs the content of the 'file-mapping.properties' file
 
         Map<String, Object> extraInfo = new HashMap<>();
-        extraInfo.put(FILE_MAPPING_NAME, findFileMappingFiles(ampPath));
+        extraInfo.put(FILE_MAPPING_NAME, findFileMappingFiles(ampPath, ampInventoryReport));
 
         try
         {
@@ -94,7 +93,7 @@ public class AnalysingServiceImpl implements AnalysingService
         return 0;
     }
 
-    private List<Properties> findFileMappingFiles(String ampPath)
+    private static List<Properties> findFileMappingFiles(String ampPath, InventoryReport ampInventoryReport)
     {
         List<Properties> foundProperties = new ArrayList<>();
 
