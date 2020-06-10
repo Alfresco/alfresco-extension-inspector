@@ -83,7 +83,7 @@ public class FileOverwritingChecker implements Checker
             String matchingSourceMapping = "";
             for (String sourceMapping : completeMappingProperties.keySet())
             {
-                if (ampResource.getId().startsWith(sourceMapping) && sourceMapping.length() > matchingSourceMapping.length())
+                if (ampResource.getId().startsWith(sourceMapping + "/") && sourceMapping.length() > matchingSourceMapping.length())
                 {
                     matchingSourceMapping = sourceMapping;
                 }
