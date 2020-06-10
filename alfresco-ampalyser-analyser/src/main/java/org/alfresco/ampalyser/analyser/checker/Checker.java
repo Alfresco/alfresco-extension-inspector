@@ -33,8 +33,5 @@ public interface Checker
 
     List<Result> processInternal(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
 
-    // TODO: Do we need this? Maybe create a type for the checker to correlate it with a field in a Result class?
-    Result.Type getType();
-
     boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
 }

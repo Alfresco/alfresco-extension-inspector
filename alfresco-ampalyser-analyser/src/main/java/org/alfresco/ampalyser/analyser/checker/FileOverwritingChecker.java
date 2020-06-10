@@ -114,12 +114,6 @@ public class FileOverwritingChecker implements Checker
     }
 
     @Override
-    public Result.Type getType()
-    {
-        return Result.Type.FILE_OVERWRITE;
-    }
-
-    @Override
     public boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
     {
         return true;
