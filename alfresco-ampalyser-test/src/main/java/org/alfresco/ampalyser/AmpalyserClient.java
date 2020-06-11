@@ -8,6 +8,10 @@
 
 package org.alfresco.ampalyser;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.ampalyser.command.CommandExecutor;
 import org.alfresco.ampalyser.command.CommandImpl;
 import org.alfresco.ampalyser.command.CommandReceiver;
@@ -18,9 +22,6 @@ import org.alfresco.ampalyser.models.InventoryTestReport;
 import org.alfresco.ampalyser.util.JsonInventoryParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.util.List;
 
 @Component
 public class AmpalyserClient
@@ -36,12 +37,23 @@ public class AmpalyserClient
 
         public CommandOutput runInventoryAnalyserCommand(List<String> cmdOptions)
         {
-                // Add additional inventory command options
-                cmd.addCommandOptions(cmdOptions);
-                CommandImpl invCmd = new CommandImpl(commReceiver, cmd);
+                CommandOutput cmdOut;
+                List<String> commandOptions = new ArrayList<>(cmd.getCommandOptions());
 
-                System.out.println("Running command: " + cmd.toString());
-                CommandOutput cmdOut = executor.execute(invCmd);
+                try
+                {
+                        // Add additional inventory command options
+                        cmd.addCommandOptions(cmdOptions);
+                        CommandImpl invCmd = new CommandImpl(commReceiver, cmd);
+
+                        System.out.println("Running command: " + cmd.toString());
+                        cmdOut = executor.execute(invCmd);
+                }
+                finally
+                {
+                        cmd.getCommandOptions().clear();
+                        cmd.addCommandOptions(commandOptions);
+                }
 
                 return cmdOut;
         }
