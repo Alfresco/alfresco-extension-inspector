@@ -89,7 +89,7 @@ public abstract class AbstractResult implements Result
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, type, ampResourceInConflict, warResourceInConflict);
+        return Objects.hash(type, ampResourceInConflict, warResourceInConflict);
     }
 
     @Override
@@ -99,7 +99,6 @@ public abstract class AbstractResult implements Result
         if (o == null || getClass() != o.getClass()) return false;
         AbstractResult that = (AbstractResult) o;
         return type == that.type &&
-            Objects.equals(id, that.id) &&
             Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
             Objects.equals(warResourceInConflict, that.warResourceInConflict);
     }

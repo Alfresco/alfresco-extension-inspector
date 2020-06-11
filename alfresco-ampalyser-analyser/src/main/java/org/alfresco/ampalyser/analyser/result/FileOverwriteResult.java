@@ -49,7 +49,7 @@ public class FileOverwriteResult extends AbstractResult
     @Override
     public int hashCode()
     {
-        return Objects.hash(getId(), getType(), getAmpResourceInConflict(), getWarResourceInConflict(), getUsedMapping());
+        return Objects.hash(getType(), getAmpResourceInConflict(), getWarResourceInConflict(), getUsedMapping());
     }
 
     @Override
@@ -59,7 +59,6 @@ public class FileOverwriteResult extends AbstractResult
         if (o == null || getClass() != o.getClass()) return false;
         FileOverwriteResult that = (FileOverwriteResult) o;
         return getType() == that.getType() &&
-            Objects.equals(getId(), that.getId()) &&
             Objects.equals(getAmpResourceInConflict(), that.getAmpResourceInConflict()) &&
             Objects.equals(getWarResourceInConflict(), that.getWarResourceInConflict()) &&
             Objects.equals(getUsedMapping(), that.getUsedMapping());
