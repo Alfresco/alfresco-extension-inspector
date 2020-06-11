@@ -29,10 +29,10 @@ public class FileOverwriteResult extends AbstractResult
         super();
     }
 
-    public FileOverwriteResult(Resource ampResourceInConflict,
-        Resource warResourceInConflict, Map<String, String> usedMapping)
+    public FileOverwriteResult(Resource ampResourceInConflict, Resource warResourceInConflict,
+        Map<String, String> usedMapping, String alfrescoVersion)
     {
-        super(FILE_OVERWRITE, ampResourceInConflict, warResourceInConflict);
+        super(FILE_OVERWRITE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
         this.usedMapping = usedMapping;
     }
 

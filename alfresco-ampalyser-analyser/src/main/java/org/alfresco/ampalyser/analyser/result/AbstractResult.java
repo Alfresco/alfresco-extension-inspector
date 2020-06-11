@@ -23,6 +23,7 @@ public abstract class AbstractResult implements Result
     private Type type;
     private Resource ampResourceInConflict;
     private Resource warResourceInConflict;
+    private String alfrescoVersion;
 
     public AbstractResult()
     {
@@ -30,12 +31,13 @@ public abstract class AbstractResult implements Result
     }
 
     public AbstractResult(Type type, Resource ampResourceInConflict,
-        Resource warResourceInConflict)
+        Resource warResourceInConflict, String alfrescoVersion)
     {
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.ampResourceInConflict = ampResourceInConflict;
         this.warResourceInConflict = warResourceInConflict;
+        this.alfrescoVersion = alfrescoVersion;
     }
 
     @Override
@@ -84,6 +86,18 @@ public abstract class AbstractResult implements Result
     public void setWarResourceInConflict(Resource warResourceInConflict)
     {
         this.warResourceInConflict = warResourceInConflict;
+    }
+
+    @Override
+    public String getAlfrescoVersion()
+    {
+        return alfrescoVersion;
+    }
+
+    @Override
+    public void setAlfrescoVersion(String alfrescoVersion)
+    {
+        this.alfrescoVersion = alfrescoVersion;
     }
 
     @Override

@@ -36,6 +36,7 @@ public class FileOverwritingCheckerTest
         ampReport.addResources(ampResources);
 
         InventoryReport warReport = new InventoryReport();
+        warReport.setAlfrescoVersion("6.66");
         Map<Resource.Type, List<Resource>> warResources = new HashMap<>();
         FileResource warFR1 = new FileResource("/fr1.txt", "/fr1.txt");
         FileResource warFR2 = new FileResource("/abc/fr2.txt", "/abc/fr2.txt");
@@ -51,5 +52,10 @@ public class FileOverwritingCheckerTest
 
         List<Result> results = foChecker.process(warReport, ampReport, extraInfo);
         assertEquals(1, results.size());
+
+        Result result = results.get(0);
+        assertEquals(ampFR1.getId(), result.getAmpResourceInConflict().getId());
+        assertEquals(warFR1.getId(), result.getWarResourceInConflict().getId());
+        assertEquals("6.66", result.getAlfrescoVersion());
     }
 }

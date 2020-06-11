@@ -36,4 +36,7 @@ public interface Result
 
     Resource getWarResourceInConflict();
     void setWarResourceInConflict(Resource warResourceInConflict);
+
+    String getAlfrescoVersion();
+    void setAlfrescoVersion(String alfrescoVersion);
 }

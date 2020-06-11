@@ -75,7 +75,9 @@ public class FileOverwritingChecker implements Checker
                     FileOverwriteResult newResult = new FileOverwriteResult(
                         ampResource,
                         warResource,
-                        matchingSourceMapping.isEmpty() ? null : Map.of(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping)));
+                        matchingSourceMapping.isEmpty() ? null : Map.of(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping)),
+                        warReport.getAlfrescoVersion()
+                    );
                     results.add(newResult);
                 }
             }
