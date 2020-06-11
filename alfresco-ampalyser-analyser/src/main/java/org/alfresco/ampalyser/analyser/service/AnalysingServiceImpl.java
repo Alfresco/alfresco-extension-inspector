@@ -112,37 +112,35 @@ public class AnalysingServiceImpl implements AnalysingService
             .filter(fileResource -> (fileResource.getId() != null && fileResource.getId().contains(FILE_MAPPING_NAME)))
             .collect(toUnmodifiableList());
 
+        // If no resource is found quickly return before unzipping and iterating through the whole amp (.zip) file
         if (mappingResources.size() < 1)
         {
             LOGGER.info(FILE_MAPPING_NAME + " was not found in the provided .amp. Continuing with default mapping.");
             return emptyList();
         }
 
-        // TODO : Is it ok to have multiple mapping files?
-        for (Resource resource : mappingResources)
+        try
         {
-            try
-            {
-                ZipFile zipFile = new ZipFile(ampPath);
-                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            ZipFile zipFile = new ZipFile(ampPath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-                while(entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    if (FILE_MAPPING_NAME.equals(entry.getName()))
-                    {
-                        InputStream is = zipFile.getInputStream(entry);
-                        Properties properties = new Properties();
-                        properties.load(is);
-                        foundProperties.add(properties);
-                    }
+            while(entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                if (FILE_MAPPING_NAME.equals(entry.getName()))
+                {
+                    InputStream is = zipFile.getInputStream(entry);
+                    Properties properties = new Properties();
+                    properties.load(is);
+                    foundProperties.add(properties);
                 }
             }
-            catch (IOException e)
-            {
-                LOGGER.warn("Failed to read from the " + FILE_MAPPING_NAME + " although it was found.");
-                return emptyList();
-            }
         }
+        catch (IOException e)
+        {
+            LOGGER.warn("Failed to read from the " + FILE_MAPPING_NAME + " although it was found.");
+            return emptyList();
+        }
+
         return foundProperties;
     }
 }
