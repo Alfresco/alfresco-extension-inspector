@@ -7,7 +7,6 @@
  */
 package org.alfresco.ampalyser.analyser;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ public class Analyser
     private List<Checker> checkers;
 
     public List<Result> startAnalysis(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
-        throws IOException
     {
         List<Result> results = new LinkedList<>();
         for (Checker checker : checkers)
