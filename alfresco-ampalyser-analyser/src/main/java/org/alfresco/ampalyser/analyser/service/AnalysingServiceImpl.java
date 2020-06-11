@@ -14,7 +14,6 @@ import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FIL
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,10 +121,9 @@ public class AnalysingServiceImpl implements AnalysingService
         try
         {
             ZipFile zipFile = new ZipFile(ampPath);
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-            while(entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
+            for (Resource resource : mappingResources)
+            {
+                ZipEntry entry = zipFile.getEntry(resource.getId());
                 if (FILE_MAPPING_NAME.equals(entry.getName()))
                 {
                     InputStream is = zipFile.getInputStream(entry);
