@@ -7,6 +7,8 @@
  */
 package org.alfresco.ampalyser.analyser.parser;
 
+import java.io.InputStream;
+
 import org.alfresco.ampalyser.model.InventoryReport;
 
 /**
@@ -15,4 +17,6 @@ import org.alfresco.ampalyser.model.InventoryReport;
 public interface InventoryParser
 {
     InventoryReport parseReport(String path);
+
+    InventoryReport parseReport(InputStream is);
 }

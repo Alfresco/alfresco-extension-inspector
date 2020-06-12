@@ -9,6 +9,7 @@ package org.alfresco.ampalyser.analyser.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.slf4j.Logger;
@@ -37,15 +38,23 @@ public class JSONInventoryParser implements InventoryParser
             // TODO: ACS-76 depending on how deep we want to dive, we can read line by line and only parse the types that we're interested in to save memory and time.
             return objectMapper.readValue(new File(path), InventoryReport.class);
         }
-        catch (IOException ioe)
+        catch (IOException e)
         {
-            LOGGER.error("Failed to open file " + path + " in order to read it.", ioe);
-            return null;
+            LOGGER.error("Failed to read inventory file: " + path, e);
+            throw new RuntimeException("Failed to read file: " + path, e);
         }
-        catch (Exception e)
+    }
+
+    public InventoryReport parseReport(final InputStream is)
+    {
+        try
         {
-            LOGGER.error("Failed parsing content from " + path, e);
-            return null;
+            return objectMapper.readValue(is, InventoryReport.class);
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Failed to read inventory stream", e);
+            throw new RuntimeException("Failed to read inventory stream: ", e);
         }
     }
 }

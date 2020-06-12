@@ -3,6 +3,8 @@ spring:
   main:
     banner_mode: "off"
 
+inventory-report-resource-pattern: "classpath:bundled-inventories/*.json"
+
 logging:
   level:
     root: warn
