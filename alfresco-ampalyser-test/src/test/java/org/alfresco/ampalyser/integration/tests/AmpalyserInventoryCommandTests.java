@@ -8,16 +8,34 @@
 
 package org.alfresco.ampalyser.integration.tests;
 
+import static java.io.File.separator;
+import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.alfresco.ampalyser.AmpalyserClient;
+import org.alfresco.ampalyser.models.CommandOutput;
+import org.alfresco.ampalyser.util.AppConfig;
 import org.alfresco.ampalyser.util.TestResource;
-import org.testng.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-public class AmpalyserInventoryCommandTests extends AmpalyserInventoryTests
+@ContextConfiguration(classes = AppConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextTests
 {
+    @Autowired
+    private AmpalyserClient client;
+
+    private CommandOutput cmdOut;
+
     @Test
     public void runCommandWithOutput()
     {
@@ -27,22 +45,23 @@ public class AmpalyserInventoryCommandTests extends AmpalyserInventoryTests
 
         // Generate new inventory report
         cmdOut = client.runInventoryAnalyserCommand(cmdOptions);
-        File inventoryReport = new File(inventoryReportPath + File.separator + TestResource.getTestInventoryReport().getName());
+        final File inventoryReport = new File(
+            inventoryReportPath + separator + TestResource.getTestInventoryReport().getName());
 
-        Assert.assertEquals(cmdOut.getExitCode(), 0);
-        Assert.assertTrue(cmdOut.containsMessage(SUCCESS_MESSAGE), "Inventory report has not been generated");
-        Assert.assertTrue(inventoryReport.exists());
+        assertEquals(cmdOut.getExitCode(), 0);
+        assertTrue(cmdOut.containsMessage(SUCCESS_MESSAGE), "Inventory report has not been generated");
+        assertTrue(inventoryReport.exists());
     }
 
     @Test
     public void runCommandWithExitCodeError()
     {
         cmdOut = client.runInventoryAnalyserCommand(Collections.emptyList());
-        Assert.assertEquals(cmdOut.getExitCode(), 1);
-        Assert.assertTrue(cmdOut.containsMessage("Missing war file."));
+        assertEquals(cmdOut.getExitCode(), 1);
+        assertTrue(cmdOut.containsMessage("Missing war file."));
 
         cmdOut = client.runInventoryAnalyserCommand(List.of("nonExisting.war"));
-        Assert.assertEquals(cmdOut.getExitCode(), 1);
-        Assert.assertTrue(cmdOut.containsMessage("The war file is not valid"));
+        assertEquals(cmdOut.getExitCode(), 1);
+        assertTrue(cmdOut.containsMessage("The war file is not valid"));
     }
 }
