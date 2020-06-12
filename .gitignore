@@ -25,3 +25,5 @@ target/
 *.log
 *.log.*
 
+# Other
+wars/
