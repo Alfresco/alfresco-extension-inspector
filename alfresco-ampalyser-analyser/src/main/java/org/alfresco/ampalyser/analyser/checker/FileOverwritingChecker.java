@@ -9,15 +9,15 @@ package org.alfresco.ampalyser.analyser.checker;
 
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.alfresco.ampalyser.analyser.result.FileOverwriteResult;
-import org.alfresco.ampalyser.analyser.result.Result;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +48,14 @@ public class FileOverwritingChecker implements Checker
     );
 
     @Override
-    public List<Result> processInternal(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        List<Result> results = new LinkedList<>();
+        List<Conflict> conflicts = new LinkedList<>();
         List<Properties> foundMappingProperties = (List<Properties>) extraInfo.get(FILE_MAPPING_NAME);
         Map<String, String> completeMappingProperties = computeMappings(foundMappingProperties);
 
         // Check every resource for conflicts
-        for (Resource ampResource : ampReport.getResources().get(FILE))
+        for (Resource ampResource : ampResources)
         {
             // Find the most specific/deepest mapping that we can use
             String matchingSourceMapping = findMostSpecificMapping(completeMappingProperties, ampResource);
@@ -68,22 +68,22 @@ public class FileOverwritingChecker implements Checker
             destination = destination.startsWith("//") ? destination.substring(1) : destination;
 
             // Iterate through the war FILE resources and check if the calculated destination matches any of the existing resources
-            for (Resource warResource : warReport.getResources().get(FILE))
+            for (Resource warResource : warResources)
             {
                 if (warResource.getId().equals(destination))
                 {
-                    FileOverwriteResult newResult = new FileOverwriteResult(
+                    FileOverwriteConflict newConflict = new FileOverwriteConflict(
                         ampResource,
                         warResource,
                         matchingSourceMapping.isEmpty() ? null : Map.of(matchingSourceMapping, completeMappingProperties.get(matchingSourceMapping)),
-                        warReport.getAlfrescoVersion()
+                        (String) extraInfo.get(ALFRESCO_VERSION)
                     );
-                    results.add(newResult);
+                    conflicts.add(newConflict);
                 }
             }
         }
 
-        return results;
+        return conflicts;
     }
 
     /**
@@ -106,9 +106,15 @@ public class FileOverwritingChecker implements Checker
     }
 
     @Override
-    public boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
+    public boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
         return true;
+    }
+
+    @Override
+    public Resource.Type resourceType()
+    {
+        return FILE;
     }
 
     /**

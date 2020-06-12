@@ -13,7 +13,7 @@ import org.alfresco.ampalyser.model.Resource;
  * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
  * @author Lucian Tuca
  */
-public interface Result
+public interface Conflict
 {
     enum Type
     {

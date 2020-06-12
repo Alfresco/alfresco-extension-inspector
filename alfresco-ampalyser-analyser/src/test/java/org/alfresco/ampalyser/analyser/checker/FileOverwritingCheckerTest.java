@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.alfresco.ampalyser.analyser.result.Result;
+import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -50,12 +50,12 @@ public class FileOverwritingCheckerTest
         properties.putIfAbsent("include.default", "true");
         Map<String, Object> extraInfo = Map.of(FILE_MAPPING_NAME, List.of(properties));
 
-        List<Result> results = foChecker.process(warReport, ampReport, extraInfo);
-        assertEquals(1, results.size());
+        List<Conflict> conflicts = foChecker.process(warReport.getResources().get(FILE), ampReport.getResources().get(FILE), extraInfo);
+        assertEquals(1, conflicts.size());
 
-        Result result = results.get(0);
-        assertEquals(ampFR1.getId(), result.getAmpResourceInConflict().getId());
-        assertEquals(warFR1.getId(), result.getWarResourceInConflict().getId());
-        assertEquals("6.66", result.getAlfrescoVersion());
+        Conflict conflict = conflicts.get(0);
+        assertEquals(ampFR1.getId(), conflict.getAmpResourceInConflict().getId());
+        assertEquals(warFR1.getId(), conflict.getWarResourceInConflict().getId());
+        assertEquals("6.66", conflict.getAlfrescoVersion());
     }
 }

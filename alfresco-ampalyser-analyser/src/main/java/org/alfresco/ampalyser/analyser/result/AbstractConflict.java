@@ -17,7 +17,7 @@ import org.alfresco.ampalyser.model.Resource;
  *
  * @author Lucian Tuca
  */
-public abstract class AbstractResult implements Result
+public abstract class AbstractConflict implements Conflict
 {
     private String id;
     private Type type;
@@ -25,12 +25,12 @@ public abstract class AbstractResult implements Result
     private Resource warResourceInConflict;
     private String alfrescoVersion;
 
-    public AbstractResult()
+    public AbstractConflict()
     {
         this.id = UUID.randomUUID().toString();
     }
 
-    public AbstractResult(Type type, Resource ampResourceInConflict,
+    public AbstractConflict(Type type, Resource ampResourceInConflict,
         Resource warResourceInConflict, String alfrescoVersion)
     {
         this.id = UUID.randomUUID().toString();
@@ -111,7 +111,7 @@ public abstract class AbstractResult implements Result
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractResult that = (AbstractResult) o;
+        AbstractConflict that = (AbstractConflict) o;
         return type == that.type &&
             Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
             Objects.equals(warResourceInConflict, that.warResourceInConflict);
@@ -120,7 +120,7 @@ public abstract class AbstractResult implements Result
     @Override
     public String toString()
     {
-        return "AbstractResult{" +
+        return "AbstractConflict{" +
             "type=" + type +
             ", id='" + id + '\'' +
             ", ampResourceInConflict='" + ampResourceInConflict + '\'' +

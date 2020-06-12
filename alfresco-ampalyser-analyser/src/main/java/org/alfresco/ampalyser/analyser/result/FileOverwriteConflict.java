@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Result.Type.FILE_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 
 import java.util.Map;
 import java.util.Objects;
@@ -20,16 +20,16 @@ import org.alfresco.ampalyser.model.Resource;
  *
  * @author Lucian Tuca
  */
-public class FileOverwriteResult extends AbstractResult
+public class FileOverwriteConflict extends AbstractConflict
 {
     private Map<String, String> usedMapping;
 
-    public FileOverwriteResult()
+    public FileOverwriteConflict()
     {
         super();
     }
 
-    public FileOverwriteResult(Resource ampResourceInConflict, Resource warResourceInConflict,
+    public FileOverwriteConflict(Resource ampResourceInConflict, Resource warResourceInConflict,
         Map<String, String> usedMapping, String alfrescoVersion)
     {
         super(FILE_OVERWRITE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
@@ -57,7 +57,7 @@ public class FileOverwriteResult extends AbstractResult
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FileOverwriteResult that = (FileOverwriteResult) o;
+        FileOverwriteConflict that = (FileOverwriteConflict) o;
         return getType() == that.getType() &&
             Objects.equals(getAmpResourceInConflict(), that.getAmpResourceInConflict()) &&
             Objects.equals(getWarResourceInConflict(), that.getWarResourceInConflict()) &&
@@ -67,7 +67,7 @@ public class FileOverwriteResult extends AbstractResult
     @Override
     public String toString()
     {
-        return "FileOverwriteResult{" +
+        return "FileOverwriteConflict{" +
             "type=" + getType() +
             ", id='" + getId() + '\'' +
             ", ampResourceInConflict='" + getAmpResourceInConflict() + '\'' +

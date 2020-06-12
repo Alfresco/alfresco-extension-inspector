@@ -9,11 +9,12 @@ package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.ampalyser.analyser.result.Result;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.model.Resource;
 
 /**
  * Defines how a checker should work.
@@ -22,16 +23,20 @@ import org.alfresco.ampalyser.model.InventoryReport;
  */
 public interface Checker
 {
-    default List<Result> process(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo)
+    String ALFRESCO_VERSION = "WAR_ALFRESCO_VERSION";
+
+    default List<Conflict> process(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        if (this.canProcessEntry(warReport, ampReport, extraInfo))
+        if (canProcessEntry(ampResources, warResources, extraInfo))
         {
-            return processInternal(warReport, ampReport, extraInfo);
+            return processInternal(ampResources, warResources, extraInfo);
         }
         return emptyList();
     }
 
-    List<Result> processInternal(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
+    List<Conflict> processInternal(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo);
 
-    boolean canProcessEntry(InventoryReport warReport, InventoryReport ampReport, Map<String, Object> extraInfo);
+    boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo);
+
+    Resource.Type resourceType();
 }

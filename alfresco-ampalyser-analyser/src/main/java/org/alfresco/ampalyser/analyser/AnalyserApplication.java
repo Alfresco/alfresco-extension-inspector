@@ -9,6 +9,7 @@ package org.alfresco.ampalyser.analyser;
 
 import java.io.File;
 
+import org.alfresco.ampalyser.analyser.service.AnalyserService;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
@@ -23,6 +24,8 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
