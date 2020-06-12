@@ -19,22 +19,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.ExitCodeExceptionMapper;
+import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class InventoryApplication implements ApplicationRunner
+public class InventoryApplication implements ApplicationRunner, ExitCodeGenerator
 {
     private static final Logger logger = LoggerFactory.getLogger(InventoryApplication.class);
 
     private static final String OUTPUT_ARG = "o";
 
+    private static final int EXIT_CODE_EXCEPTION = 1;
+
     @Autowired
     private InventoryService inventoryService;
 
+    private int exitCode = 0;
+
     public static void main(String[] args)
     {
-        SpringApplication.run(InventoryApplication.class, args);
+        System.exit(SpringApplication.exit(SpringApplication.run(InventoryApplication.class, args)));
     }
 
     @Override
@@ -44,6 +51,7 @@ public class InventoryApplication implements ApplicationRunner
         {
             logger.error("Missing war file.");
             printUsage();
+            setExceptionExitCode();
             return;
         }
         String warPath = args.getNonOptionArgs().get(0);
@@ -51,20 +59,14 @@ public class InventoryApplication implements ApplicationRunner
         {
             logger.error("The war file is not valid.");
             printUsage();
+            setExceptionExitCode();
             return;
         }
 
-        try
-        {
-            String reportPath = getOutputReportPath(args, warPath);
-            // TODO: Make it a bean and inject it?
-            InventoryOutput output = new JSONInventoryOutput(warPath, reportPath);
-            inventoryService.generateInventoryReport(warPath, output);
-        }
-        catch (Exception e)
-        {
-            logger.error(e.getLocalizedMessage(), e);
-        }
+        String reportPath = getOutputReportPath(args, warPath);
+        // TODO: Make it a bean and inject it?
+        InventoryOutput output = new JSONInventoryOutput(warPath, reportPath);
+        inventoryService.generateInventoryReport(warPath, output);
     }
 
     private boolean isWarValid(String warPath)
@@ -83,5 +85,34 @@ public class InventoryApplication implements ApplicationRunner
     {
         System.out.println("Usage:");
         System.out.println("java -jar alfresco-ampalyser-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
+    }
+
+    @Bean
+    ExitCodeExceptionMapper exitCodeToExceptionMapper()
+    {
+        return exception -> {
+            // Set specific exit codes based on the exception type
+
+            // Default exit code
+            return EXIT_CODE_EXCEPTION;
+        };
+    }
+
+    /**
+     * @return the code 1 if an exception occurs. Otherwise, on a clean exit, it
+     *         provides 0 as the exit code.
+     */
+    @Override
+    public int getExitCode()
+    {
+        return exitCode;
+    }
+
+    /**
+     * Set the exit code to default exception exit code.
+     */
+    private void setExceptionExitCode()
+    {
+        this.exitCode = EXIT_CODE_EXCEPTION;
     }
 }
