@@ -29,7 +29,7 @@ public class FileInventoryWorker implements InventoryWorker
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        return List.of(new FileResource(zipEntry.getName(), definingObject));
+        return List.of(new FileResource("/" + zipEntry.getName(), "/" + definingObject));
     }
 
     @Override

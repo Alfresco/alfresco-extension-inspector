@@ -46,8 +46,8 @@ public class FileInventoryWorkerTest
         assertTrue(resourceList.get(0) instanceof FileResource);
 
         assertEquals(Resource.Type.FILE, resourceList.get(0).getType());
-        assertEquals(entry.getName(), resourceList.get(0).getId());
-        assertEquals(entry.getName(), resourceList.get(0).getDefiningObject());
+        assertEquals("/" + entry.getName(), resourceList.get(0).getId());
+        assertEquals("/" + entry.getName(), resourceList.get(0).getDefiningObject());
     }
 
     @Test
