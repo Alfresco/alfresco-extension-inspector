@@ -8,9 +8,10 @@
 package org.alfresco.ampalyser.analyser;
 
 import java.io.File;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
 import org.apache.commons.io.FilenameUtils;
@@ -42,7 +43,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     private static final int EXIT_CODE_EXCEPTION = 1;
 
     @Autowired
-    private WarInventoryReportStore inventoryStore;
+    private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
     @Autowired
     private AnalyserService analyserService;
 
@@ -73,8 +74,8 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        final String targetRange = args.getOptionValues("target").get(0);
-        if (inventoryStore.knownVersions(targetRange).isEmpty())
+        final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
+        if (versions.isEmpty())
         {
             logger.error("The target ACS version was not recognised.");
             printUsage();
@@ -82,7 +83,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, targetRange);
+        analyserService.analyse(extensionPath, versions);
     }
 
     private static boolean isExtensionValid(final String warPath)

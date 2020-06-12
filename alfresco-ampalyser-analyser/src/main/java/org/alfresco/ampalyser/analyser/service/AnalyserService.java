@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -44,15 +44,12 @@ public class AnalyserService
     @Autowired
     private WarComparatorService warComparatorService;
 
-    public void analyse(final String ampPath, final String alfrescoVersionRange)
+    public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
 
-        // compare with all the requested wars and build a collection with the results:
-        final Set<String> versions = warInventoryStore.knownVersions(alfrescoVersionRange);
-
-        final Map<String, List<Conflict>> conflictsPerWarVersion = versions
+        final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
             .collect(toMap(identity(), v -> warComparatorService.findConflicts(
                 ampInventory,
