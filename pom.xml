@@ -56,6 +56,4 @@
         <module>alfresco-ampalyser-commons</module>
         <module>alfresco-ampalyser-test</module>
     </modules>
-
-    
 </project>

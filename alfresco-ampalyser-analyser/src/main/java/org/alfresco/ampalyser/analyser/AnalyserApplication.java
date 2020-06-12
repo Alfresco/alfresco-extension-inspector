@@ -7,54 +7,125 @@
  */
 package org.alfresco.ampalyser.analyser;
 
+import java.io.File;
+
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
+import org.alfresco.ampalyser.inventory.InventoryApplication;
+import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.ExitCodeExceptionMapper;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication
-public class AnalyserApplication implements ExitCodeGenerator
+@ComponentScan(
+    basePackages = {"org.alfresco.ampalyser.inventory", "org.alfresco.ampalyser.analyser"},
+    excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {AlfrescoWarInventory.class, InventoryApplication.class })
+    })
+public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
 {
-	private static final int EXIT_CODE_EXCEPTION = 1;
+    private static final Logger logger = LoggerFactory.getLogger(AnalyserApplication.class);
 
-	private int exitCode = 0;
+    private static final int EXIT_CODE_EXCEPTION = 1;
 
-	public static void main(String[] args) {
-		System.exit(SpringApplication.exit(SpringApplication.run(AnalyserApplication.class, args)));
-	}
+    @Autowired
+    private WarInventoryReportStore inventoryStore;
+    @Autowired
+    private AnalyserService analyserService;
 
-	@Bean
-	public ObjectMapper objectMapper()
-	{
-		return new ObjectMapper();
-	}
+    private int exitCode = 0;
 
-	@Bean
-	ExitCodeExceptionMapper exitCodeToExceptionMapper()
-	{
-		return exception -> {
-			// Set specific exit codes based on the exception type
+    public static void main(String[] args)
+    {
+        System.exit(SpringApplication.exit(SpringApplication.run(AnalyserApplication.class, args)));
+    }
 
-			// Default exit code
-			return 1;
-		};
-	}
+    @Override
+    public void run(ApplicationArguments args) throws Exception
+    {
+        if (args.getNonOptionArgs().isEmpty())
+        {
+            logger.error("Missing extension file.");
+            printUsage();
+            setExceptionExitCode();
+            return;
+        }
 
-	/**
-	 * @return the code 1 if an exception occurs. Otherwise, on a clean exit, it
-	 *         provides 0 as the exit code.
-	 */
-	@Override
-	public int getExitCode()
-	{
-		return exitCode;
-	}
+        final String extensionPath = args.getNonOptionArgs().get(0);
+        if (!isExtensionValid(extensionPath))
+        {
+            logger.error("The extension file is not valid.");
+            printUsage();
+            setExceptionExitCode();
+            return;
+        }
 
-	/**
-	 * Set the exit code to default exception exit code.
+        final String targetRange = args.getOptionValues("target").get(0);
+        if (inventoryStore.knownVersions(targetRange).isEmpty())
+        {
+            logger.error("The target ACS version was not recognised.");
+            printUsage();
+            setExceptionExitCode();
+            return;
+        }
+
+        analyserService.analyse(extensionPath, targetRange);
+    }
+
+    private static boolean isExtensionValid(final String warPath)
+    {
+        return new File(warPath).exists() &&
+               (FilenameUtils.getExtension(warPath).equalsIgnoreCase("amp") ||
+                FilenameUtils.getExtension(warPath).equalsIgnoreCase("jar"));
+    }
+
+    private static void printUsage()
+    {
+        System.out.println("Usage:");
+        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]]");
+    }
+
+    @Bean
+    public ObjectMapper objectMapper()
+    {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    ExitCodeExceptionMapper exitCodeToExceptionMapper()
+    {
+        return exception -> {
+            // Set specific exit codes based on the exception type
+
+            // Default exit code
+            return 1;
+        };
+    }
+
+    /**
+     * @return the code 1 if an exception occurs. Otherwise, on a clean exit, it
+     * provides 0 as the exit code.
+     */
+    @Override
+    public int getExitCode()
+    {
+        return exitCode;
+    }
+
+    /**
+     * Set the exit code to default exception exit code.
 	 */
 	private void setExceptionExitCode()
 	{
