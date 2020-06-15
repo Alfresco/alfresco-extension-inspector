@@ -45,8 +45,8 @@ public class ClasspathElementInventoryWorkerTest
         assertTrue(resourceList.get(0) instanceof ClasspathElementResource);
 
         assertEquals(Resource.Type.CLASSPATH_ELEMENT, resourceList.get(0).getType());
-        assertEquals("TestEntry.txt", resourceList.get(0).getId());
-        assertEquals(entry.getName(), resourceList.get(0).getDefiningObject());
+        assertEquals("/TestEntry.txt", resourceList.get(0).getId());
+        assertEquals("/" + entry.getName(), resourceList.get(0).getDefiningObject());
     }
 
     @Test

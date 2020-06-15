@@ -8,8 +8,8 @@
 
 package org.alfresco.ampalyser.inventory;
 
+import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -81,7 +81,7 @@ public class InventoryReportTest
         String outputPath = "out/folder";
         JSONInventoryOutput output = new JSONInventoryOutput(warPath, outputPath);
 
-        assertEquals(Path.of(outputPath).toString() + File.separator + "alfresco.inventory.json", output.getOutputPath().toString());
+        assertEquals(Path.of(outputPath).toString() + separator + "alfresco.inventory.json", output.getOutputPath().toString());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class InventoryReportTest
         JSONInventoryOutput output = new JSONInventoryOutput(warPath, outputPath);
 
         // Build expected output path
-        String expectedOutputPath =  Path.of(outputPath).toString() + File.separator + "alfresco.inventory.json";
+        String expectedOutputPath = Path.of(outputPath).toString() + separator + "alfresco.inventory.json";
 
         assertEquals(expectedOutputPath, output.getOutputPath().toString());
     }
@@ -169,7 +169,7 @@ public class InventoryReportTest
         String outputPath = "target";
         JSONInventoryOutput output = new JSONInventoryOutput(warPath, outputPath);
 
-        assertEquals("target" + File.separator + "alfresco.inventory.json", output.getOutputPath().toString());
+        assertEquals("target" + separator + "alfresco.inventory.json", output.getOutputPath().toString());
 
         //Generate the report
         output.generateOutput(new InventoryReport());

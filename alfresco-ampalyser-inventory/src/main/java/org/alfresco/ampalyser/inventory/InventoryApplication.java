@@ -69,19 +69,19 @@ public class InventoryApplication implements ApplicationRunner, ExitCodeGenerato
         inventoryService.generateInventoryReport(warPath, output);
     }
 
-    private boolean isWarValid(String warPath)
+    private static boolean isWarValid(String warPath)
     {
         return FilenameUtils.getExtension(warPath).equalsIgnoreCase("war") &&
                 new File(warPath).exists();
     }
 
-    private String getOutputReportPath(ApplicationArguments args, String warPath) throws Exception
+    private static String getOutputReportPath(ApplicationArguments args, String warPath) throws Exception
     {
         return args.containsOption(OUTPUT_ARG) && !args.getOptionValues(OUTPUT_ARG).isEmpty() ?
                 args.getOptionValues(OUTPUT_ARG).get(0) : "";
     }
 
-    private void printUsage()
+    private static void printUsage()
     {
         System.out.println("Usage:");
         System.out.println("java -jar alfresco-ampalyser-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
