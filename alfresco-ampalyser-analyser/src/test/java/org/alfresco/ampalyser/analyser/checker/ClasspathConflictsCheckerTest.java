@@ -69,7 +69,7 @@ class ClasspathConflictsCheckerTest
             )
         ));
 
-        final List<Conflict> actualResult = checker.processInternal(warResources, ampResources,
+        final List<Conflict> actualResult = checker.processInternal(ampResources, warResources,
             Map.of(ALFRESCO_VERSION, "6.0.0"));
         assertEquals(expectedResult.size(), actualResult.size());
         assertTrue(actualResult.containsAll(expectedResult));
