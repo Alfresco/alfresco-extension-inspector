@@ -76,7 +76,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
         }
 
         final List<String> beanWhitelistPaths = args.getOptionValues("beanWhitelist");
-        String beanWhitelist = beanWhitelistPaths == null ? null : beanWhitelistPaths.get(0);
+        String beanWhitelist = beanWhitelistPaths == null || beanWhitelistPaths.isEmpty() ? null : beanWhitelistPaths.get(0);
         if (beanWhitelistPaths != null && beanWhitelistPaths.size() > 1)
         {
             logger.error("Multiple Bean Overriding Whitelists provided.");
