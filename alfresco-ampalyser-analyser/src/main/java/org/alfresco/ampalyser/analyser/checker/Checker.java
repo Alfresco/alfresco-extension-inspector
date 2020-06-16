@@ -27,7 +27,7 @@ public interface Checker
 
     default List<Conflict> process(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        if (canProcessEntry(ampResources, warResources, extraInfo))
+        if (canProcess(ampResources, warResources, extraInfo))
         {
             return processInternal(ampResources, warResources, extraInfo);
         }
@@ -36,7 +36,7 @@ public interface Checker
 
     List<Conflict> processInternal(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo);
 
-    boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo);
+    boolean canProcess(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo);
 
     Resource.Type resourceType();
 }

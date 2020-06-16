@@ -68,11 +68,11 @@ public class BeanOverwritingChecker implements Checker
     }
 
     @Override
-    public boolean canProcessEntry(Collection<Resource> ampResources,
+    public boolean canProcess(Collection<Resource> ampResources,
         Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        return ampResources.stream().filter(r -> BEAN != r.getType()).findAny().isEmpty()
-            && warResources.stream().filter(r -> BEAN != r.getType()).findAny().isEmpty()
+        return ampResources.stream().anyMatch(r -> BEAN == r.getType())
+            && warResources.stream().anyMatch(r -> BEAN == r.getType())
             && extraInfo != null
             && extraInfo.get(BEAN_OVERRIDING_WHITELIST) != null;
     }

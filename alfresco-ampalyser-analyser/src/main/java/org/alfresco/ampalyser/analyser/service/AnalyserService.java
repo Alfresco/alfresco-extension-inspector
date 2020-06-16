@@ -29,11 +29,13 @@ import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.inventory.service.InventoryService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,6 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AnalyserService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyserService.class);
+
+    public static final String EXTENSION_FILE_TYPE = "EXTENSION_FILE_TYPE";
 
     @Autowired
     private InventoryService inventoryService;
@@ -58,6 +62,8 @@ public class AnalyserService
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
+        List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
+        Set<String> beanOverridingWhiteList = loadBeanOverridingWhiteList(whitelistFilePath);
 
         final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
@@ -66,13 +72,23 @@ public class AnalyserService
                 warInventoryStore.retrieve(v),
                 Map.of(
                     ALFRESCO_VERSION, v,
-                    FILE_MAPPING_NAME, findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE)),
-                    BEAN_OVERRIDING_WHITELIST, loadBeanOverridingWhiteList(whitelistFilePath)
+                    FILE_MAPPING_NAME, fileMappingFiles,
+                    BEAN_OVERRIDING_WHITELIST, beanOverridingWhiteList,
+                    EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
                 ))
             ));
 
         //TODO ACS-192 Process results and generate output, e.g.
         // > /foo/bar.jar - conflicting with 4.2.0, 4.2.1, 4.2.3, 4.2.4, 4.2.5
+        try
+        {
+            objectMapper.writeValueAsString(conflictsPerWarVersion);
+        }
+        catch (JsonProcessingException e)
+        {
+            LOGGER.error("Cannot perform temporary output.");
+        }
+        // end of TODO
     }
 
     /**

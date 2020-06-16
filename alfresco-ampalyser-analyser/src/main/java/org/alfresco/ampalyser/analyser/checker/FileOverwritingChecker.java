@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.util.Collection;
@@ -106,11 +107,12 @@ public class FileOverwritingChecker implements Checker
     }
 
     @Override
-    public boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
+    public boolean canProcess(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        return ampResources.stream().filter(r -> FILE != r.getType()).findAny().isEmpty()
-            && warResources.stream().filter(r -> FILE != r.getType()).findAny().isEmpty()
-            && extraInfo != null
+        return extraInfo != null
+            && "amp".equalsIgnoreCase((String) extraInfo.get(EXTENSION_FILE_TYPE))
+            && ampResources.stream().anyMatch(r -> FILE == r.getType())
+            && warResources.stream().anyMatch(r -> FILE == r.getType())
             && extraInfo.get(FILE_MAPPING_NAME) != null;
     }
 
