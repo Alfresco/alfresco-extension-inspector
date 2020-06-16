@@ -108,7 +108,10 @@ public class FileOverwritingChecker implements Checker
     @Override
     public boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        return true;
+        return ampResources.stream().filter(r -> FILE != r.getType()).findAny().isEmpty()
+            && warResources.stream().filter(r -> FILE != r.getType()).findAny().isEmpty()
+            && extraInfo != null
+            && extraInfo.get(FILE_MAPPING_NAME) != null;
     }
 
     @Override
