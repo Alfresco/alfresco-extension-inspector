@@ -1,7 +1,7 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
+import static java.util.Set.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
@@ -46,6 +46,9 @@ public class AnalyserService
 
     public static final String EXTENSION_FILE_TYPE = "EXTENSION_FILE_TYPE";
 
+    // Default white list
+    private static final Set<String> DEFAULT_WHITE_LIST = of();
+
     @Autowired
     private InventoryService inventoryService;
 
@@ -82,7 +85,7 @@ public class AnalyserService
         // > /foo/bar.jar - conflicting with 4.2.0, 4.2.1, 4.2.3, 4.2.4, 4.2.5
         try
         {
-            objectMapper.writeValueAsString(conflictsPerWarVersion);
+            System.out.println(objectMapper.writeValueAsString(conflictsPerWarVersion));
         }
         catch (JsonProcessingException e)
         {
@@ -147,7 +150,7 @@ public class AnalyserService
     {
         if (whitelistFilePath == null)
         {
-            return emptySet();
+            return DEFAULT_WHITE_LIST;
         }
 
         try
