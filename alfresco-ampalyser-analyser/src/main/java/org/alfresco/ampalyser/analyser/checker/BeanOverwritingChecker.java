@@ -58,15 +58,13 @@ public class BeanOverwritingChecker implements Checker
             }
         }
 
-        List<Conflict> c = beanOverridingLists.entrySet()
+        return beanOverridingLists.entrySet()
             .stream()
             .flatMap(ampR -> ampR.getValue().stream().map(warR -> new BeanOverwriteConflict(
                 ampR.getKey(),
                 warR,
                 (String) extraInfo.get(ALFRESCO_VERSION))))
             .collect(toList());
-
-        return c;
     }
 
     @Override
