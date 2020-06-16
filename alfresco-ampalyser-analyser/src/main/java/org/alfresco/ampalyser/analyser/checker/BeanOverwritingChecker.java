@@ -7,12 +7,11 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,33 +37,18 @@ public class BeanOverwritingChecker implements Checker
     public List<Conflict> processInternal(Collection<Resource> ampResources,
         Collection<Resource> warResources, Map<String, Object> extraInfo)
     {
-        Set<String> beanOverridingWhitelist = (Set<String>) extraInfo.get(BEAN_OVERRIDING_WHITELIST);
+        Set<String> whitelist = (Set<String>) extraInfo.get(BEAN_OVERRIDING_WHITELIST);
         Map<Resource, List<Resource>> beanOverridingLists = new HashMap<>();
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
-        for (Resource ampR : ampResources)
-        {
-            List<Resource> resourceInConflictWithAmpR = new LinkedList<>();
-            for (Resource warR : warResources)
-            {
-                if (warR.getId().equals(ampR.getId()) && !beanOverridingWhitelist.contains(ampR.getId()))
-                {
-                    resourceInConflictWithAmpR.add(warR);
-                }
-            }
-            if (!resourceInConflictWithAmpR.isEmpty())
-            {
-                beanOverridingLists.put(ampR, resourceInConflictWithAmpR);
-            }
-        }
-
-        return beanOverridingLists.entrySet()
+        return ampResources
             .stream()
-            .flatMap(ampR -> ampR.getValue().stream().map(warR -> new BeanOverwriteConflict(
-                ampR.getKey(),
-                warR,
-                (String) extraInfo.get(ALFRESCO_VERSION))))
-            .collect(toList());
+            .filter(ar -> !whitelist.contains(ar))
+            .flatMap(ar -> warResources
+                .stream()
+                .filter(wr -> wr.getId().equals(ar.getId()))
+                .map(wr -> new BeanOverwriteConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
+            .collect(toUnmodifiableList());
     }
 
     @Override
