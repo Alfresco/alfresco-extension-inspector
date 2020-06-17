@@ -37,11 +37,10 @@ public class ClasspathConflictsChecker implements Checker
     }
 
     @Override
-    public boolean canProcessEntry(Collection<Resource> ampResources, Collection<Resource> warResources,
+    public boolean canProcess(Collection<Resource> ampResources, Collection<Resource> warResources,
         Map<String, Object> extraInfo)
     {
-        return !isEmpty(ampResources) &&
-               !isEmpty(warResources);
+        return !isEmpty(ampResources) && !isEmpty(warResources);
     }
 
     @Override
