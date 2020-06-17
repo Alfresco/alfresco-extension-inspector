@@ -1,13 +1,16 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Set.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.BEAN_OVERRIDING_WHITELIST;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -25,15 +29,25 @@ import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.inventory.service.InventoryService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class AnalyserService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyserService.class);
+
+    public static final String EXTENSION_FILE_TYPE = "EXTENSION_FILE_TYPE";
+
+    // Default white list
+    private static final Set<String> DEFAULT_WHITE_LIST = of();
 
     @Autowired
     private InventoryService inventoryService;
@@ -44,10 +58,15 @@ public class AnalyserService
     @Autowired
     private WarComparatorService warComparatorService;
 
-    public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions)
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions, final String whitelistFilePath)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
+        List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
+        Set<String> beanOverridingWhiteList = loadBeanOverridingWhiteList(whitelistFilePath);
 
         final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
@@ -56,12 +75,23 @@ public class AnalyserService
                 warInventoryStore.retrieve(v),
                 Map.of(
                     ALFRESCO_VERSION, v,
-                    FILE_MAPPING_NAME, findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE))
+                    FILE_MAPPING_NAME, fileMappingFiles,
+                    BEAN_OVERRIDING_WHITELIST, beanOverridingWhiteList,
+                    EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
                 ))
             ));
 
         //TODO ACS-192 Process results and generate output, e.g.
         // > /foo/bar.jar - conflicting with 4.2.0, 4.2.1, 4.2.3, 4.2.4, 4.2.5
+        try
+        {
+            System.out.println(objectMapper.writeValueAsString(conflictsPerWarVersion));
+        }
+        catch (JsonProcessingException e)
+        {
+            LOGGER.error("Cannot perform temporary output.");
+        }
+        // end of TODO
     }
 
     /**
@@ -91,7 +121,8 @@ public class AnalyserService
             ZipFile zipFile = new ZipFile(ampPath);
             for (Resource resource : mappingResources)
             {
-                ZipEntry entry = zipFile.getEntry(resource.getId());
+                // Trim the first slash when looking in the .zip
+                ZipEntry entry = zipFile.getEntry(resource.getId().substring(1));
                 if (FILE_MAPPING_NAME.equals(entry.getName()))
                 {
                     InputStream is = zipFile.getInputStream(entry);
@@ -108,5 +139,28 @@ public class AnalyserService
         }
 
         return foundProperties;
+    }
+
+    /**
+     * Reads and loads whitelist for the beans in a war that can be overridden when an .amp is applied
+     *
+     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     */
+    private Set<String> loadBeanOverridingWhiteList(String whitelistFilePath)
+    {
+        if (whitelistFilePath == null)
+        {
+            return DEFAULT_WHITE_LIST;
+        }
+
+        try
+        {
+            return objectMapper.readValue(new FileInputStream(whitelistFilePath), new TypeReference<>() {});
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
+            throw new RuntimeException("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
+        }
     }
 }
