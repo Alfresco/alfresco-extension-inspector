@@ -103,7 +103,7 @@ public abstract class AbstractConflict implements Conflict
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, ampResourceInConflict, warResourceInConflict);
+        return Objects.hash(type, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
     }
 
     @Override
@@ -114,7 +114,8 @@ public abstract class AbstractConflict implements Conflict
         AbstractConflict that = (AbstractConflict) o;
         return type == that.type &&
             Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
-            Objects.equals(warResourceInConflict, that.warResourceInConflict);
+            Objects.equals(warResourceInConflict, that.warResourceInConflict) &&
+            Objects.equals(alfrescoVersion, that.alfrescoVersion);
     }
 
     @Override
@@ -125,6 +126,7 @@ public abstract class AbstractConflict implements Conflict
             ", id='" + id + '\'' +
             ", ampResourceInConflict='" + ampResourceInConflict + '\'' +
             ", warResourceInConflict='" + warResourceInConflict + '\'' +
+            ", alfrescoVersion='" + alfrescoVersion + '\'' +
             '}';
     }
 }

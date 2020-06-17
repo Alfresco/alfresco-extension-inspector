@@ -29,11 +29,11 @@ public class BeanOverwritingCheckerTest
         Map<Resource.Type, List<Resource>> ampResources = new HashMap<>();
 
         // This one should be allowed by the whitelist
-        BeanResource ampBR1 = new BeanResource("bean1", "context.xml");
+        BeanResource ampBR1 = new BeanResource("bean1", "context.xml", "org.alfresco.Dummy");
         // This one should generate multiple conflicts
-        BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml");
+        BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml", "org.alfresco.Dummy");
         // This one should be ok as it doesn't overwrite anything
-        BeanResource ampBR3 = new BeanResource("bean3", "amp_context.xml");
+        BeanResource ampBR3 = new BeanResource("bean3", "amp_context.xml", "org.alfresco.Dummy");
         ampResources.put(BEAN, List.of(ampBR1, ampBR2, ampBR3));
 
         ampReport.addResources(ampResources);
@@ -41,10 +41,10 @@ public class BeanOverwritingCheckerTest
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
         Map<Resource.Type, List<Resource>> warResources = new HashMap<>();
-        BeanResource warBR1 = new BeanResource("bean1", "context.xml");
-        BeanResource warBR21 = new BeanResource("bean2", "war_context1.xml");
-        BeanResource warBR22 = new BeanResource("bean2", "war_context2.xml");
-        BeanResource warBR3 = new BeanResource("bean4", "war_main_context.xml");
+        BeanResource warBR1 = new BeanResource("bean1", "context.xml", "org.alfresco.Dummy");
+        BeanResource warBR21 = new BeanResource("bean2", "war_context1.xml", "org.alfresco.Dummy");
+        BeanResource warBR22 = new BeanResource("bean2", "war_context2.xml", "org.alfresco.Dummy");
+        BeanResource warBR3 = new BeanResource("bean4", "war_main_context.xml", "org.alfresco.Dummy");
         warResources.put(BEAN, List.of(warBR1, warBR21, warBR22, warBR3));
 
         warReport.addResources(warResources);

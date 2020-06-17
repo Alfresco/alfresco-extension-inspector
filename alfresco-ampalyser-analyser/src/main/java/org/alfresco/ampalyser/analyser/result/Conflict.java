@@ -18,12 +18,14 @@ public interface Conflict
     enum Type
     {
         FILE_OVERWRITE,
-        BEAN_OVERWRITE;
+        BEAN_OVERWRITE,
+        RESTRICTED_BEAN_CLASS;
 
         public static class Constants
         {
             public static final String FILE_OVERWRITE= "FILE_OVERWRITE";
             public static final String BEAN_OVERWRITE= "BEAN_OVERWRITE";
+            public static final String RESTRICTED_BEAN_CLASS= "RESTRICTED_BEAN_CLASS";
         }
     }
 

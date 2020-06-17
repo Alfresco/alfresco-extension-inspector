@@ -111,8 +111,8 @@ public class FileOverwritingChecker implements Checker
     {
         return extraInfo != null
             && "amp".equalsIgnoreCase((String) extraInfo.get(EXTENSION_FILE_TYPE))
-            && ampResources.stream().anyMatch(r -> FILE == r.getType())
-            && warResources.stream().anyMatch(r -> FILE == r.getType())
+            && ampResources.stream().allMatch(r -> FILE == r.getType())
+            && warResources.stream().allMatch(r -> FILE == r.getType())
             && extraInfo.get(FILE_MAPPING_NAME) != null;
     }
 
