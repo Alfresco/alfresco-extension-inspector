@@ -43,7 +43,7 @@ public class BeanOverwritingChecker implements Checker
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
         return ampResources
             .stream()
-            .filter(ar -> !whitelist.contains(ar))
+            .filter(ar -> !whitelist.contains(ar.getId()))
             .flatMap(ar -> warResources
                 .stream()
                 .filter(wr -> wr.getId().equals(ar.getId()))
