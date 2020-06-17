@@ -19,11 +19,13 @@ public interface Conflict
     {
         FILE_OVERWRITE,
         CLASSPATH_CONFLICT,
+        BEAN_OVERWRITE,
         ;
 
         public static class Constants
         {
             public static final String FILE_OVERWRITE= "FILE_OVERWRITE";
+            public static final String BEAN_OVERWRITE= "BEAN_OVERWRITE";
         }
     }
 

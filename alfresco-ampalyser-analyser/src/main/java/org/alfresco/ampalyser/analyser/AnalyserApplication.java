@@ -8,6 +8,7 @@
 package org.alfresco.ampalyser.analyser;
 
 import java.io.File;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @SpringBootApplication
 @ComponentScan(
@@ -74,6 +76,16 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
+        final List<String> beanWhitelistPaths = args.getOptionValues("beanWhitelist");
+        String beanWhitelist = beanWhitelistPaths == null || beanWhitelistPaths.isEmpty() ? null : beanWhitelistPaths.get(0);
+        if (beanWhitelistPaths != null && beanWhitelistPaths.size() > 1)
+        {
+            logger.error("Multiple Bean Overriding Whitelists provided.");
+            printUsage();
+            setExceptionExitCode();
+            return;
+        }
+
         final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
         if (versions.isEmpty())
         {
@@ -83,7 +95,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, versions);
+        analyserService.analyse(extensionPath, versions, beanWhitelist);
     }
 
     private static boolean isExtensionValid(final String warPath)
@@ -96,13 +108,15 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     private static void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]]");
+        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] [--beanWhitelist=/path/to/bean_overriding_whitelist.json]");
     }
 
     @Bean
     public ObjectMapper objectMapper()
     {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        return objectMapper;
     }
 
     @Bean
