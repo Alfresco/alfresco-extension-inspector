@@ -12,11 +12,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.ampalyser.command.CommandAnalyserImpl;
 import org.alfresco.ampalyser.command.CommandExecutor;
-import org.alfresco.ampalyser.command.CommandImpl;
+import org.alfresco.ampalyser.command.CommandInventoryImpl;
 import org.alfresco.ampalyser.command.CommandReceiver;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.models.AnalyserCommand;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.models.InventoryCommand;
 import org.alfresco.ampalyser.util.JsonInventoryParser;
@@ -28,6 +30,8 @@ public class AmpalyserClient
 {
         @Autowired
         private InventoryCommand cmd;
+        @Autowired
+        private AnalyserCommand cmdAnalyser;
         @Autowired
         private CommandReceiver commReceiver;
         @Autowired
@@ -44,10 +48,33 @@ public class AmpalyserClient
                 {
                         // Add additional inventory command options
                         cmd.addCommandOptions(cmdOptions);
-                        CommandImpl invCmd = new CommandImpl(commReceiver, cmd);
+                        CommandInventoryImpl invCmd = new CommandInventoryImpl(commReceiver, cmd);
 
                         System.out.println("Running command: " + cmd.toString());
                         cmdOut = executor.execute(invCmd);
+                }
+                finally
+                {
+                        cmd.getCommandOptions().clear();
+                        cmd.addCommandOptions(commandOptions);
+                }
+
+                return cmdOut;
+        }
+
+        public CommandOutput runAnalyserCommand(List<String> cmdOptions)
+        {
+                CommandOutput cmdOut;
+                List<String> commandOptions = new ArrayList<>(cmdAnalyser.getCommandOptions());
+
+                try
+                {
+                        // Add additional inventory command options
+                        cmdAnalyser.addCommandOptions(cmdOptions);
+                        CommandAnalyserImpl analyserCmd = new CommandAnalyserImpl(commReceiver, cmdAnalyser);
+
+                        System.out.println("Running command: " + cmdAnalyser.toString());
+                        cmdOut = executor.execute(analyserCmd);
                 }
                 finally
                 {
