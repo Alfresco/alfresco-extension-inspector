@@ -28,7 +28,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
         @Test
         public void runCommandWithOutput()
         {
-                String ampResourcePath = TestResource.getTestResourcePath("alfresco-mm-repo-1.4.1-808.amp");
+                String ampResourcePath = TestResource.getTestResourcePath("ampTest.amp");
                 String version = "6.1.1";
                 List<String> cmdOptions = List.of(ampResourcePath, "--target=" + version);
 
@@ -37,7 +37,6 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
                 System.out.println(cmdOut.getOutput());
 
                 assertEquals(cmdOut.getExitCode(), 0);
-
         }
 
         @Test
