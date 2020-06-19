@@ -1,6 +1,5 @@
 package org.alfresco.ampalyser.analyser.comparators;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.util.Collection;
@@ -24,7 +23,6 @@ public class WarComparatorService
         // Call all checkers and return the found list of conflicts
         return checkers
             .stream()
-            .sorted(comparing(Checker::resourceType))
             .map(c -> c.process(
                 ampInventory,
                 warInventory,

@@ -11,25 +11,23 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.InventoryReport;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClasspathConflictsChecker implements Checker
 {
     @Override
-    public List<Conflict> processInternal(Collection<Resource> ampResources, Collection<Resource> warResources,
-        Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
-        return ampResources
+        return ampInventory.getResources().get(CLASSPATH_ELEMENT)
             .stream()
-            .flatMap(ar -> warResources
+            .flatMap(ar -> warInventory.getResources().get(CLASSPATH_ELEMENT)
                 .stream()
                 .filter(wr -> wr.getId().equals(ar.getId()))
                 .map(wr -> new ClasspathConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
@@ -37,15 +35,9 @@ public class ClasspathConflictsChecker implements Checker
     }
 
     @Override
-    public boolean canProcess(Collection<Resource> ampResources, Collection<Resource> warResources,
-        Map<String, Object> extraInfo)
+    public boolean canProcess(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
-        return !isEmpty(ampResources) && !isEmpty(warResources);
-    }
-
-    @Override
-    public Resource.Type resourceType()
-    {
-        return CLASSPATH_ELEMENT;
+        return !isEmpty(ampInventory.getResources().get(CLASSPATH_ELEMENT)) &&
+            !isEmpty(warInventory.getResources().get(CLASSPATH_ELEMENT));
     }
 }

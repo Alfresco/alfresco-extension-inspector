@@ -49,7 +49,7 @@ public class FileOverwritingChecker implements Checker
     );
 
     @Override
-    public List<Conflict> processInternal(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         List<Conflict> conflicts = new LinkedList<>();
         List<Properties> foundMappingProperties = (List<Properties>) extraInfo.get(FILE_MAPPING_NAME);

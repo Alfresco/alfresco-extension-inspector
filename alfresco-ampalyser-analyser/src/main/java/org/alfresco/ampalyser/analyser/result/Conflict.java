@@ -19,7 +19,7 @@ public interface Conflict
     {
         FILE_OVERWRITE,
         BEAN_OVERWRITE,
-        RESTRICTED_BEAN_CLASS
+        RESTRICTED_BEAN_CLASS,
         CLASSPATH_CONFLICT;
 
         public static class Constants

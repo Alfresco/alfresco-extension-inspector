@@ -37,7 +37,7 @@ public class BeanRestrictedClassesChecker implements Checker
     public static final String WHITELIST_BEAN_RESTRICTED_CLASSES = "WHITELIST_BEAN_RESTRICTED_CLASSES";
 
     @Override
-    public List<Conflict> processInternal(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         // The list coming from the file the user provided
         Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_RESTRICTED_CLASSES);

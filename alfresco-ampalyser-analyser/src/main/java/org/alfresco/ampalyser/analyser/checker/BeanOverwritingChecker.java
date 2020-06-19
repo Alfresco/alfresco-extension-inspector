@@ -32,7 +32,7 @@ public class BeanOverwritingChecker implements Checker
     public static final String WHITELIST_BEAN_OVERRIDING = "WHITELIST_BEAN_OVERRIDING";
 
     @Override
-    public List<Conflict> processInternal(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_OVERRIDING);
 
