@@ -24,6 +24,7 @@ branches:
 
 stages:
   - build
+  - release
 
 
 jobs:
@@ -37,3 +38,9 @@ jobs:
       stage: build
       before_install: bash _ci/init.sh
       script: bash _ci/whitesource.sh
+
+    - name: "Release"
+      stage: release
+      if: commit_message ~= /\[trigger release\]/ AND branch ~= /^(master|support\/.+)$/
+      before_install: bash _ci/init.sh
+      script: bash _ci/release.sh

@@ -83,3 +83,11 @@ Example structure of the report:
 ```
 
 ## Analyser (TBD)
+
+
+
+## Build and release process
+
+For a complete walk-through check out the
+[build-and-release-101.MD](docs/build-and-release-101.md)
+under the `docs` folder.
