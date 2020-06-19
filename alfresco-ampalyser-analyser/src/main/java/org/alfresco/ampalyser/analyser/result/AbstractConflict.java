@@ -113,9 +113,9 @@ public abstract class AbstractConflict implements Conflict
         if (o == null || getClass() != o.getClass()) return false;
         AbstractConflict that = (AbstractConflict) o;
         return type == that.type &&
-            Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
-            Objects.equals(warResourceInConflict, that.warResourceInConflict) &&
-            Objects.equals(alfrescoVersion, that.alfrescoVersion);
+               Objects.equals(ampResourceInConflict, that.ampResourceInConflict) &&
+               Objects.equals(warResourceInConflict, that.warResourceInConflict) &&
+               Objects.equals(alfrescoVersion, that.alfrescoVersion);
     }
 
     @Override
