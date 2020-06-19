@@ -47,32 +47,26 @@ public class FileOverwriteConflict extends AbstractConflict
     }
 
     @Override
-    public int hashCode()
-    {
-        return Objects.hash(getType(), getAmpResourceInConflict(), getWarResourceInConflict(), getUsedMapping());
-    }
-
-    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         FileOverwriteConflict that = (FileOverwriteConflict) o;
-        return getType() == that.getType() &&
-            Objects.equals(getAmpResourceInConflict(), that.getAmpResourceInConflict()) &&
-            Objects.equals(getWarResourceInConflict(), that.getWarResourceInConflict()) &&
-            Objects.equals(getUsedMapping(), that.getUsedMapping());
+        return Objects.equals(usedMapping, that.usedMapping);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(super.hashCode(), usedMapping);
     }
 
     @Override
     public String toString()
     {
         return "FileOverwriteConflict{" +
-            "type=" + getType() +
-            ", id='" + getId() + '\'' +
-            ", ampResourceInConflict='" + getAmpResourceInConflict() + '\'' +
-            ", warResourceInConflict='" + getWarResourceInConflict() + '\'' +
-            ", usedMapping='" + getUsedMapping() + '\'' +
-            '}';
+               "usedMapping=" + usedMapping +
+               "} " + super.toString();
     }
 }

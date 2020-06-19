@@ -9,8 +9,6 @@ package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 
-import java.util.Objects;
-
 import org.alfresco.ampalyser.model.Resource;
 
 /**
@@ -33,30 +31,8 @@ public class BeanOverwriteConflict extends AbstractConflict
     }
 
     @Override
-    public int hashCode()
-    {
-        return Objects.hash(getType(), getAmpResourceInConflict(), getWarResourceInConflict());
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BeanOverwriteConflict that = (BeanOverwriteConflict) o;
-        return getType() == that.getType() &&
-            Objects.equals(getAmpResourceInConflict(), that.getAmpResourceInConflict()) &&
-            Objects.equals(getWarResourceInConflict(), that.getWarResourceInConflict());
-    }
-
-    @Override
     public String toString()
     {
-        return "BeanOverwriteConflict{" +
-            "type=" + getType() +
-            ", id='" + getId() + '\'' +
-            ", ampResourceInConflict='" + getAmpResourceInConflict() + '\'' +
-            ", warResourceInConflict='" + getWarResourceInConflict() + '\'' +
-            '}';
+        return "BeanOverwriteConflict{} " + super.toString();
     }
 }

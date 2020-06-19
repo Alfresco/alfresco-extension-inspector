@@ -5,7 +5,6 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-
 package org.alfresco.ampalyser.model;
 
 import static java.util.Comparator.comparing;
@@ -16,6 +15,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import org.alfresco.ampalyser.commons.InventoryUtils;
+import org.alfresco.ampalyser.model.Resource.Type;
 
 public class InventoryReport
 {
@@ -25,7 +25,7 @@ public class InventoryReport
 
     private String schemaVersion;
     private String alfrescoVersion;
-    private Map<Resource.Type, List<Resource>> resources = new TreeMap<>(comparing(Enum::name));
+    private Map<Type, List<Resource>> resources = new TreeMap<>(comparing(Enum::name));
 
     public InventoryReport()
     {
@@ -52,17 +52,17 @@ public class InventoryReport
         this.alfrescoVersion = alfrescoVersion;
     }
 
-    public Map<Resource.Type, List<Resource>> getResources()
+    public Map<Type, List<Resource>> getResources()
     {
         return resources;
     }
 
-    public void setResources(Map<Resource.Type, List<Resource>> resources)
+    public void setResources(Map<Type, List<Resource>> resources)
     {
         this.resources = resources;
     }
 
-    public void addResources(Map<Resource.Type, List<Resource>> resources)
+    public void addResources(Map<Type, List<Resource>> resources)
     {
         resources.forEach((k, v) -> this.resources.merge(k, v, InventoryUtils::mergeLists));
     }
