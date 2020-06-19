@@ -76,15 +76,26 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        final List<String> beanWhitelistPaths = args.getOptionValues("beanWhitelist");
-        String beanWhitelist = beanWhitelistPaths == null || beanWhitelistPaths.isEmpty() ? null : beanWhitelistPaths.get(0);
-        if (beanWhitelistPaths != null && beanWhitelistPaths.size() > 1)
+        final List<String> beanOverridingWhitelistPaths = args.getOptionValues("whitelistBeanOverriding");
+        String whitelistBeanOverridingPath = beanOverridingWhitelistPaths == null || beanOverridingWhitelistPaths.isEmpty() ? null : beanOverridingWhitelistPaths.get(0);
+        if (beanOverridingWhitelistPaths != null && beanOverridingWhitelistPaths.size() > 1)
         {
             logger.error("Multiple Bean Overriding Whitelists provided.");
             printUsage();
             setExceptionExitCode();
             return;
         }
+
+        final List<String> beanRestrictedClassWhitelistPaths = args.getOptionValues("whitelistBeanRestrictedClasses");
+        String whitelistRestrictedClassesPath = beanRestrictedClassWhitelistPaths == null || beanRestrictedClassWhitelistPaths.isEmpty() ? null : beanRestrictedClassWhitelistPaths.get(0);
+        if (beanRestrictedClassWhitelistPaths != null && beanRestrictedClassWhitelistPaths.size() > 1)
+        {
+            logger.error("Multiple Bean Restricted Classes Whitelists provided.");
+            printUsage();
+            setExceptionExitCode();
+            return;
+        }
+
 
         final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
         if (versions.isEmpty())
@@ -95,7 +106,8 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, versions, beanWhitelist);
+        analyserService.analyse(extensionPath, versions,
+            whitelistBeanOverridingPath, whitelistRestrictedClassesPath);
     }
 
     private static boolean isExtensionValid(final String warPath)

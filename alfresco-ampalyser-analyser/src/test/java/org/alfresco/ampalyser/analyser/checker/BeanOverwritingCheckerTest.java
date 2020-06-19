@@ -1,6 +1,6 @@
 package org.alfresco.ampalyser.analyser.checker;
 
-import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.BEAN_OVERRIDING_WHITELIST;
+import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.junit.Assert.assertEquals;
 
@@ -49,11 +49,10 @@ public class BeanOverwritingCheckerTest
 
         warReport.addResources(warResources);
 
-        Map<String, Object> extraInfo = Map.of(
-            BEAN_OVERRIDING_WHITELIST, Set.of("bean1")
+        Map<String, Object> extraInfo = Map.of(WHITELIST_BEAN_OVERRIDING, Set.of("bean1")
             );
 
-        List<Conflict> conflicts = boChecker.process(ampReport.getResources().get(BEAN), warReport.getResources().get(BEAN), extraInfo);
+        List<Conflict> conflicts = boChecker.process(ampReport, warReport, extraInfo);
         assertEquals(2, conflicts.size());
 
         Conflict conflict1 = conflicts.get(0);

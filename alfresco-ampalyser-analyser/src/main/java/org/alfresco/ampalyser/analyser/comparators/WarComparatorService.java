@@ -24,8 +24,8 @@ public class WarComparatorService
         return checkers
             .stream()
             .map(c -> c.process(
-                ampInventory.getResources().get(c.resourceType()),
-                warInventory.getResources().get(c.resourceType()),
+                ampInventory,
+                warInventory,
                 extraInfo)
             )
             .flatMap(Collection::stream)

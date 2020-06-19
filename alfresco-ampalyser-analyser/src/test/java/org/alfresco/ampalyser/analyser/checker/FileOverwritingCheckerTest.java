@@ -50,7 +50,7 @@ public class FileOverwritingCheckerTest
         properties.putIfAbsent("include.default", "true");
         Map<String, Object> extraInfo = Map.of(FILE_MAPPING_NAME, List.of(properties));
 
-        List<Conflict> conflicts = foChecker.process(ampReport.getResources().get(FILE), warReport.getResources().get(FILE), extraInfo);
+        List<Conflict> conflicts = foChecker.process(ampReport, warReport, extraInfo);
         assertEquals(1, conflicts.size());
 
         Conflict conflict = conflicts.get(0);

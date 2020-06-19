@@ -10,15 +10,13 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.InventoryReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -31,20 +29,18 @@ public class BeanOverwritingChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanOverwritingChecker.class);
 
-    public static final String BEAN_OVERRIDING_WHITELIST = "BEAN_OVERRIDING_WHITELIST";
+    public static final String WHITELIST_BEAN_OVERRIDING = "WHITELIST_BEAN_OVERRIDING";
 
     @Override
-    public List<Conflict> processInternal(Collection<Resource> ampResources,
-        Collection<Resource> warResources, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
     {
-        Set<String> whitelist = (Set<String>) extraInfo.get(BEAN_OVERRIDING_WHITELIST);
-        Map<Resource, List<Resource>> beanOverridingLists = new HashMap<>();
+        Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_OVERRIDING);
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
-        return ampResources
+        return ampInventory.getResources().get(BEAN)
             .stream()
             .filter(ar -> !whitelist.contains(ar.getId()))
-            .flatMap(ar -> warResources
+            .flatMap(ar -> warInventory.getResources().get(BEAN)
                 .stream()
                 .filter(wr -> wr.getId().equals(ar.getId()))
                 .map(wr -> new BeanOverwriteConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
@@ -52,18 +48,9 @@ public class BeanOverwritingChecker implements Checker
     }
 
     @Override
-    public boolean canProcess(Collection<Resource> ampResources,
-        Collection<Resource> warResources, Map<String, Object> extraInfo)
+    public boolean canProcess(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
     {
-        return ampResources.stream().allMatch(r -> BEAN == r.getType())
-            && warResources.stream().allMatch(r -> BEAN == r.getType())
-            && extraInfo != null
-            && extraInfo.get(BEAN_OVERRIDING_WHITELIST) != null;
-    }
-
-    @Override
-    public Resource.Type resourceType()
-    {
-        return BEAN;
+        return extraInfo != null
+            && extraInfo.get(WHITELIST_BEAN_OVERRIDING) != null;
     }
 }
