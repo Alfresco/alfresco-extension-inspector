@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
+import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.junit.Assert.assertEquals;
@@ -52,7 +53,8 @@ public class BeanOverwritingCheckerTest
 
         Map<String, Object> extraInfo = Map.of(
             WHITELIST_BEAN_OVERRIDING, Set.of("bean1"),
-            EXTENSION_FILE_TYPE, "amp"
+            EXTENSION_FILE_TYPE, "amp",
+            ALFRESCO_VERSION, "6.66"
             );
 
         List<Conflict> conflicts = boChecker.process(ampReport, warReport, extraInfo);
@@ -61,9 +63,11 @@ public class BeanOverwritingCheckerTest
         Conflict conflict1 = conflicts.get(0);
         assertEquals(ampBR2, conflict1.getAmpResourceInConflict());
         assertEquals(warBR21, conflict1.getWarResourceInConflict());
+        assertEquals("6.66", conflict1.getAlfrescoVersion());
 
         Conflict conflict2 = conflicts.get(1);
         assertEquals(ampBR2, conflict2.getAmpResourceInConflict());
         assertEquals(warBR22, conflict2.getWarResourceInConflict());
+        assertEquals("6.66", conflict2.getAlfrescoVersion());
     }
 }

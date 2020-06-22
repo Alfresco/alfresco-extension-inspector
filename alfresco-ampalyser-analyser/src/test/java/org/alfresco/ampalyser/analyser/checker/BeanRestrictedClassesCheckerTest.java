@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
+import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
@@ -52,12 +53,14 @@ public class BeanRestrictedClassesCheckerTest
 
         Map<String, Object> extraInfo = Map.of(
             WHITELIST_BEAN_RESTRICTED_CLASSES, Set.of("org.alfresco.C2"),
-            EXTENSION_FILE_TYPE, "amp");
+            EXTENSION_FILE_TYPE, "amp",
+            ALFRESCO_VERSION, "6.66");
 
         List<Conflict> conflicts = brcChecker.process(ampReport, warReport, extraInfo);
         assertEquals(1, conflicts.size());
 
         Conflict conflict1 = conflicts.get(0);
         assertEquals(ampBR3, conflict1.getAmpResourceInConflict());
+        assertEquals("6.66", conflict1.getAlfrescoVersion());
     }
 }

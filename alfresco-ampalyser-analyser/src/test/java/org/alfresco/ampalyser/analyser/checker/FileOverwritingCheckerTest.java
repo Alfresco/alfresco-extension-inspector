@@ -1,5 +1,6 @@
 package org.alfresco.ampalyser.analyser.checker;
 
+import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
 import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
@@ -51,7 +52,9 @@ public class FileOverwritingCheckerTest
         properties.putIfAbsent("include.default", "true");
         Map<String, Object> extraInfo = Map.of(
             FILE_MAPPING_NAME, List.of(properties),
-            EXTENSION_FILE_TYPE, "amp");
+            EXTENSION_FILE_TYPE, "amp",
+            ALFRESCO_VERSION, "6.66"
+            );
 
         List<Conflict> conflicts = foChecker.process(ampReport, warReport, extraInfo);
         assertEquals(1, conflicts.size());
