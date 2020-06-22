@@ -7,8 +7,10 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.util.HashSet;
@@ -45,18 +47,16 @@ public class BeanRestrictedClassesChecker implements Checker
         // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the complete whitelist.
         Set<String> completeWhitelist = new HashSet<>(whitelist);
         completeWhitelist.addAll(
-            warInventory.getResources().get(Resource.Type.ALFRESCO_PUBLIC_API)
+            warInventory.getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
                 .stream()
                 .map(Resource::getId)
                 .collect(toList()));
 
-        return ampInventory.getResources().get(BEAN).stream()
+        return ampInventory.getResources().getOrDefault(BEAN, emptyList()).stream()
                 .filter(ampR -> (ampR instanceof BeanResource
                     && ((BeanResource) ampR).getBeanClass() != null)
                     && ((BeanResource) ampR).getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
-                .filter(ampR -> completeWhitelist
-                            .stream()
-                            .noneMatch(entry -> entry.contains(((BeanResource) ampR).getBeanClass())))
+                .filter(ampR -> !completeWhitelist.contains(((BeanResource) ampR).getBeanClass()))
                 .map(ampR -> new RestrictedBeanClassConflict(ampR, null, (String) extraInfo.get(ALFRESCO_VERSION)))
             .collect(toUnmodifiableList());
     }

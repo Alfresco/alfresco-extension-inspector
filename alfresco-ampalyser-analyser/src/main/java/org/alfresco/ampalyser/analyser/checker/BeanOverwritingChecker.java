@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
@@ -37,10 +38,10 @@ public class BeanOverwritingChecker implements Checker
         Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_OVERRIDING);
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
-        return ampInventory.getResources().get(BEAN)
+        return ampInventory.getResources().getOrDefault(BEAN, emptyList())
             .stream()
             .filter(ar -> !whitelist.contains(ar.getId()))
-            .flatMap(ar -> warInventory.getResources().get(BEAN)
+            .flatMap(ar -> warInventory.getResources().getOrDefault(BEAN, emptyList())
                 .stream()
                 .filter(wr -> wr.getId().equals(ar.getId()))
                 .map(wr -> new BeanOverwriteConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))

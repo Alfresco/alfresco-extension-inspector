@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
@@ -56,7 +57,7 @@ public class FileOverwritingChecker implements Checker
         Map<String, String> completeMappingProperties = computeMappings(foundMappingProperties);
 
         // Check every resource for conflicts
-        for (Resource ampResource : ampInventory.getResources().get(FILE))
+        for (Resource ampResource : ampInventory.getResources().getOrDefault(FILE, emptyList()))
         {
             // Find the most specific/deepest mapping that we can use
             String matchingSourceMapping = findMostSpecificMapping(completeMappingProperties, ampResource);
@@ -69,7 +70,7 @@ public class FileOverwritingChecker implements Checker
             destination = destination.startsWith("//") ? destination.substring(1) : destination;
 
             // Iterate through the war FILE resources and check if the calculated destination matches any of the existing resources
-            for (Resource warResource : warInventory.getResources().get(FILE))
+            for (Resource warResource : warInventory.getResources().getOrDefault(FILE, emptyList()))
             {
                 if (warResource.getId().equals(destination))
                 {

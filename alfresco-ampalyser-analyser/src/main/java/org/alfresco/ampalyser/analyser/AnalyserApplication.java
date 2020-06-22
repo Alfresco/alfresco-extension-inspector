@@ -76,6 +76,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
+        // TODO: Improve argument retrieval and validation via ACS-355
         final List<String> beanOverridingWhitelistPaths = args.getOptionValues("whitelistBeanOverriding");
         String whitelistBeanOverridingPath = beanOverridingWhitelistPaths == null || beanOverridingWhitelistPaths.isEmpty() ? null : beanOverridingWhitelistPaths.get(0);
         if (beanOverridingWhitelistPaths != null && beanOverridingWhitelistPaths.size() > 1)

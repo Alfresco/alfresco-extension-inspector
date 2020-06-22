@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -25,9 +26,9 @@ public class ClasspathConflictsChecker implements Checker
     @Override
     public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
-        return ampInventory.getResources().get(CLASSPATH_ELEMENT)
+        return ampInventory.getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
             .stream()
-            .flatMap(ar -> warInventory.getResources().get(CLASSPATH_ELEMENT)
+            .flatMap(ar -> warInventory.getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
                 .stream()
                 .filter(wr -> wr.getId().equals(ar.getId()))
                 .map(wr -> new ClasspathConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
