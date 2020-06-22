@@ -15,7 +15,7 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Lucian Tuca
