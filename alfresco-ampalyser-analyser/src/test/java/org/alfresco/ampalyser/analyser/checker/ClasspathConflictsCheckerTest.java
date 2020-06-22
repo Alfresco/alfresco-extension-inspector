@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Map.of;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
+import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -77,7 +78,7 @@ class ClasspathConflictsCheckerTest
         ampReport.setResources(of(CLASSPATH_ELEMENT, ampResources));
 
         final List<Conflict> actualResult = checker.processInternal(ampReport, warReport,
-            of(ALFRESCO_VERSION, "6.0.0"));
+            of(ALFRESCO_VERSION, "6.0.0", EXTENSION_FILE_TYPE, "amp"));
         assertEquals(expectedResult.size(), actualResult.size());
         assertTrue(actualResult.containsAll(expectedResult));
     }

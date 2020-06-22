@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
+import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +50,9 @@ public class BeanRestrictedClassesCheckerTest
 
         warReport.addResources(warResources);
 
-        Map<String, Object> extraInfo = Map.of(WHITELIST_BEAN_RESTRICTED_CLASSES, Set.of("org.alfresco.C2"));
+        Map<String, Object> extraInfo = Map.of(
+            WHITELIST_BEAN_RESTRICTED_CLASSES, Set.of("org.alfresco.C2"),
+            EXTENSION_FILE_TYPE, "amp");
 
         List<Conflict> conflicts = brcChecker.process(ampReport, warReport, extraInfo);
         assertEquals(1, conflicts.size());
