@@ -130,7 +130,9 @@ public class FileOverwritingChecker implements Checker
      */
     private static Map<String, String> computeMappings(List<Properties> foundMappingProperties)
     {
+        boolean includeDefaultMappings = true;
         Map<String, String> mappings = new HashMap<>();
+
         // Flatten the Properties objects
         for (Properties properties : foundMappingProperties)
         {
@@ -140,9 +142,10 @@ public class FileOverwritingChecker implements Checker
                 // Add the default mappings if the 'include.default' is set to true
                 String key = entry.getKey().toString();
                 String value = entry.getValue().toString();
-                if (INCLUDE_DEFAULT_PROPERTY_KEY.equals(key) && Boolean.parseBoolean(value))
+                if (INCLUDE_DEFAULT_PROPERTY_KEY.equals(key) && !Boolean.parseBoolean(value))
                 {
-                    mappings.putAll(DEFAULT_MAPPINGS);
+                    LOGGER.info("The " + FILE_MAPPING_NAME + " was explicitly configured to ignore the default mappings.");
+                    includeDefaultMappings = false;
                 }
 
                 // and filter to only keep entries that refer to path mappings
@@ -152,6 +155,12 @@ public class FileOverwritingChecker implements Checker
                 }
             }
         }
+
+        if (includeDefaultMappings)
+        {
+            mappings.putAll(DEFAULT_MAPPINGS);
+        }
+
         return mappings;
     }
 }
