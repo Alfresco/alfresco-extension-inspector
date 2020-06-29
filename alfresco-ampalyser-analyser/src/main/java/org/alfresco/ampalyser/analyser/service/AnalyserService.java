@@ -90,7 +90,10 @@ public class AnalyserService
             .forEach((k, v) -> 
                 v.forEach((k1, v1) -> addConflictToMap(k1, k, v1, conflictsPerType)));
 
-        conflictsPerType.forEach((k, v) -> {mapVersionsPerConflict(v); /*Print output;*/});
+        conflictsPerType.forEach((k, v) -> {
+            Map<Conflict, List<String>> versionsPerConflict = mapVersionsPerConflict(v); 
+            /*Print output for resource type `k`;*/
+        });
         
         try
         {
