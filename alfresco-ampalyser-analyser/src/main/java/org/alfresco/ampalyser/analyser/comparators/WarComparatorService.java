@@ -1,6 +1,8 @@
 package org.alfresco.ampalyser.analyser.comparators;
 
 import static java.util.stream.Collectors.toMap;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.util.List;
 import java.util.Map;

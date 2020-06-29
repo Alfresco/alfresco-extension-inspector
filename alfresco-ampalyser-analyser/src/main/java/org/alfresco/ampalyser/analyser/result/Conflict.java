@@ -18,7 +18,9 @@ public interface Conflict
     enum Type
     {
         FILE_OVERWRITE,
-        BEAN_OVERWRITE;
+        CLASSPATH_CONFLICT,
+        BEAN_OVERWRITE,
+        ;
 
         public static class Constants
         {
