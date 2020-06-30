@@ -3,6 +3,8 @@ package org.alfresco.ampalyser.analyser.service;
 import static java.util.Collections.emptyList;
 import static java.util.Set.of;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.BEAN_OVERRIDING_WHITELIST;
@@ -15,12 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -69,7 +71,7 @@ public class AnalyserService
         List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
         Set<String> beanOverridingWhiteList = loadBeanOverridingWhiteList(whitelistFilePath);
 
-        final Map<String, Map<Resource.Type, List<Conflict>>> conflictsPerWarVersion = alfrescoVersions
+        final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
             .collect(toMap(identity(), v -> warComparatorService.findConflicts(
                 ampInventory,
@@ -81,81 +83,43 @@ public class AnalyserService
                     EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
                 ))
             ));
+        
+        final Map<Conflict.Type, Map<String, List<Conflict>>> conflictPerResourceId = 
+            groupConflictsPerTypeAndResourceId(conflictsPerWarVersion);
+          
+        conflictPerResourceId.forEach(AnalyserService::printOutput);
+    }
 
-        //TODO ACS-192 Process results and generate output, e.g.
-        // > /foo/bar.jar - conflicting with 4.2.0, 4.2.1, 4.2.3, 4.2.4, 4.2.5
+    static Map<Conflict.Type, Map<String, List<Conflict>>> groupConflictsPerTypeAndResourceId(
+        Map<String, List<Conflict>> conflictsPerWarVersion)
+    {
+        return conflictsPerWarVersion
+            .values()
+            .stream()
+            .flatMap(Collection::stream)
+            .collect(groupingBy(
+                Conflict::getType, 
+                TreeMap::new,
+                groupingBy(
+                    Conflict::getId,
+                    TreeMap::new,
+                    toList()
+                )));
+    }
 
-        Map<Resource.Type, Map<String, List<Conflict>>> conflictsPerType = new HashMap<>();
-        conflictsPerWarVersion
-            .forEach((k, v) -> 
-                v.forEach((k1, v1) -> addConflictToMap(k1, k, v1, conflictsPerType)));
-
-        conflictsPerType.forEach((k, v) -> {
-            Map<Conflict, List<String>> versionsPerConflict = mapVersionsPerConflict(v); 
-            /*Print output for resource type `k`;*/
+    static void printOutput(Conflict.Type type, Map<String, List<Conflict>> conflictMap)
+    {
+        System.out.println("Conflicts for type: " + type);
+        conflictMap.forEach((id,conflicts) -> {
+            String versions = conflicts
+                .stream()
+                .map(Conflict::getAlfrescoVersion)
+                .collect(Collectors.joining(", "));
+                
+            System.out.println(id + " - conflicting with " + versions);
         });
-        
-        try
-        {
-            System.out.println(objectMapper.writeValueAsString(conflictsPerWarVersion));
-        }
-        catch (JsonProcessingException e)
-        {
-            LOGGER.error("Cannot perform temporary output.");
-        }
-        // end of TODO
     }
 
-    /**
-     * Group all war versions by {@link Conflict}
-     * 
-     * @param conflictsPerVersion conflicts of a specific type grouped by war versions
-     * @return war versions grouped by {@link Conflict}s
-     */
-    private Map<Conflict, List<String>> mapVersionsPerConflict(
-        Map<String, List<Conflict>> conflictsPerVersion)
-    {
-        Map<Conflict, List<String>> versionsPerConflict = new HashMap<>();
-        conflictsPerVersion
-            .forEach((k, v) -> 
-                v.stream()
-                    .forEach(el -> addConflictToMap(el,versionsPerConflict)));
-        
-        return versionsPerConflict;
-    }
-
-    private static void addConflictToMap(Conflict conflict,
-        Map<Conflict, List<String>> versionsPerConflict)
-    {
-        if (versionsPerConflict.containsKey(conflict))
-        {
-            versionsPerConflict.get(conflict).add(conflict.getAlfrescoVersion());
-        }
-        else
-        {
-            versionsPerConflict.put(conflict, new ArrayList<>()
-            {{
-                add(conflict.getAlfrescoVersion());
-            }});
-        }
-    }
-
-    private static void addConflictToMap(Resource.Type type, String version,
-        List<Conflict> conflicts, Map<Resource.Type, Map<String, List<Conflict>>> conflictsPerType)
-    {
-        if (conflictsPerType.containsKey(type))
-        {
-            conflictsPerType.get(type).put(version, conflicts);
-        }
-        else
-        {
-            conflictsPerType.put(type, new HashMap<>()
-            {{
-                put(version, conflicts);
-            }});
-        }
-    }
-    
     /**
      * Extracts the mapping options specified in the .amp as {@link List}s of {@link Properties}
      * @param ampPath The filepath of the .amp required to open the .zip file and read the file-mapping.properties file(s)
