@@ -95,20 +95,21 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, versions, beanWhitelist);
+        analyserService
+            .analyse(extensionPath, versions, beanWhitelist, args.containsOption("verbose"));
     }
 
-    private static boolean isExtensionValid(final String warPath)
+    private static boolean isExtensionValid(final String extensionPath)
     {
-        return new File(warPath).exists() &&
-               (FilenameUtils.getExtension(warPath).equalsIgnoreCase("amp") ||
-                FilenameUtils.getExtension(warPath).equalsIgnoreCase("jar"));
+        return new File(extensionPath).exists() &&
+               (FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("amp") ||
+                FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("jar"));
     }
 
     private static void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] [--beanWhitelist=/path/to/bean_overriding_whitelist.json]");
+        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] [--beanWhitelist=/path/to/bean_overriding_whitelist.json] [--verbose]");
     }
 
     @Bean

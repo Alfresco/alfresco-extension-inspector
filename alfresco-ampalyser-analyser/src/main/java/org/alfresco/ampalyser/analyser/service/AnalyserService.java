@@ -64,7 +64,8 @@ public class AnalyserService
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions, final String whitelistFilePath)
+    public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
+        final String whitelistFilePath, final boolean verboseOutput)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
@@ -84,13 +85,13 @@ public class AnalyserService
                 ))
             ));
         
-        final Map<Conflict.Type, Map<String, List<Conflict>>> conflictPerResourceId = 
-            groupConflictsPerTypeAndResourceId(conflictsPerWarVersion);
+        final Map<Conflict.Type, Map<String, List<Conflict>>> conflictPerTypeResourceId = 
+            groupByTypeAndResourceId(conflictsPerWarVersion);
           
-        conflictPerResourceId.forEach(AnalyserService::printOutput);
+        conflictPerTypeResourceId.forEach(AnalyserService::printConflicts);
     }
 
-    static Map<Conflict.Type, Map<String, List<Conflict>>> groupConflictsPerTypeAndResourceId(
+    static Map<Conflict.Type, Map<String, List<Conflict>>> groupByTypeAndResourceId(
         Map<String, List<Conflict>> conflictsPerWarVersion)
     {
         return conflictsPerWarVersion
@@ -107,7 +108,7 @@ public class AnalyserService
                 )));
     }
 
-    static void printOutput(Conflict.Type type, Map<String, List<Conflict>> conflictMap)
+    static void printConflicts(Conflict.Type type, Map<String, List<Conflict>> conflictMap)
     {
         System.out.println("Conflicts for type: " + type);
         conflictMap.forEach((id,conflicts) -> {
