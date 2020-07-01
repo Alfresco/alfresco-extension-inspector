@@ -1,8 +1,6 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static java.util.Set.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,9 +48,8 @@ public class AnalyserService
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyserService.class);
 
     public static final String EXTENSION_FILE_TYPE = "EXTENSION_FILE_TYPE";
-
-    // Default white list
-    private static final Set<String> DEFAULT_WHITE_LIST = of();
+    private static final String WHITELIST_BEAN_OVERRIDING_FILE = "/bean-overriding-whitelist.default.json";
+    private static final String WHITELIST_BEAN_RESTRICTED_CLASSES_FILE = "/bean-restricted-classes-whitelist.default.json";
 
     @Autowired
     private InventoryService inventoryService;
@@ -169,20 +167,39 @@ public class AnalyserService
      */
     private Set<String> loadWhitelistBeanOverriding(String whitelistFilePath)
     {
+        Set<String> whitelist = new HashSet<>();
+
+        try
+        {
+            whitelist.addAll(objectMapper.readValue(
+                getClass().getResourceAsStream(WHITELIST_BEAN_OVERRIDING_FILE),
+                new TypeReference<>() {}));
+        }
+        catch (IOException ioe)
+        {
+            LOGGER.error("Failed to read DEFAULT Bean Overriding Whitelist file: " + WHITELIST_BEAN_OVERRIDING_FILE, ioe);
+            throw new RuntimeException("Failed to read DEFAULT Bean Overriding Whitelist file: " + WHITELIST_BEAN_OVERRIDING_FILE, ioe);
+        }
+
+
         if (whitelistFilePath == null)
         {
-            return DEFAULT_WHITE_LIST;
+            return whitelist;
         }
 
         try
         {
-            return objectMapper.readValue(new FileInputStream(whitelistFilePath), new TypeReference<>() {});
+            whitelist.addAll(objectMapper.readValue(
+                new FileInputStream(whitelistFilePath),
+                new TypeReference<>() {}));
         }
         catch (IOException e)
         {
             LOGGER.error("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
             throw new RuntimeException("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
         }
+
+        return whitelist;
     }
 
     /**
@@ -192,19 +209,37 @@ public class AnalyserService
      */
     private Set<String> loadWhitelistBeanRestrictedClasses(String whitelistRestrictedClassesPath)
     {
+        Set<String> whitelist = new HashSet<>();
+
+        try
+        {
+            whitelist.addAll(objectMapper.readValue(
+                getClass().getResourceAsStream(WHITELIST_BEAN_RESTRICTED_CLASSES_FILE),
+                new TypeReference<>() {}));
+        }
+        catch (IOException ioe)
+        {
+            LOGGER.error("Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES_FILE, ioe);
+            throw new RuntimeException("Failed to read DEFAULT Bean Restricted Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES_FILE, ioe);
+        }
+
         if (whitelistRestrictedClassesPath == null)
         {
-            return emptySet();
+            return whitelist;
         }
 
         try
         {
-            return objectMapper.readValue(new FileInputStream(whitelistRestrictedClassesPath), new TypeReference<>() {});
+            whitelist.addAll(objectMapper.readValue(
+                new FileInputStream(whitelistRestrictedClassesPath),
+                new TypeReference<>() {}));
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to read the white list for restricted bean classes from file: " + whitelistRestrictedClassesPath, e);
-            throw new RuntimeException("Failed to read the white list for restricted bean classes from file: " + whitelistRestrictedClassesPath, e);
+            LOGGER.error("Failed to read Bean Restricted Classes Whitelist file: " + whitelistRestrictedClassesPath, e);
+            throw new RuntimeException("Failed to read Bean Restricted Classes Whitelist file: " + whitelistRestrictedClassesPath, e);
         }
+
+        return whitelist;
     }
 }
