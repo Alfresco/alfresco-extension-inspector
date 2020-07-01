@@ -11,7 +11,6 @@ package org.alfresco.ampalyser.analyser.printers;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
@@ -20,47 +19,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
-    @Override
-    public void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
-    {
-        if (conflicts == null || conflicts.isEmpty())
-        {
-            return;
-        }
-        
-        System.out.println("Found resource conflicts! The following resources will conflict with "
+    private static final String HEADER =
+        "Found resource conflicts! The following resources will conflict with "
             + "resources present in various Alfresco versions. It will not be "
             + "possible to install this AMP on these versions. (You can use the "
-            + "option --target to limit this scan to specific Alfresco versions)");
-        System.out.println();
+            + "option --target to limit this scan to specific Alfresco versions)";
 
-        if (verbose)
-        {
-            conflicts.forEach(FileOverwriteConflictPrinter::printVerboseOutput);
-        }
-        else
-        {
-            conflicts
-                .keySet()
-                .forEach(System.out::println);
-
-            System.out.println();
-            System.out.println("(use option --verbose for version details)");
-        }
+    @Override
+    public String getHeader()
+    {
+        return HEADER;
     }
-    
+
     @Override
     public Conflict.Type getConflictType()
     {
         return FILE_OVERWRITE;
     }
-    
-    private static void printVerboseOutput(String id, Set<Conflict> conflictSet)
+
+    @Override
+    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
         String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
 
         System.out.println(id + " (conflicting with " + warResourceId + ")");
         System.out.println("Conflicting with " + joinWarVersions(conflictSet));
         System.out.println();
+    }
+
+    @Override
+    public void print(String id, Set<Conflict> conflictSet)
+    {
+        System.out.println(id);
     }
 }

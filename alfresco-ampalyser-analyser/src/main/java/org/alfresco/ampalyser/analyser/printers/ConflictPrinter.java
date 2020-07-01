@@ -16,9 +16,36 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 
 public interface ConflictPrinter
 {
-    void print(Map<String, Set<Conflict>> conflicts, boolean verbose);
+    default void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
+    {
+        if (conflicts == null || conflicts.isEmpty())
+        {
+            return;
+        }
+
+        System.out.println(getHeader());
+        System.out.println();
+
+        if (verbose)
+        {
+            conflicts.forEach(this::printVerboseOutput);
+        }
+        else
+        {
+            conflicts.forEach(this::print);
+
+            System.out.println();
+            System.out.println("(use option --verbose for version details)");
+        }
+    }
     
+    String getHeader();
+
     Conflict.Type getConflictType();
+
+    void printVerboseOutput(String id, Set<Conflict> conflictSet);
+    
+    void print(String id, Set<Conflict> conflictSet);
     
     static String joinWarVersions(Set<Conflict> conflictSet)
     {
@@ -29,13 +56,13 @@ public interface ConflictPrinter
             .collect(Collectors.joining(", "));
     }
 
-    static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
+    static String joinWarResourceIds(Set<Conflict> conflictSet)
     {
         return conflictSet
             .stream()
-            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
+            .map(conflict -> conflict.getWarResourceInConflict().getId())
             .distinct()
             .sorted()
-            .collect(Collectors.joining(", "));
+            .collect(Collectors.joining("\n"));
     }
 }

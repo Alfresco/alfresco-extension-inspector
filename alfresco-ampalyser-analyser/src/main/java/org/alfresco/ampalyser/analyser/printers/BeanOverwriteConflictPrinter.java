@@ -8,12 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
@@ -21,45 +20,42 @@ import org.springframework.stereotype.Component;
 @Component
 public class BeanOverwriteConflictPrinter implements ConflictPrinter
 {
-    @Override
-    public void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
-    {
-        if (conflicts == null || conflicts.isEmpty())
-        {
-            return;
-        }
-        
-        System.out.println("Found bean overwrites! Spring beans defined by Alfresco constitute "
+    private static final String HEADER =
+        "Found bean overwrites! Spring beans defined by Alfresco constitute "
             + "a fundamental building block of the repository and must not be "
             + "overwritten unless explicitly allowed. Found the following beans "
-            + "overwriting default Alfresco functionality:");
-        System.out.println();
+            + "overwriting default Alfresco functionality:";
 
-        if (verbose)
-        {
-            conflicts.forEach(BeanOverwriteConflictPrinter::printVerboseOutput);
-        }
-        else
-        {
-            conflicts
-                .forEach((id, conflictSet) -> 
-                    System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)));
-
-            System.out.println();
-            System.out.println("(use option --verbose for version details)");
-        }
+    @Override
+    public String getHeader()
+    {
+        return HEADER;
     }
-
+    
     @Override
     public Conflict.Type getConflictType()
     {
         return BEAN_OVERWRITE;
     }
 
-    private static void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    @Override
+    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
         System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
         System.out.println();
+    }
+
+    @Override
+    public void print(String id, Set<Conflict> conflictSet)
+    {
+        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
+    }
+
+    private static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
+    {
+        return conflictSet.stream()
+            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject()).distinct()
+            .sorted().collect(Collectors.joining(", "));
     }
 }

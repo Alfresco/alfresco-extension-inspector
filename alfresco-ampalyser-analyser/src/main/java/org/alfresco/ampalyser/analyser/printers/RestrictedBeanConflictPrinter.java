@@ -9,7 +9,7 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
 
 import java.util.Set;
 
@@ -17,13 +17,11 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClasspathConflictPrinter implements ConflictPrinter
+public class RestrictedBeanConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER =
-        "Found classpath conflicts! Although it might be possible to install "
-            + "this AMP, its behaviour is undefined. The following resource in your "
-            + "AMP are in conflict with resources on the classpath in the Alfresco "
-            + "repository:";
+    private static final String HEADER = "Found beans for restricted classes! The following beans "
+        + "instantiate classes from Alfresco or 3rd party libraries which are "
+        + "not meant to be instantiated by custom beans:";
 
     @Override
     public String getHeader()
@@ -34,14 +32,14 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return CLASSPATH_CONFLICT;
+        return RESTRICTED_BEAN_CLASS;
     }
 
     @Override
     public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
         System.out.println(id);
-        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
+        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
