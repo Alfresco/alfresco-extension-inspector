@@ -1,0 +1,150 @@
+{
+  "schemaVersion" : "1.0",
+  "resources" : {
+    "ALFRESCO_PUBLIC_API" : [ {
+      "type" : "ALFRESCO_PUBLIC_API",
+      "id" : "org.alfresco.repo.node.NodeServicePolicies",
+      "deprecated" : false
+    }, {
+      "type" : "ALFRESCO_PUBLIC_API",
+      "id" : "org.alfresco.repo.content.transform.TransformerConfig",
+      "deprecated" : true
+    } ],
+    "BEAN" : [ {
+      "type" : "BEAN",
+      "id" : "webscripts.configsource",
+      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "beanClass" : "org.springframework.extensions.config.source.UrlConfigSource"
+    }, {
+      "type" : "BEAN",
+      "id" : "web.config",
+      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "beanClass" : "org.springframework.extensions.config.xml.XMLConfigService"
+    }, {
+      "type" : "BEAN",
+      "id" : "controlDAO",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : "org.alfresco.util.bean.HierarchicalBeanLoader"
+    }, {
+      "type" : "BEAN",
+      "id" : "controlDAO.org.alfresco.repo.domain.dialect.PostgreSQLDialect",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : "org.alfresco.repo.domain.control.ibatis.ControlDAOImpl$PostgreSQL"
+    }, {
+      "type" : "BEAN",
+      "id" : "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : "org.alfresco.repo.domain.activities.ibatis.ActivityPostDAOImpl"
+    }, {
+      "type" : "BEAN",
+      "id" : "beanName",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : "className"
+    }, {
+      "type" : "BEAN",
+      "id" : "sqlSessionTemplate",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : ""
+    }, {
+      "type" : "BEAN",
+      "id" : "propertyValueDAO",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : "org.alfresco.repo.domain.propval.ibatis.PropertyValueDAOImpl"
+    }, {
+      "type" : "BEAN",
+      "id" : "testBean",
+      "definingObject" : "alfresco/dao/dao-context.xml@WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "beanClass" : ""
+    } ],
+    "CLASSPATH_ELEMENT" : [ {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/org/alfresco/repo/node/NodeServicePolicies.class",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/application-context.xml",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/org/alfresco/repo/transaction/TransactionUtil.class",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/dao/dao-context.xml",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/org/alfresco/repo/content/transform/TransformerConfig.class",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/invalidXML.xml",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/log4j.properties",
+      "definingObject" : "/WEB-INF/classes/log4j.properties"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/logging.properties",
+      "definingObject" : "/WEB-INF/classes/logging.properties"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/alfresco-jmxrmi.access",
+      "definingObject" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.access"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/alfresco-jmxrmi.password",
+      "definingObject" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.password"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/version.properties",
+      "definingObject" : "/WEB-INF/classes/alfresco/version.properties"
+    }, {
+      "type" : "CLASSPATH_ELEMENT",
+      "id" : "/alfresco/web-client-security-config.xml",
+      "definingObject" : "/WEB-INF/classes/alfresco/web-client-security-config.xml"
+    } ],
+    "FILE" : [ {
+      "type" : "FILE",
+      "id" : "/META-INF/MANIFEST.MF",
+      "definingObject" : "/META-INF/MANIFEST.MF"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/web-application-context.xml",
+      "definingObject" : "/WEB-INF/web-application-context.xml"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/web.xml",
+      "definingObject" : "/WEB-INF/web.xml"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar",
+      "definingObject" : "/WEB-INF/lib/alfresco-repository-0.0.1.jar"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/log4j.properties",
+      "definingObject" : "/WEB-INF/classes/log4j.properties"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/logging.properties",
+      "definingObject" : "/WEB-INF/classes/logging.properties"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.access",
+      "definingObject" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.access"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.password",
+      "definingObject" : "/WEB-INF/classes/alfresco/alfresco-jmxrmi.password"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/alfresco/version.properties",
+      "definingObject" : "/WEB-INF/classes/alfresco/version.properties"
+    }, {
+      "type" : "FILE",
+      "id" : "/WEB-INF/classes/alfresco/web-client-security-config.xml",
+      "definingObject" : "/WEB-INF/classes/alfresco/web-client-security-config.xml"
+    } ]
+  }
+}

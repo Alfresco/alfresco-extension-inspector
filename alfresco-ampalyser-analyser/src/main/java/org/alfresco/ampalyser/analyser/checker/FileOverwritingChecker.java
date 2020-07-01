@@ -7,10 +7,10 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
+import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +50,14 @@ public class FileOverwritingChecker implements Checker
     );
 
     @Override
-    public List<Conflict> processInternal(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
+    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         List<Conflict> conflicts = new LinkedList<>();
         List<Properties> foundMappingProperties = (List<Properties>) extraInfo.get(FILE_MAPPING_NAME);
         Map<String, String> completeMappingProperties = computeMappings(foundMappingProperties);
 
         // Check every resource for conflicts
-        for (Resource ampResource : ampResources)
+        for (Resource ampResource : ampInventory.getResources().getOrDefault(FILE, emptyList()))
         {
             // Find the most specific/deepest mapping that we can use
             String matchingSourceMapping = findMostSpecificMapping(completeMappingProperties, ampResource);
@@ -69,7 +70,7 @@ public class FileOverwritingChecker implements Checker
             destination = destination.startsWith("//") ? destination.substring(1) : destination;
 
             // Iterate through the war FILE resources and check if the calculated destination matches any of the existing resources
-            for (Resource warResource : warResources)
+            for (Resource warResource : warInventory.getResources().getOrDefault(FILE, emptyList()))
             {
                 if (warResource.getId().equals(destination))
                 {
@@ -107,19 +108,11 @@ public class FileOverwritingChecker implements Checker
     }
 
     @Override
-    public boolean canProcess(Collection<Resource> ampResources, Collection<Resource> warResources, Map<String, Object> extraInfo)
+    public boolean canProcess(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         return extraInfo != null
             && "amp".equalsIgnoreCase((String) extraInfo.get(EXTENSION_FILE_TYPE))
-            && ampResources.stream().anyMatch(r -> FILE == r.getType())
-            && warResources.stream().anyMatch(r -> FILE == r.getType())
             && extraInfo.get(FILE_MAPPING_NAME) != null;
-    }
-
-    @Override
-    public Resource.Type resourceType()
-    {
-        return FILE;
     }
 
     /**
