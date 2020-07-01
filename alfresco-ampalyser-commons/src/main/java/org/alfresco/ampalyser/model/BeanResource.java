@@ -14,13 +14,26 @@ import java.io.Serializable;
 
 public class BeanResource extends AbstractResource implements Serializable
 {
+    private String beanClass;
+
     public BeanResource()
     {
     }
 
-    public BeanResource(String id, String definingObject)
+    public BeanResource(String id, String definingObject, String beanClass)
     {
         super(BEAN, id, definingObject);
+        this.beanClass = beanClass;
+    }
+
+    public String getBeanClass()
+    {
+        return beanClass;
+    }
+
+    public void setBeanClass(String beanClass)
+    {
+        this.beanClass = beanClass;
     }
 
     @Override
@@ -29,6 +42,7 @@ public class BeanResource extends AbstractResource implements Serializable
         return "BeanResource{" +
             "id='" + id + '\'' +
             ", definingObject='" + definingObject + '\'' +
+            ", beanClass='" + beanClass + '\'' +
             '}';
     }
 }

@@ -8,17 +8,19 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Map.of;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
+import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 
@@ -29,13 +31,13 @@ class ClasspathConflictsCheckerTest
     @Test
     void testProcessInternal()
     {
-        final Collection<Resource> ampResources = List.of(
+        final List<Resource> ampResources = List.of(
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-west-2.0.jar"),
             new ClasspathElementResource("/org/alfresco/Blue.class", "/WEB-INF/lib/lib-east-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/White.class", "/WEB-INF/lib/lib-south-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Purple.class", "/WEB-INF/lib/lib-south-1.0.jar")
         );
-        final Collection<Resource> warResources = List.of(
+        final List<Resource> warResources = List.of(
             new ClasspathElementResource("/org/alfresco/Red.class", "/WEB-INF/lib/lib-west-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-west-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-east-1.0.jar"),
@@ -69,8 +71,14 @@ class ClasspathConflictsCheckerTest
             )
         ));
 
-        final List<Conflict> actualResult = checker.processInternal(ampResources, warResources,
-            Map.of(ALFRESCO_VERSION, "6.0.0"));
+        InventoryReport warReport = new InventoryReport();
+        warReport.setResources(of(CLASSPATH_ELEMENT, warResources));
+
+        InventoryReport ampReport = new InventoryReport();
+        ampReport.setResources(of(CLASSPATH_ELEMENT, ampResources));
+
+        final List<Conflict> actualResult = checker.processInternal(ampReport, warReport,
+            of(ALFRESCO_VERSION, "6.0.0", EXTENSION_FILE_TYPE, "amp"));
         assertEquals(expectedResult.size(), actualResult.size());
         assertTrue(actualResult.containsAll(expectedResult));
     }
