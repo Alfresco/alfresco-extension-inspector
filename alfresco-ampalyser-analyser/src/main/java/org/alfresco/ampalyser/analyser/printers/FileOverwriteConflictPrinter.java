@@ -8,23 +8,31 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
     @Override
     public void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
     {
+        if (conflicts == null || conflicts.isEmpty())
+        {
+            return;
+        }
+        
         System.out.println("Found resource conflicts! The following resources will conflict with\n"
             + "resources present in various Alfresco versions. It will not be\n"
             + "possible to install this AMP on these versions. (You can use the\n"
             + "option --target to limit this scan to specific Alfresco versions)");
+        System.out.println();
 
         if (verbose)
         {
@@ -48,16 +56,10 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     
     private static void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
-        String versions = conflictSet
-            .stream()
-            .map(Conflict::getAlfrescoVersion)
-            .collect(Collectors.joining(", "));
-
-        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict()
-            .getId();
+        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
 
         System.out.println(id + " (conflicting with " + warResourceId + ")");
-        System.out.println("Conflicting with " + versions);
+        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
         System.out.println();
     }
 }

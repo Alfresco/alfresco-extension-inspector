@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.printers;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 
@@ -18,4 +19,23 @@ public interface ConflictPrinter
     void print(Map<String, Set<Conflict>> conflicts, boolean verbose);
     
     Conflict.Type getConflictType();
+    
+    static String joinWarVersions(Set<Conflict> conflictSet)
+    {
+        return conflictSet
+            .stream()
+            .map(Conflict::getAlfrescoVersion)
+            .sorted()
+            .collect(Collectors.joining(", "));
+    }
+
+    static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
+    {
+        return conflictSet
+            .stream()
+            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
+            .distinct()
+            .sorted()
+            .collect(Collectors.joining(", "));
+    }
 }

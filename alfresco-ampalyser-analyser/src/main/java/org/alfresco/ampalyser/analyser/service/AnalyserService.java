@@ -4,8 +4,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Set.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.BEAN_OVERRIDING_WHITELIST;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
@@ -23,7 +23,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -60,6 +59,9 @@ public class AnalyserService
 
     @Autowired
     private WarComparatorService warComparatorService;
+    
+    @Autowired
+    private AnalyserOutputService outputService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -85,13 +87,13 @@ public class AnalyserService
                 ))
             ));
         
-        final Map<Conflict.Type, Map<String, List<Conflict>>> conflictPerTypeResourceId = 
+        final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId = 
             groupByTypeAndResourceId(conflictsPerWarVersion);
-          
-        conflictPerTypeResourceId.forEach(AnalyserService::printConflicts);
+
+        outputService.print(conflictPerTypeAndResourceId, verboseOutput);
     }
 
-    static Map<Conflict.Type, Map<String, List<Conflict>>> groupByTypeAndResourceId(
+    static Map<Conflict.Type, Map<String, Set<Conflict>>> groupByTypeAndResourceId(
         Map<String, List<Conflict>> conflictsPerWarVersion)
     {
         return conflictsPerWarVersion
@@ -102,23 +104,10 @@ public class AnalyserService
                 Conflict::getType, 
                 TreeMap::new,
                 groupingBy(
-                    Conflict::getId,
+                    conflict -> conflict.getAmpResourceInConflict().getId(),
                     TreeMap::new,
-                    toList()
+                    toSet()
                 )));
-    }
-
-    static void printConflicts(Conflict.Type type, Map<String, List<Conflict>> conflictMap)
-    {
-        System.out.println("Conflicts for type: " + type);
-        conflictMap.forEach((id,conflicts) -> {
-            String versions = conflicts
-                .stream()
-                .map(Conflict::getAlfrescoVersion)
-                .collect(Collectors.joining(", "));
-                
-            System.out.println(id + " - conflicting with " + versions);
-        });
     }
 
     /**
