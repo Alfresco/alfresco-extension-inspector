@@ -108,7 +108,9 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     private static void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] [--beanWhitelist=/path/to/bean_overriding_whitelist.json]");
+        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] "
+            + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
+            + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json]");
     }
 
     @Bean
