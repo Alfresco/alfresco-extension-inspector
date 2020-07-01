@@ -107,8 +107,8 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, versions,
-            whitelistBeanOverridingPath, whitelistRestrictedClassesPath, args.containsOption("verbose"));
+        analyserService.analyse(extensionPath, versions, whitelistBeanOverridingPath,
+            whitelistRestrictedClassesPath, args.containsOption("verbose"));
     }
 
     private static boolean isExtensionValid(final String extensionPath)

@@ -69,7 +69,8 @@ public class AnalyserService
     private ObjectMapper objectMapper;
 
     public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
-        final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath, final boolean verboseOutput)
+        final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath,
+        final boolean verboseOutput)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
