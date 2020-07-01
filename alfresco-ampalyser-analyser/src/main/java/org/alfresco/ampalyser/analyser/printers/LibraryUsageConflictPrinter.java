@@ -15,7 +15,7 @@ import java.util.Set;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class LibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER = "Found 3rd party library usage! Although this is not an "

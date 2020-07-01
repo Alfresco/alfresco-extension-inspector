@@ -15,7 +15,7 @@ import java.util.Set;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
