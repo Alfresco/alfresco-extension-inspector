@@ -29,9 +29,9 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
             return;
         }
         
-        System.out.println("Found bean overwrites! Spring beans defined by Alfresco constitute\n"
-            + "a fundamental building block of the repository and must not be\n"
-            + "overwritten unless explicitly allowed. Found the following beans\n"
+        System.out.println("Found bean overwrites! Spring beans defined by Alfresco constitute "
+            + "a fundamental building block of the repository and must not be "
+            + "overwritten unless explicitly allowed. Found the following beans "
             + "overwriting default Alfresco functionality:");
         System.out.println();
 
@@ -45,6 +45,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
                 .forEach((id, conflictSet) -> 
                     System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)));
 
+            System.out.println();
             System.out.println("(use option --verbose for version details)");
         }
     }

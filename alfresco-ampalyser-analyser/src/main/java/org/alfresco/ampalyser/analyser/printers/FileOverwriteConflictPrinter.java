@@ -28,9 +28,9 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
             return;
         }
         
-        System.out.println("Found resource conflicts! The following resources will conflict with\n"
-            + "resources present in various Alfresco versions. It will not be\n"
-            + "possible to install this AMP on these versions. (You can use the\n"
+        System.out.println("Found resource conflicts! The following resources will conflict with "
+            + "resources present in various Alfresco versions. It will not be "
+            + "possible to install this AMP on these versions. (You can use the "
             + "option --target to limit this scan to specific Alfresco versions)");
         System.out.println();
 
@@ -44,6 +44,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
                 .keySet()
                 .forEach(System.out::println);
 
+            System.out.println();
             System.out.println("(use option --verbose for version details)");
         }
     }

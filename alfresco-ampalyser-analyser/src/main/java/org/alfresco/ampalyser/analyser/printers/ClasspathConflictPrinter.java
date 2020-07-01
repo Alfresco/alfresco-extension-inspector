@@ -28,9 +28,9 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             return;
         }
         
-        System.out.println("Found classpath conflicts! Although it might be possible to install\n"
-            + "this AMP, its behaviour is undefined. The following resource in your\n"
-            + "AMP are in conflict with resources on the classpath in the Alfresco\n"
+        System.out.println("Found classpath conflicts! Although it might be possible to install "
+            + "this AMP, its behaviour is undefined. The following resource in your "
+            + "AMP are in conflict with resources on the classpath in the Alfresco "
             + "repository:");
         System.out.println();
 
@@ -44,6 +44,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
                 .keySet()
                 .forEach(System.out::println);
 
+            System.out.println();
             System.out.println("(use option --verbose for version details)");
         }
     }
