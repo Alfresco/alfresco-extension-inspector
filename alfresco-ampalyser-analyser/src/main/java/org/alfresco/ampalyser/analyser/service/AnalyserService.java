@@ -1,13 +1,15 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Set.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toUnmodifiableList;
-import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.BEAN_OVERRIDING_WHITELIST;
+import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
+import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
@@ -67,12 +69,13 @@ public class AnalyserService
     private ObjectMapper objectMapper;
 
     public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
-        final String whitelistFilePath, final boolean verboseOutput)
+        final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath, final boolean verboseOutput)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
         List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
-        Set<String> beanOverridingWhiteList = loadBeanOverridingWhiteList(whitelistFilePath);
+        Set<String> beanOverridingWhitelist = loadWhitelistBeanOverriding(whitelistBeanOverridingPath);
+        Set<String> beanRestrictedClassesWhitelist = loadWhitelistBeanRestrictedClasses(whitelistRestrictedClassesPath);
 
         final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
@@ -82,7 +85,8 @@ public class AnalyserService
                 Map.of(
                     ALFRESCO_VERSION, v,
                     FILE_MAPPING_NAME, fileMappingFiles,
-                    BEAN_OVERRIDING_WHITELIST, beanOverridingWhiteList,
+                    WHITELIST_BEAN_OVERRIDING, beanOverridingWhitelist,
+                    WHITELIST_BEAN_RESTRICTED_CLASSES, beanRestrictedClassesWhitelist,
                     EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
                 ))
             ));
@@ -162,7 +166,7 @@ public class AnalyserService
      *
      * @return a {@link Set} of the whitelisted beans (that can be overridden).
      */
-    private Set<String> loadBeanOverridingWhiteList(String whitelistFilePath)
+    private Set<String> loadWhitelistBeanOverriding(String whitelistFilePath)
     {
         if (whitelistFilePath == null)
         {
@@ -177,6 +181,29 @@ public class AnalyserService
         {
             LOGGER.error("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
             throw new RuntimeException("Failed to read Bean Overriding Whitelist file: " + whitelistFilePath, e);
+        }
+    }
+
+    /**
+     * Reads and loads a class whitelist for the .amp beans from a .json file
+     *
+     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     */
+    private Set<String> loadWhitelistBeanRestrictedClasses(String whitelistRestrictedClassesPath)
+    {
+        if (whitelistRestrictedClassesPath == null)
+        {
+            return emptySet();
+        }
+
+        try
+        {
+            return objectMapper.readValue(new FileInputStream(whitelistRestrictedClassesPath), new TypeReference<>() {});
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Failed to read the white list for restricted bean classes from file: " + whitelistRestrictedClassesPath, e);
+            throw new RuntimeException("Failed to read the white list for restricted bean classes from file: " + whitelistRestrictedClassesPath, e);
         }
     }
 }
