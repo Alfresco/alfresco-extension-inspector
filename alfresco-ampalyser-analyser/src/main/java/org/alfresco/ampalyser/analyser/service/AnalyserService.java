@@ -5,6 +5,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
+import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
 import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
@@ -46,7 +47,7 @@ public class AnalyserService
 
     public static final String EXTENSION_FILE_TYPE = "EXTENSION_FILE_TYPE";
     private static final String WHITELIST_BEAN_OVERRIDING_FILE = "/bean-overriding-whitelist.default.json";
-    private static final String WHITELIST_BEAN_RESTRICTED_CLASSES = "/bean-restricted-classes-whitelist.default.json";
+    private static final String WHITELIST_BEAN_RESTRICTED_CLASSES_FILE = "/bean-restricted-classes-whitelist.default.json";
 
     @Autowired
     private InventoryService inventoryService;
@@ -197,13 +198,13 @@ public class AnalyserService
         try
         {
             whitelist.addAll(objectMapper.readValue(
-                getClass().getResourceAsStream(WHITELIST_BEAN_RESTRICTED_CLASSES),
+                getClass().getResourceAsStream(WHITELIST_BEAN_RESTRICTED_CLASSES_FILE),
                 new TypeReference<>() {}));
         }
         catch (IOException ioe)
         {
-            LOGGER.error("Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES, ioe);
-            throw new RuntimeException("Failed to read DEFAULT Bean Restricted Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES, ioe);
+            LOGGER.error("Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES_FILE, ioe);
+            throw new RuntimeException("Failed to read DEFAULT Bean Restricted Whitelist file: " + WHITELIST_BEAN_RESTRICTED_CLASSES_FILE, ioe);
         }
 
         if (whitelistRestrictedClassesPath == null)
