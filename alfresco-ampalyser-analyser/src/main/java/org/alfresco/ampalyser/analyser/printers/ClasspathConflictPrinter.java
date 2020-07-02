@@ -49,5 +49,6 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     public void print(String id, Set<Conflict> conflictSet)
     {
         System.out.println(id);
+        System.out.println();
     }
 }

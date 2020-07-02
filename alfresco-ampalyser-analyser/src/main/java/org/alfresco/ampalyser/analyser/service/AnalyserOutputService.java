@@ -29,5 +29,10 @@ public class AnalyserOutputService
         printers
             .forEach(p -> 
                 p.print(conflictPerTypeAndResourceId.get(p.getConflictType()), verboseOutput));
+
+        if (!verboseOutput)
+        {
+            System.out.println("(use option --verbose for version details)");
+        }
     }
 }

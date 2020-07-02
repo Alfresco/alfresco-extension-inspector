@@ -52,5 +52,6 @@ public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
         System.out.println(id + " in " + definingObject);
         System.out.println("using");
         System.out.println(joinWarResourceIds(conflictSet));
+        System.out.println();
     }
 }

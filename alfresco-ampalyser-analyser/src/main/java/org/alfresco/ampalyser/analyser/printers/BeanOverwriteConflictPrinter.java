@@ -50,12 +50,16 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     public void print(String id, Set<Conflict> conflictSet)
     {
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
+        System.out.println();
     }
 
     private static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
     {
-        return conflictSet.stream()
-            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject()).distinct()
-            .sorted().collect(Collectors.joining(", "));
+        return conflictSet
+            .stream()
+            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
+            .distinct()
+            .sorted()
+            .collect(Collectors.joining(", "));
     }
 }

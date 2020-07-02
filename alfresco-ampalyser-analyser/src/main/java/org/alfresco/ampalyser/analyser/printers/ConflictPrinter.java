@@ -33,9 +33,6 @@ public interface ConflictPrinter
         else
         {
             conflicts.forEach(this::print);
-
-            System.out.println();
-            System.out.println("(use option --verbose for version details)");
         }
     }
     
