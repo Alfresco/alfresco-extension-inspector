@@ -8,11 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
@@ -51,15 +51,5 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     {
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
         System.out.println();
-    }
-
-    private static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
-    {
-        return conflictSet
-            .stream()
-            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
-            .distinct()
-            .sorted()
-            .collect(Collectors.joining(", "));
     }
 }

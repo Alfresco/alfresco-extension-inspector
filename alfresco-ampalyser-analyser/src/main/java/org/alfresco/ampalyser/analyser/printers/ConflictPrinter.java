@@ -49,6 +49,7 @@ public interface ConflictPrinter
         return conflictSet
             .stream()
             .map(Conflict::getAlfrescoVersion)
+            .distinct()
             .sorted()
             .collect(Collectors.joining(", "));
     }
@@ -61,5 +62,15 @@ public interface ConflictPrinter
             .distinct()
             .sorted()
             .collect(Collectors.joining("\n"));
+    }
+
+    static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
+    {
+        return conflictSet
+            .stream()
+            .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
+            .distinct()
+            .sorted()
+            .collect(Collectors.joining(", "));
     }
 }

@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.alfresco.ampalyser.analyser.comparators.WarComparatorService;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
@@ -68,7 +69,7 @@ public class AnalyserService
 
     public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
         final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath,
-        final boolean verboseOutput)
+        final boolean verboseOutput) throws JsonProcessingException
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
