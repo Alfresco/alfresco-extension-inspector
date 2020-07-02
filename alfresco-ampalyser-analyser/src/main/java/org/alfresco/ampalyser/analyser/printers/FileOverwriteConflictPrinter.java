@@ -22,7 +22,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     private static final String HEADER =
         "Found resource conflicts! The following resources will conflict with "
             + "resources present in various Alfresco versions. It will not be "
-            + "possible to install this AMP on these versions. (You can use the "
+            + "possible to install this extension on these versions. (You can use the "
             + "option --target to limit this scan to specific Alfresco versions)";
 
     @Override

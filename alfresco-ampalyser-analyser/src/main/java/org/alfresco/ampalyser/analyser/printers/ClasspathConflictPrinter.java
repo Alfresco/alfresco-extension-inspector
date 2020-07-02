@@ -21,8 +21,8 @@ public class ClasspathConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found classpath conflicts! Although it might be possible to install "
-            + "this AMP, its behaviour is undefined. The following resource in your "
-            + "AMP are in conflict with resources on the classpath in the Alfresco "
+            + "this extension, its behaviour is undefined. The following resources in your "
+            + "extension are in conflict with resources on the classpath in the Alfresco "
             + "repository:";
 
     @Override
