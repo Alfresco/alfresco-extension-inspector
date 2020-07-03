@@ -8,6 +8,8 @@
 
 package org.alfresco.ampalyser.analyser.service;
 
+import static java.util.Comparator.comparing;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,8 @@ public class AnalyserOutputService
         boolean verboseOutput)
     {
         printers
+            .stream()
+            .sorted(comparing(ConflictPrinter::getConflictType))
             .forEach(p -> 
                 p.print(conflictPerTypeAndResourceId.get(p.getConflictType()), verboseOutput));
 
