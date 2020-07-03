@@ -34,6 +34,9 @@ public interface ConflictPrinter
         {
             conflicts.forEach(this::print);
         }
+
+        System.out.println("-------------------------------------------------------------------");
+        System.out.println();
     }
     
     String getHeader();
