@@ -41,7 +41,11 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
+        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
+            .getDefiningObject();
+
+        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
+            + " in conflict with bean defined in " + warBeanDefiningObject);
         System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
         System.out.println();
     }
@@ -49,7 +53,11 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void print(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet));
+        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
+            .getDefiningObject();
+
+        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
+            + " in conflict with bean defined in " + warBeanDefiningObject);
         System.out.println();
     }
 }
