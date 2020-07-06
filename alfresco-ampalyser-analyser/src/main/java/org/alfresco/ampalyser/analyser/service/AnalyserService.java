@@ -2,7 +2,9 @@ package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
 import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -57,12 +59,16 @@ public class AnalyserService
 
     @Autowired
     private WarComparatorService warComparatorService;
+    
+    @Autowired
+    private AnalyserOutputService outputService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
-        final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath)
+        final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath,
+        final boolean verboseOutput)
     {
         // build the *ampInventoryReport*:
         final InventoryReport ampInventory = inventoryService.extractInventoryReport(ampPath);
@@ -83,18 +89,28 @@ public class AnalyserService
                     EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
                 ))
             ));
+        
+        final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId = 
+            groupByTypeAndResourceId(conflictsPerWarVersion);
 
-        //TODO ACS-192 Process results and generate output, e.g.
-        // > /foo/bar.jar - conflicting with 4.2.0, 4.2.1, 4.2.3, 4.2.4, 4.2.5
-        try
-        {
-            System.out.println(objectMapper.writeValueAsString(conflictsPerWarVersion));
-        }
-        catch (JsonProcessingException e)
-        {
-            LOGGER.error("Cannot perform temporary output.");
-        }
-        // end of TODO
+        outputService.print(conflictPerTypeAndResourceId, verboseOutput);
+    }
+
+    static Map<Conflict.Type, Map<String, Set<Conflict>>> groupByTypeAndResourceId(
+        Map<String, List<Conflict>> conflictsPerWarVersion)
+    {
+        return conflictsPerWarVersion
+            .values()
+            .stream()
+            .flatMap(Collection::stream)
+            .collect(groupingBy(
+                Conflict::getType, 
+                TreeMap::new,
+                groupingBy(
+                    conflict -> conflict.getAmpResourceInConflict().getId(),
+                    TreeMap::new,
+                    toSet()
+                )));
     }
 
     /**
