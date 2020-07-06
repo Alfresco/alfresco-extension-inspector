@@ -7,12 +7,25 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.alfresco.ampalyser.model.Resource;
 
 /**
  * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
  * @author Lucian Tuca
  */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "type",
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = BeanOverwriteConflict.class, name = Conflict.Type.Constants.BEAN_OVERWRITE),
+    @JsonSubTypes.Type(value = RestrictedBeanClassConflict.class, name = Conflict.Type.Constants.RESTRICTED_BEAN_CLASS),
+    @JsonSubTypes.Type(value = FileOverwriteConflict.class, name = Conflict.Type.Constants.FILE_OVERWRITE),
+    @JsonSubTypes.Type(value = ClasspathConflict.class, name = Conflict.Type.Constants.CLASSPATH_CONFLICT)
+})
 public interface Conflict
 {
     enum Type
