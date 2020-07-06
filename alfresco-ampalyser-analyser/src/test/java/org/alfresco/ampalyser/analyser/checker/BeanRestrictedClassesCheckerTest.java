@@ -1,11 +1,12 @@
 package org.alfresco.ampalyser.analyser.checker;
 
-import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
-import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
-import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
+import static java.util.stream.Collectors.toList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,24 +14,34 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author Lucian Tuca
  */
+@ExtendWith(MockitoExtension.class)
 public class BeanRestrictedClassesCheckerTest
 {
+    @Mock
+    private ConfigService configService;
+    @InjectMocks
+    private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
+    @InjectMocks
     private BeanRestrictedClassesChecker brcChecker = new BeanRestrictedClassesChecker();
 
     @Test
     public void happyFlowTest()
     {
-        InventoryReport ampReport = new InventoryReport();
-        Map<Resource.Type, List<Resource>> ampResources = new HashMap<>();
 
         // This one should be allowed by the ALFRESCO_PUBLIC_API resources in the WAR
         BeanResource ampBR1 = new BeanResource("bean1", "context.xml", "org.alfresco.C1");
@@ -38,9 +49,7 @@ public class BeanRestrictedClassesCheckerTest
         BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml", "org.alfresco.C2");
         // This one should generate a conflict
         BeanResource ampBR3 = new BeanResource("bean3", "amp_context.xml", "org.alfresco.C3");
-        ampResources.put(BEAN, List.of(ampBR1, ampBR2, ampBR3));
-
-        ampReport.addResources(ampResources);
+        doReturn(List.of(ampBR1, ampBR2, ampBR3)).when(configService).getExtensionResources(eq(BEAN));
 
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
@@ -51,12 +60,9 @@ public class BeanRestrictedClassesCheckerTest
 
         warReport.addResources(warResources);
 
-        Map<String, Object> extraInfo = Map.of(
-            WHITELIST_BEAN_RESTRICTED_CLASSES, Set.of("org.alfresco.C2"),
-            EXTENSION_FILE_TYPE, "amp",
-            ALFRESCO_VERSION, "6.66");
+        doReturn(Set.of("org.alfresco.C2")).when(configService).getBeanClassBlacklist();
 
-        List<Conflict> conflicts = brcChecker.process(ampReport, warReport, extraInfo);
+        List<Conflict> conflicts = brcChecker.process(warReport, "6.66").collect(toList());
         assertEquals(1, conflicts.size());
 
         Conflict conflict1 = conflicts.get(0);

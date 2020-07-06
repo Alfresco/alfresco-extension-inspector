@@ -8,15 +8,16 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
@@ -31,18 +32,12 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
     private static final String ALFRESCO_SOURCE = "org/alfresco";
     private static final String ALFRESCO_PUBLIC_API_ANNOTATION = "Lorg/alfresco/api/AlfrescoPublicApi;";
 
-    public AlfrescoPublicApiInventoryWorker(EntryProcessor processor)
-    {
-        processor.attach(this);
-    }
-
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        List<Resource> publicApiClasses = new ArrayList<>();
         if (data == null)
         {
-            return publicApiClasses;
+            return emptyList();
         }
         ClassParser cp = new ClassParser(new ByteArrayInputStream(data), null);
         try
@@ -68,19 +63,19 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             if (isAlfrescoPublicApi)
             {
                 AlfrescoPublicApiResource resource = new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated);
-                publicApiClasses.add(resource);
 
                 if (LOG.isTraceEnabled())
                 {
                     LOG.trace("AlfrescoPublicApi: " + resource.toString());
                 }
+                return singletonList(resource);
             }
         }
         catch (IOException e)
         {
             LOG.error("Class parsing error: ", e.getMessage());
         }
-        return publicApiClasses;
+        return emptyList();
     }
 
     public Resource.Type getType()

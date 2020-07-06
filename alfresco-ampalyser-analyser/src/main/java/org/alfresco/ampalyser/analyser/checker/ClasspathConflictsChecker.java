@@ -8,37 +8,49 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClasspathConflictsChecker implements Checker
 {
+    @Autowired
+    private ConfigService configService;
+    @Autowired
+    private ExtensionResourceInfoService extensionResourceInfoService;
+
     @Override
-    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
+    public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return ampInventory.getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+        final Map<String, Set<Resource>> elementsById = extensionResourceInfoService.retrieveClasspathElementsById();
+
+        return warInventory
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
             .stream()
-            .flatMap(ar -> warInventory.getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+            .filter(wr -> elementsById.containsKey(wr.getId()))
+            .flatMap(wr -> elementsById
+                .get(wr.getId())
                 .stream()
-                .filter(wr -> wr.getId().equals(ar.getId()))
-                .map(wr -> new ClasspathConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
-            .collect(toUnmodifiableList());
+                .map(r -> new ClasspathConflict(r, wr, alfrescoVersion)));
     }
 
     @Override
-    public boolean canProcess(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
+    public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return !isEmpty(ampInventory.getResources().get(CLASSPATH_ELEMENT)) &&
-            !isEmpty(warInventory.getResources().get(CLASSPATH_ELEMENT));
+        return !configService.getExtensionResources(CLASSPATH_ELEMENT).isEmpty() &&
+               !isEmpty(warInventory.getResources().get(CLASSPATH_ELEMENT));
     }
 }

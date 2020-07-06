@@ -8,9 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 
@@ -18,7 +20,7 @@ public interface ConflictPrinter
 {
     default void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
     {
-        if (conflicts == null || conflicts.isEmpty())
+        if (isEmpty(conflicts))
         {
             return;
         }
@@ -54,7 +56,7 @@ public interface ConflictPrinter
             .map(Conflict::getAlfrescoVersion)
             .distinct()
             .sorted()
-            .collect(Collectors.joining(", "));
+            .collect(joining(", "));
     }
 
     static String joinWarResourceIds(Set<Conflict> conflictSet)
@@ -64,7 +66,7 @@ public interface ConflictPrinter
             .map(conflict -> conflict.getWarResourceInConflict().getId())
             .distinct()
             .sorted()
-            .collect(Collectors.joining("\n"));
+            .collect(joining("\n"));
     }
 
     static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
@@ -74,6 +76,6 @@ public interface ConflictPrinter
             .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
-            .collect(Collectors.joining(", "));
+            .collect(joining(", "));
     }
 }

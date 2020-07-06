@@ -1,6 +1,12 @@
 package org.alfresco.ampalyser.inventory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.alfresco.ampalyser.inventory.worker.AlfrescoPublicApiInventoryWorker;
@@ -15,11 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @SpringBootTest
 public class EntryProcessorTest
 {
@@ -30,7 +31,7 @@ public class EntryProcessorTest
     @Test
     public void testProcessorInjection()
     {
-        final Set<InventoryWorker> workers = (Set<InventoryWorker>) ReflectionTestUtils
+        final List<InventoryWorker> workers = (List<InventoryWorker>) ReflectionTestUtils
             .getField(entryProcessor, "inventoryWorkers");
 
         assertNotNull(workers);

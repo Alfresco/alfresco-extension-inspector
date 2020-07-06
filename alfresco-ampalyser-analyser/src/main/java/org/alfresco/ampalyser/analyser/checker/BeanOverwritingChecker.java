@@ -8,18 +8,23 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,28 +35,30 @@ public class BeanOverwritingChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanOverwritingChecker.class);
 
-    public static final String WHITELIST_BEAN_OVERRIDING = "WHITELIST_BEAN_OVERRIDING";
+    @Autowired
+    private ConfigService configService;
+    @Autowired
+    private ExtensionResourceInfoService extensionResourceInfoService;
 
     @Override
-    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
+    public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_OVERRIDING);
+        final Map<String, Set<Resource>> resourcesById = extensionResourceInfoService.retrieveBeanOverridesById();
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
-        return ampInventory.getResources().getOrDefault(BEAN, emptyList())
+        return warInventory
+            .getResources().getOrDefault(BEAN, emptyList())
             .stream()
-            .filter(ar -> !whitelist.contains(ar.getId()))
-            .flatMap(ar -> warInventory.getResources().getOrDefault(BEAN, emptyList())
+            .filter(wr -> resourcesById.containsKey(wr.getId()))
+            .flatMap(wr -> resourcesById
+                .get(wr.getId())
                 .stream()
-                .filter(wr -> wr.getId().equals(ar.getId()))
-                .map(wr -> new BeanOverwriteConflict(ar, wr, (String) extraInfo.get(ALFRESCO_VERSION))))
-            .collect(toUnmodifiableList());
+                .map(r -> new BeanOverwriteConflict(r, wr, alfrescoVersion)));
     }
 
     @Override
-    public boolean canProcess(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return extraInfo != null
-            && extraInfo.get(WHITELIST_BEAN_OVERRIDING) != null;
+        return configService.getBeanOverrideWhitelist() != null;
     }
 }

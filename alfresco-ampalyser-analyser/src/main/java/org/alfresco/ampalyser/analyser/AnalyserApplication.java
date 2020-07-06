@@ -7,11 +7,14 @@
  */
 package org.alfresco.ampalyser.analyser;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 import java.io.File;
 import java.util.List;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
@@ -47,6 +50,8 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     @Autowired
     private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
     @Autowired
+    private ConfigService configService;
+    @Autowired
     private AnalyserService analyserService;
 
     private int exitCode = 0;
@@ -57,7 +62,7 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception
+    public void run(ApplicationArguments args)
     {
         if (args.getNonOptionArgs().isEmpty())
         {
@@ -77,26 +82,31 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
         }
 
         // TODO: Improve argument retrieval and validation via ACS-355
-        final List<String> beanOverridingWhitelistPaths = args.getOptionValues("whitelistBeanOverriding");
-        String whitelistBeanOverridingPath = beanOverridingWhitelistPaths == null || beanOverridingWhitelistPaths.isEmpty() ? null : beanOverridingWhitelistPaths.get(0);
-        if (beanOverridingWhitelistPaths != null && beanOverridingWhitelistPaths.size() > 1)
+        final List<String> whitelistArgs = args.getOptionValues("beanOverrideWhitelist");
+        if (whitelistArgs != null && whitelistArgs.size() > 1)
         {
             logger.error("Multiple Bean Overriding Whitelists provided.");
             printUsage();
             setExceptionExitCode();
             return;
         }
+        if (!isEmpty(whitelistArgs))
+        {
+            configService.registerBeanOverrideWhitelistPath(whitelistArgs.get(0));
+        }
 
-        final List<String> beanRestrictedClassWhitelistPaths = args.getOptionValues("whitelistBeanRestrictedClasses");
-        String whitelistRestrictedClassesPath = beanRestrictedClassWhitelistPaths == null || beanRestrictedClassWhitelistPaths.isEmpty() ? null : beanRestrictedClassWhitelistPaths.get(0);
-        if (beanRestrictedClassWhitelistPaths != null && beanRestrictedClassWhitelistPaths.size() > 1)
+        final List<String> blacklistArgs = args.getOptionValues("beanClassBlacklist");
+        if (blacklistArgs != null && blacklistArgs.size() > 1)
         {
             logger.error("Multiple Bean Restricted Classes Whitelists provided.");
             printUsage();
             setExceptionExitCode();
             return;
         }
-
+        if (!isEmpty(blacklistArgs))
+        {
+            configService.registerBeanClassBlacklist(blacklistArgs.get(0));
+        }
 
         final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
         if (versions.isEmpty())
@@ -107,8 +117,11 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
             return;
         }
 
-        analyserService.analyse(extensionPath, versions, whitelistBeanOverridingPath,
-            whitelistRestrictedClassesPath, args.containsOption("verbose"));
+        configService.registerExtensionPath(extensionPath);
+
+        configService.setVerboseOutput(args.containsOption("verbose"));
+
+        analyserService.analyse(versions);
     }
 
     private static boolean isExtensionValid(final String extensionPath)

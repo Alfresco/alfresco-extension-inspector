@@ -13,28 +13,23 @@ import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.commons.InventoryUtils;
 import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
 import org.alfresco.ampalyser.model.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EntryProcessor
 {
-    private Set<InventoryWorker> inventoryWorkers = new LinkedHashSet<>();
-
-    public void attach(InventoryWorker inventoryWorker)
-    {
-        inventoryWorkers.add(inventoryWorker);
-    }
+    @Autowired
+    private List<InventoryWorker> inventoryWorkers;
 
     public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
         throws IOException
@@ -43,7 +38,8 @@ public class EntryProcessor
         {
             throw new IllegalArgumentException("Arguments should not be null.");
         }
-        Map<Resource.Type, List<Resource>> extractedResources = new HashMap<>();
+
+        final Map<Resource.Type, List<Resource>> extractedResources = new EnumMap<>(Resource.Type.class);
         // add modifiable lists for each inventoryWorker type
         // to be able to merge results later
         inventoryWorkers.forEach(inventoryWorker -> extractedResources
@@ -80,6 +76,6 @@ public class EntryProcessor
     {
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
-            InventoryUtils::mergeLists));
+            InventoryUtils::mergeCollections));
     }
 }

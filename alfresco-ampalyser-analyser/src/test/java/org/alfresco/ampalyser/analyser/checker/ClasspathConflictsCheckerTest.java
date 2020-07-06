@@ -8,25 +8,39 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Map.of;
-import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
-import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
+import static java.util.stream.Collectors.toList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ClasspathConflictsCheckerTest
 {
-    private ClasspathConflictsChecker checker = new ClasspathConflictsChecker();
+    @Mock
+    private ConfigService configService;
+    @InjectMocks
+    private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
+    @InjectMocks
+    private ClasspathConflictsChecker checker;
 
     @Test
     void testProcessInternal()
@@ -72,13 +86,11 @@ class ClasspathConflictsCheckerTest
         ));
 
         InventoryReport warReport = new InventoryReport();
-        warReport.setResources(of(CLASSPATH_ELEMENT, warResources));
+        warReport.setResources(Map.of(CLASSPATH_ELEMENT, warResources));
 
-        InventoryReport ampReport = new InventoryReport();
-        ampReport.setResources(of(CLASSPATH_ELEMENT, ampResources));
+        doReturn(ampResources).when(configService).getExtensionResources(eq(CLASSPATH_ELEMENT));
 
-        final List<Conflict> actualResult = checker.processInternal(ampReport, warReport,
-            of(ALFRESCO_VERSION, "6.0.0", EXTENSION_FILE_TYPE, "amp"));
+        final List<Conflict> actualResult = checker.processInternal(warReport, "6.0.0").collect(toList());
         assertEquals(expectedResult.size(), actualResult.size());
         assertTrue(actualResult.containsAll(expectedResult));
     }
