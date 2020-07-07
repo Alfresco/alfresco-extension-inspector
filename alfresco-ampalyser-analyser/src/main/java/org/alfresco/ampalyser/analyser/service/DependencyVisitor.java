@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.checker;
+package org.alfresco.ampalyser.analyser.service;
 
 import java.util.HashMap;
 import java.util.HashSet;

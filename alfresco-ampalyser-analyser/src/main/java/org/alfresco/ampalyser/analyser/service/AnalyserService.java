@@ -7,14 +7,18 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
 import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
+import static org.alfresco.ampalyser.analyser.checker.CustomCodeChecker.AMP_JAVA_CLASSES;
 import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
+import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.analyser.comparators.WarComparatorService;
 import org.alfresco.ampalyser.analyser.result.Conflict;
@@ -69,6 +74,7 @@ public class AnalyserService
         List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
         Set<String> beanOverridingWhitelist = loadWhitelistBeanOverriding(whitelistBeanOverridingPath);
         Set<String> beanRestrictedClassesWhitelist = loadWhitelistBeanRestrictedClasses(whitelistRestrictedClassesPath);
+        Map<String, byte[]> classes = findClasses(ampPath);
 
         final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
@@ -80,7 +86,8 @@ public class AnalyserService
                     FILE_MAPPING_NAME, fileMappingFiles,
                     WHITELIST_BEAN_OVERRIDING, beanOverridingWhitelist,
                     WHITELIST_BEAN_RESTRICTED_CLASSES, beanRestrictedClassesWhitelist,
-                    EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath)
+                    EXTENSION_FILE_TYPE, FileUtils.getExtension(ampPath),
+                    AMP_JAVA_CLASSES, classes
                 ))
             ));
 
@@ -142,6 +149,63 @@ public class AnalyserService
         }
 
         return foundProperties;
+    }
+
+    /**
+     * Finds and computes a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
+     *
+     * @param ampPath the location of the amp
+     * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
+     */
+    private static Map<String, byte[]> findClasses(String ampPath)
+    {
+        Map<String, byte[]> javaClasses = new HashMap<>();
+
+        int lastSlash = ampPath.lastIndexOf("/");
+        int lastDot = ampPath.lastIndexOf(".");
+        String ampNameWithVersion = ampPath.substring(lastSlash + 1, lastDot);
+        LOGGER.info("Looking for " + ampNameWithVersion + " jar");
+
+        try
+        {
+            // Iterate through the .amp
+            ZipInputStream zis = new ZipInputStream((new FileInputStream(ampPath)));
+            ZipEntry entry = zis.getNextEntry();
+
+            while (entry != null)
+            {
+                // Find the .jar with the .amp filename
+                if (entry.getName().contains(ampNameWithVersion))
+                {
+                    // Extract the jar
+                    byte[] data = extract(zis);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(data);
+                    ZipInputStream jarZis = new ZipInputStream(bis);
+                    ZipEntry jarZe = jarZis.getNextEntry();
+
+                    // Iterate through the .jar
+                    while (jarZe != null)
+                    {
+                        if (jarZe.getName().endsWith(".class"))
+                        {
+                            LOGGER.info("Found a class " + jarZe);
+                            javaClasses.put(jarZe.getName(), extract(jarZis));
+                        }
+                        jarZis.closeEntry();
+                        jarZe = jarZis.getNextEntry();
+                    }
+                }
+                zis.closeEntry();
+                entry = zis.getNextEntry();
+            }
+        }
+        catch (IOException ioe)
+        {
+            LOGGER.error("Failed to open and iterate through the .amp file: " + ampPath, ioe);
+            throw new RuntimeException("Failed to open and iterate through the .amp file: " + ampPath, ioe);
+        }
+
+        return javaClasses;
     }
 
     /**

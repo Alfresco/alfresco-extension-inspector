@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.alfresco.ampalyser.analyser.checker.DependencyVisitor;
+import org.alfresco.ampalyser.analyser.service.DependencyVisitor;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 
