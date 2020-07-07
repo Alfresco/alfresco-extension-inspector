@@ -7,15 +7,23 @@
  */
 package org.alfresco.ampalyser.analyser;
 
-import java.io.File;
+import static org.alfresco.ampalyser.analyser.CommandOptionsResolver.checkCommandArgs;
+import static org.alfresco.ampalyser.analyser.CommandOptionsResolver.extractExtensionPath;
+import static org.alfresco.ampalyser.analyser.CommandOptionsResolver.extractWhitelistPath;
+import static org.alfresco.ampalyser.analyser.CommandOptionsResolver.validateAnalyserOptions;
+import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
+import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printUsage;
+
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
-import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +53,11 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     private static final int EXIT_CODE_EXCEPTION = 1;
 
     @Autowired
-    private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
+    private CommandOptionsResolver commandOptionsResolver;
+
+    @Autowired
+    private WarInventoryReportStore warInventoryReportStore;
+    
     @Autowired
     private AnalyserService analyserService;
 
@@ -57,74 +69,86 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception
+    public void run(ApplicationArguments args)
     {
-        if (args.getNonOptionArgs().isEmpty())
+        final Set<String> options = args.getOptionNames();
+        final List<String> nonOptionArgs = args.getNonOptionArgs();
+
+        try
         {
-            logger.error("Missing extension file.");
-            printUsage();
+            // Stop if no command arguments have been provided
+            checkCommandArgs(options, nonOptionArgs);
+            
+            if (nonOptionArgs.isEmpty())
+            {
+                Iterator<String> iterator = options.iterator();
+                execute(iterator.next(), iterator);
+            }
+            else
+            {
+                final String extensionPath = extractExtensionPath(nonOptionArgs);
+                if (options.isEmpty())
+                {
+                    analyserService.analyse(extensionPath);
+                    return;
+                }
+                validateAnalyserOptions(options);
+
+                final SortedSet<String> versions = commandOptionsResolver
+                    .extractTargetVersions(args);
+                final String beanOverridingWhitelistPath = extractWhitelistPath(
+                    "whitelistBeanOverriding", args);
+                final String beanRestrictedClassWhitelistPath = extractWhitelistPath(
+                    "whitelistBeanRestrictedClasses", args);
+
+                analyserService.analyse(extensionPath, versions, beanOverridingWhitelistPath,
+                    beanRestrictedClassWhitelistPath, args.containsOption("verbose"));
+            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            logger.error(e.getMessage());
             setExceptionExitCode();
             return;
         }
-
-        final String extensionPath = args.getNonOptionArgs().get(0);
-        if (!isExtensionValid(extensionPath))
-        {
-            logger.error("The extension file is not valid.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-        // TODO: Improve argument retrieval and validation via ACS-355
-        final List<String> beanOverridingWhitelistPaths = args.getOptionValues("whitelistBeanOverriding");
-        String whitelistBeanOverridingPath = beanOverridingWhitelistPaths == null || beanOverridingWhitelistPaths.isEmpty() ? null : beanOverridingWhitelistPaths.get(0);
-        if (beanOverridingWhitelistPaths != null && beanOverridingWhitelistPaths.size() > 1)
-        {
-            logger.error("Multiple Bean Overriding Whitelists provided.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-        final List<String> beanRestrictedClassWhitelistPaths = args.getOptionValues("whitelistBeanRestrictedClasses");
-        String whitelistRestrictedClassesPath = beanRestrictedClassWhitelistPaths == null || beanRestrictedClassWhitelistPaths.isEmpty() ? null : beanRestrictedClassWhitelistPaths.get(0);
-        if (beanRestrictedClassWhitelistPaths != null && beanRestrictedClassWhitelistPaths.size() > 1)
-        {
-            logger.error("Multiple Bean Restricted Classes Whitelists provided.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-
-        final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
-        if (versions.isEmpty())
-        {
-            logger.error("The target ACS version was not recognised.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-        analyserService.analyse(extensionPath, versions, whitelistBeanOverridingPath,
-            whitelistRestrictedClassesPath, args.containsOption("verbose"));
     }
 
-    private static boolean isExtensionValid(final String extensionPath)
+    public void execute(String command, Iterator<String> commandOptions)
     {
-        return new File(extensionPath).exists() &&
-               (FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("amp") ||
-                FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("jar"));
+        switch (command)
+        {
+        case "help":
+            if (commandOptions.hasNext())
+            {
+                printUsage("--help");
+                throw new IllegalArgumentException(
+                    "Unknown options provided for '--help' command.");
+            }
+            printHelp();
+            break;
+        case "list-known-alfresco-versions":
+            if (commandOptions.hasNext())
+            {
+                printUsage("--list-known-alfresco-versions");
+                throw new IllegalArgumentException(
+                    "Unknown options provided for '--list-known-alfresco-versions' command.");
+            }
+            listKnownAlfrescoVersions();
+            break;
+        default:
+            printUsage("[--help]", "[--list-known-alfresco-versions]",
+                "<extension-filename> [--target=6.1.0[-7.0.0]] "
+                    + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
+                    + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] "
+                    + "[--verbose]");
+            throw new IllegalArgumentException("Unknown command provided: " + command);
+        }
     }
 
-    private static void printUsage()
+    private void listKnownAlfrescoVersions()
     {
-        System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] "
-            + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
-            + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] " 
-            + "[--verbose]");
+        System.out.println("Known Alfresco versions: " + StringUtils
+            .joinWith(", ", warInventoryReportStore.allKnownVersions()));
     }
 
     @Bean

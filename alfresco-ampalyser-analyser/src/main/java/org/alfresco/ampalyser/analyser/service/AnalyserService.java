@@ -1,6 +1,7 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -66,6 +67,12 @@ public class AnalyserService
     @Autowired
     private ObjectMapper objectMapper;
 
+    public void analyse(final String ampPath)
+    {
+        analyse(ampPath, unmodifiableSortedSet(warInventoryStore.allKnownVersions()), null, null,
+            false);
+    }
+    
     public void analyse(final String ampPath, final SortedSet<String> alfrescoVersions,
         final String whitelistBeanOverridingPath, final String whitelistRestrictedClassesPath,
         final boolean verboseOutput)
