@@ -19,21 +19,28 @@ public class UsagePrinter
                 + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
                 + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] "
                 + "[--verbose]");
-        //TODO write manual
+        //TODO
     }
 
-    public static void printAnalyserUsage()
+    public static void printAnalyserUsage(String errorMessage)
     {
+        System.out.println("error: " + errorMessage);
         printUsage("<extension-filename> [--target=6.1.0[-7.0.0]] "
             + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
             + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] "
             + "[--verbose]");
+    }
+    
+    public static void printCommandUsage(String command, String errorMessage)
+    {
+        System.out.println("error: " + errorMessage);
+        printUsage(command);
     }
 
     public static void printUsage(String... supportedCommands)
     {
         System.out.println("Usage: ");
         System.out.println("java -jar alfresco-ampalyser-analyser.jar " + StringUtils
-            .joinWith("\n", supportedCommands));
+            .joinWith("\n   ", supportedCommands));
     }
 }

@@ -6,11 +6,10 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser;
+package org.alfresco.ampalyser.analyser.runner;
 
 import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printAnalyserUsage;
-import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
-import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printUsage;
+import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printCommandUsage;
 
 import java.io.File;
 import java.util.Iterator;
@@ -19,9 +18,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
@@ -39,16 +36,16 @@ public class CommandOptionsResolver
     {
         if (nonOptionArgs.size() > 1)
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException("Multiple extension files have been provided.");
+            printAnalyserUsage("Multiple extension files have been provided.");
+            throw new IllegalArgumentException();
         }
 
         String extensionPath = nonOptionArgs.get(0);
         if (!isExtensionValid(extensionPath))
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException(
+            printAnalyserUsage(
                 "The extension file is not valid or does not exist. Supported file formats are AMP and JAR.");
+            throw new IllegalArgumentException();
         }
 
         return extensionPath;
@@ -63,22 +60,21 @@ public class CommandOptionsResolver
         }
         if (whitelistPaths.isEmpty())
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException("Invalid whitelist path provided (missing value).");
+            printAnalyserUsage("Invalid whitelist path provided (missing value).");
+            throw new IllegalArgumentException();
         }
         if (whitelistPaths.size() > 1)
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException(
+            printAnalyserUsage(
                 "Multiple whitelists provided.(command option '" + whitelistOption + "')");
+            throw new IllegalArgumentException();
         }
         String path = whitelistPaths.get(0);
         if (!new File(path).exists() || !FilenameUtils.getExtension(path).equalsIgnoreCase("json"))
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException(
-                "The whitelist file is not valid or does not exist.(command option '"
-                    + whitelistOption + "') Supported file format is JSON.");
+            printAnalyserUsage("The whitelist file is not valid or does not exist.(command option '"
+                + whitelistOption + "') Supported file format is JSON.");
+            throw new IllegalArgumentException();
         }
         return path;
     }
@@ -89,8 +85,8 @@ public class CommandOptionsResolver
             .parse(args.getOptionValues("target"));
         if (versions.isEmpty())
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException("The target ACS version was not recognised.");
+            printAnalyserUsage("Target ACS version was not recognised.");
+            throw new IllegalArgumentException();
         }
         return versions;
     }
@@ -99,24 +95,24 @@ public class CommandOptionsResolver
     {
         if (!ANALYSER_COMMAND_OPTIONS.containsAll(options))
         {
-            printAnalyserUsage();
-            throw new IllegalArgumentException("Unknown options provided.");
+            printAnalyserUsage("Unknown options provided.");
+            throw new IllegalArgumentException();
         }
     }
-    
-    public static void checkCommandArgs(Set<String> options, List<String> nonOptionArgs)
+
+    public static void validateOptionsForCommand(String command, Iterator<String> commandOptions)
     {
-        if (nonOptionArgs.isEmpty() && options.isEmpty())
+        if (commandOptions.hasNext())
         {
-            printHelp();
-            throw new IllegalArgumentException("No command provided.");
+            printCommandUsage(command, "Unknown options provided for '" + command + "' command.");
+            throw new IllegalArgumentException();
         }
     }
 
     private static boolean isExtensionValid(final String extensionPath)
     {
-        return new File(extensionPath).exists() &&
-            (FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("amp") ||
-                FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("jar"));
+        return new File(extensionPath).exists() && (
+            FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("amp") || FilenameUtils
+                .getExtension(extensionPath).equalsIgnoreCase("jar"));
     }
 }
