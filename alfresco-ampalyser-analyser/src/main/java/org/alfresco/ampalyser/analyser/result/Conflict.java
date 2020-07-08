@@ -33,7 +33,8 @@ public interface Conflict
         FILE_OVERWRITE,
         BEAN_OVERWRITE,
         RESTRICTED_BEAN_CLASS,
-        CLASSPATH_CONFLICT;
+        CLASSPATH_CONFLICT,
+        CUSTOM_CODE;
 
         public static class Constants
         {
@@ -41,6 +42,7 @@ public interface Conflict
             public static final String BEAN_OVERWRITE= "BEAN_OVERWRITE";
             public static final String RESTRICTED_BEAN_CLASS= "RESTRICTED_BEAN_CLASS";
             public static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
+            public static final String CUSTOM_CODE = "CUSTOM_CODE";
         }
     }
 

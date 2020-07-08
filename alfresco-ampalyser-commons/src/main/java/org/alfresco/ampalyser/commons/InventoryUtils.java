@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.Attributes;
@@ -43,7 +44,7 @@ public class InventoryUtils
         return v1;
     }
 
-    public static byte[] extract(ZipInputStream zis) throws IOException
+    public static byte[] extract(InputStream zis) throws IOException
     {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

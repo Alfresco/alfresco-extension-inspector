@@ -29,7 +29,7 @@ public class AnalyserService
 
     @Autowired
     private WarComparatorService warComparatorService;
-    
+
     @Autowired
     private AnalyserOutputService outputService;
 
