@@ -74,7 +74,7 @@ public class AnalyserService
         List<Properties> fileMappingFiles = findFileMappingFiles(ampPath, ampInventory.getResources().get(FILE));
         Set<String> beanOverridingWhitelist = loadWhitelistBeanOverriding(whitelistBeanOverridingPath);
         Set<String> beanRestrictedClassesWhitelist = loadWhitelistBeanRestrictedClasses(whitelistRestrictedClassesPath);
-        Map<String, byte[]> classes = findClasses(ampPath);
+        Map<String, byte[]> classes = findClasses(ampPath, ampInventory);
 
         final Map<String, List<Conflict>> conflictsPerWarVersion = alfrescoVersions
             .stream()
@@ -157,7 +157,7 @@ public class AnalyserService
      * @param ampPath the location of the amp
      * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
      */
-    private static Map<String, byte[]> findClasses(String ampPath)
+    private static Map<String, byte[]> findClasses(String ampPath, InventoryReport ampInventoruy)
     {
         Map<String, byte[]> javaClasses = new HashMap<>();
 
@@ -169,39 +169,36 @@ public class AnalyserService
         try
         {
             // Iterate through the .amp
-            ZipInputStream zis = new ZipInputStream((new FileInputStream(ampPath)));
-            ZipEntry entry = zis.getNextEntry();
+            Resource ampJarResource = ampInventoruy.getResources().get(FILE).stream()
+                .filter(r -> r.getId().contains(ampNameWithVersion))
+                .findFirst().orElse(null);
 
-            while (entry != null)
+            ZipFile zipFile = new ZipFile(ampPath);
+            ZipEntry ampJarEntry = zipFile.getEntry(ampJarResource.getId().substring(1));
+            InputStream inputStream = zipFile.getInputStream(ampJarEntry);
+
+            // Extract the jar
+            byte[] data = extract(inputStream);
+            ByteArrayInputStream bis = new ByteArrayInputStream(data);
+            ZipInputStream jarZis = new ZipInputStream(bis);
+            ZipEntry jarZe = jarZis.getNextEntry();
+
+            // Iterate through the .jar
+            while (jarZe != null)
             {
-                // Find the .jar with the .amp filename
-                if (entry.getName().contains(ampNameWithVersion))
+                String jzeName = jarZe.getName();
+                if (jzeName.endsWith(".class"))
                 {
-                    // Extract the jar
-                    byte[] data = extract(zis);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(data);
-                    ZipInputStream jarZis = new ZipInputStream(bis);
-                    ZipEntry jarZe = jarZis.getNextEntry();
-
-                    // Iterate through the .jar
-                    while (jarZe != null)
-                    {
-                        String jzeName = jarZe.getName();
-                        if (jzeName.endsWith(".class"))
-                        {
-                            javaClasses.put(
-                                jzeName.substring(0, jzeName.length() - 6).replaceAll("/", "."),
-                                extract(jarZis));
-                            LOGGER.debug("Found a class " + jzeName);
-                        }
-                        jarZis.closeEntry();
-                        jarZe = jarZis.getNextEntry();
-                    }
+                    javaClasses.put(
+                        jzeName.substring(0, jzeName.length() - 6).replaceAll("/", "."),
+                        extract(jarZis));
+                    LOGGER.debug("Found a class " + jzeName);
                 }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
+                jarZis.closeEntry();
+                jarZe = jarZis.getNextEntry();
             }
         }
+
         catch (IOException ioe)
         {
             LOGGER.error("Failed to open and iterate through the provided file: " + ampPath, ioe);

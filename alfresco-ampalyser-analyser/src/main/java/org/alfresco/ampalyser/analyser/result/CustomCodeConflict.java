@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 
 import java.util.Objects;
 import java.util.Set;
@@ -32,7 +32,7 @@ public class CustomCodeConflict extends AbstractConflict
     public CustomCodeConflict(Resource ampResourceInConflict, Resource warResourceInConflict,
         Set<String> invalidAlfrescoDependencies, String alfrescoVersion)
     {
-        super(FILE_OVERWRITE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
+        super(CUSTOM_CODE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
         this.invalidAlfrescoDependencies = invalidAlfrescoDependencies;
     }
 
