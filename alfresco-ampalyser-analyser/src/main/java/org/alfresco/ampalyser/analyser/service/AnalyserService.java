@@ -201,8 +201,8 @@ public class AnalyserService
         }
         catch (IOException ioe)
         {
-            LOGGER.error("Failed to open and iterate through the .amp file: " + ampPath, ioe);
-            throw new RuntimeException("Failed to open and iterate through the .amp file: " + ampPath, ioe);
+            LOGGER.error("Failed to open and iterate through the provided file: " + ampPath, ioe);
+            throw new RuntimeException("Failed to open and iterate through the provided file: " + ampPath, ioe);
         }
 
         return javaClasses;
