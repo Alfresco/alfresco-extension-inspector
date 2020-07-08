@@ -44,7 +44,7 @@ public class ConfigService
     private Map<Resource.Type, List<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
-    private Set<String> beanClassBlacklist = emptySet();
+    private Set<String> beanClassWhitelist = emptySet();
     private boolean verboseOutput = false;
 
     //region Simple Accessors
@@ -68,9 +68,9 @@ public class ConfigService
         return beanOverrideWhitelist;
     }
 
-    public Set<String> getBeanClassBlacklist()
+    public Set<String> getBeanClassWhitelist()
     {
-        return beanClassBlacklist;
+        return beanClassWhitelist;
     }
 
     public boolean isVerboseOutput()
@@ -99,9 +99,9 @@ public class ConfigService
         beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist(path);
     }
 
-    public void registerBeanClassBlacklist(final String path)
+    public void registerBeanClassWhitelist(final String path)
     {
-        beanClassBlacklist = whitelistService.loadWhitelistBeanRestrictedClasses(path);
+        beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
     }
     //endregion
 }

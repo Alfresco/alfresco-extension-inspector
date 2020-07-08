@@ -67,7 +67,7 @@ public class BeanRestrictedClassesCheckerTest
 
         warReport.addResources(warResources);
 
-        doReturn(Set.of("org.alfresco.C2")).when(configService).getBeanClassBlacklist();
+        doReturn(Set.of("org.alfresco.C2")).when(configService).getBeanClassWhitelist();
 
         List<Conflict> conflicts = brcChecker.process(warReport, "6.66").collect(toList());
         assertEquals(1, conflicts.size());

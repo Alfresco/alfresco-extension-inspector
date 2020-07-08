@@ -29,7 +29,7 @@ public class WhitelistService
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
 
     private static final String DEFAULT_BEAN_OVERRIDE_WHITELIST = "/bean-overriding-whitelist.default.json";
-    private static final String DEFAULT_BEAN_CLASS_BLACKLIST = "/bean-restricted-classes-whitelist.default.json";
+    private static final String DEFAULT_BEAN_CLASS_WHITELIST = "/bean-restricted-classes-whitelist.default.json";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -82,23 +82,23 @@ public class WhitelistService
      *
      * @return a {@link Set} of the whitelisted beans (that can be overridden).
      */
-    public Set<String> loadWhitelistBeanRestrictedClasses(final String path)
+    public Set<String> loadBeanClassWhitelist(final String path)
     {
         final Set<String> whitelist = new HashSet<>();
 
         try
         {
             whitelist.addAll(objectMapper.readValue(
-                getClass().getResourceAsStream(DEFAULT_BEAN_CLASS_BLACKLIST),
+                getClass().getResourceAsStream(DEFAULT_BEAN_CLASS_WHITELIST),
                 new TypeReference<>() {}));
         }
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + DEFAULT_BEAN_CLASS_BLACKLIST,
+                "Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + DEFAULT_BEAN_CLASS_WHITELIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT Bean Restricted Whitelist file: " + DEFAULT_BEAN_CLASS_BLACKLIST,
+                "Failed to read DEFAULT Bean Restricted Whitelist file: " + DEFAULT_BEAN_CLASS_WHITELIST,
                 ioe);
         }
 

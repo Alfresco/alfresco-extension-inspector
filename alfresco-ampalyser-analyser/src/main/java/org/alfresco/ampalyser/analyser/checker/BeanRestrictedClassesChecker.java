@@ -42,12 +42,12 @@ public class BeanRestrictedClassesChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Set<String> blacklist = Stream
+        final Set<String> whitelist = Stream
             .concat(
                 // The list coming from the file the user provided
-                configService.getBeanClassBlacklist().stream(),
+                configService.getBeanClassWhitelist().stream(),
 
-                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the blacklist.
+                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
                 warInventory
                     .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
                     .stream()
@@ -60,7 +60,7 @@ public class BeanRestrictedClassesChecker implements Checker
             .filter(ampR -> (ampR instanceof BeanResource
                     && ((BeanResource) ampR).getBeanClass() != null)
                     && ((BeanResource) ampR).getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
-            .filter(ampR -> !blacklist.contains(((BeanResource) ampR).getBeanClass())) // is this right?
+            .filter(ampR -> !whitelist.contains(((BeanResource) ampR).getBeanClass())) // is this right?
             .map(ampR -> new RestrictedBeanClassConflict(ampR, null, alfrescoVersion));
     }
 

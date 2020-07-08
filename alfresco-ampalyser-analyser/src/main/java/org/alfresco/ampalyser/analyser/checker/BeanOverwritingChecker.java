@@ -8,8 +8,6 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.util.Map;

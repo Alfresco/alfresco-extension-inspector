@@ -82,30 +82,30 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
         }
 
         // TODO: Improve argument retrieval and validation via ACS-355
-        final List<String> whitelistArgs = args.getOptionValues("beanOverrideWhitelist");
-        if (whitelistArgs != null && whitelistArgs.size() > 1)
+        final List<String> beanOverrideWhitelist = args.getOptionValues("beanOverrideWhitelist");
+        if (beanOverrideWhitelist != null && beanOverrideWhitelist.size() > 1)
         {
             logger.error("Multiple Bean Overriding Whitelists provided.");
             printUsage();
             setExceptionExitCode();
             return;
         }
-        if (!isEmpty(whitelistArgs))
+        if (!isEmpty(beanOverrideWhitelist))
         {
-            configService.registerBeanOverrideWhitelistPath(whitelistArgs.get(0));
+            configService.registerBeanOverrideWhitelistPath(beanOverrideWhitelist.get(0));
         }
 
-        final List<String> blacklistArgs = args.getOptionValues("beanClassBlacklist");
-        if (blacklistArgs != null && blacklistArgs.size() > 1)
+        final List<String> beanClassWhitelist = args.getOptionValues("beanClassWhitelist");
+        if (beanClassWhitelist != null && beanClassWhitelist.size() > 1)
         {
             logger.error("Multiple Bean Restricted Classes Whitelists provided.");
             printUsage();
             setExceptionExitCode();
             return;
         }
-        if (!isEmpty(blacklistArgs))
+        if (!isEmpty(beanClassWhitelist))
         {
-            configService.registerBeanClassBlacklist(blacklistArgs.get(0));
+            configService.registerBeanClassWhitelist(beanClassWhitelist.get(0));
         }
 
         final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
