@@ -59,11 +59,7 @@ public class CustomCodeChecker implements Checker
             .map(r -> (AlfrescoPublicApiResource) r)
             .collect(toMap(Resource::getId, AlfrescoPublicApiResource::isDeprecated));
 
-        // For each amp class
-        // Only keep as 'invalid' dependencies
-        // the 'org.alfresco' classes
-        // that do not belong to the .amp classes
-        // and that are not annotated with the @AlfrescoPublicApi OR are annotated but the class is deprecated
+        // For each amp class only keep its invalid dependencies
         Map<String, Set<String>> filteredAmpClassesDependencies = ampClassesDependencies.entrySet().stream()
             .collect(toMap(
                 Map.Entry::getKey,
