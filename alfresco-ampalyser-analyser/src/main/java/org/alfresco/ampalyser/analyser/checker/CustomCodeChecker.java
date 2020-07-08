@@ -49,7 +49,7 @@ public class CustomCodeChecker implements Checker
         InventoryReport warInventory, Map<String, Object> extraInfo)
     {
         Map<String, byte[]> ampClasses = (Map<String, byte[]>) extraInfo.get(AMP_JAVA_CLASSES);
-        Map<String, Set<String>> ampClassesDependencies = new HashMap<>();
+        Map<String, Set<String>> ampClassesDependencies = new HashMap<>(ampClasses.size());
 
         // Visit each class to search for all its the dependencies
         ampClasses.forEach((k,v) -> ampClassesDependencies.put(k, findDependenciesForClass(v)));
