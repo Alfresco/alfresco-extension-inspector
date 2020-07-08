@@ -1,5 +1,6 @@
 package org.alfresco.ampalyser.analyser.service;
 
+import static java.util.Map.Entry;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -21,11 +22,16 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.model.Resource;
+import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Cezar Leahu
+ * @author Lucian Tuca
+ */
 @Component
 public class ExtensionResourceInfoService
 {
@@ -37,7 +43,7 @@ public class ExtensionResourceInfoService
     private Map<String, Set<Resource>> beanOverridesById;
     private Map<String, Set<Resource>> classpathElementsById;
     private Map<String, Resource> filesByDestination;
-    private Map<String, byte[]> bytecodePerClass;
+    private Map<String, Set<String>> dependenciesPerClass;
 
     public Map<String, Set<Resource>> retrieveBeanOverridesById()
     {
@@ -80,14 +86,19 @@ public class ExtensionResourceInfoService
         return filesByDestination;
     }
 
-    // TODO check if any further processing can be done here (instead of returning bytecode, maybe we can compute the actual necessary info
-    public Map<String, byte[]> retrieveBytecodePerClass()
+    public Map<String, Set<String>> retrieveDependenciesPerClass()
     {
-        if (bytecodePerClass == null)
+        if (dependenciesPerClass == null)
         {
-            bytecodePerClass = findClasses(configService.getExtensionPath(), configService.getExtensionResources(FILE));
+            final Map<String, byte[]> bytecodePerClass = findClasses(
+                configService.getExtensionPath(), configService.getExtensionResources(FILE));
+
+            dependenciesPerClass = bytecodePerClass
+                .entrySet()
+                .stream()
+                .collect(toMap(Entry::getKey, e -> findDependenciesForClass(e.getValue())));
         }
-        return bytecodePerClass;
+        return dependenciesPerClass;
     }
 
     private static String computeDestination(final Resource resource, final Map<String, String> fileMappings)
@@ -183,5 +194,25 @@ public class ExtensionResourceInfoService
         }
 
         return javaClasses;
+    }
+
+    /**
+     * For a given .class file provided as byte[] this method finds all the classes this class uses.
+     *
+     * @param classData the .class file as byte[]
+     * @return a {@link Set} of the used classes
+     */
+    private static Set<String> findDependenciesForClass(final byte[] classData)
+    {
+        final DependencyVisitor visitor = new DependencyVisitor();
+        final ClassReader reader = new ClassReader(classData);
+        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+        visitor.visitEnd();
+
+        return visitor
+            .getClasses()
+            .stream()
+            .map(c -> c.replaceAll("/", "."))
+            .collect(toSet());
     }
 }

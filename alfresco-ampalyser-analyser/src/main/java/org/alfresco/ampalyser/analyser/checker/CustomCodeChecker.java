@@ -21,12 +21,10 @@ import java.util.stream.Stream;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.service.DependencyVisitor;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
-import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +52,7 @@ public class CustomCodeChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Map<String, byte[]> extensionClasses = extensionResourceInfoService.retrieveBytecodePerClass();
+        final Map<String, Set<String>> dependenciesPerClass = extensionResourceInfoService.retrieveDependenciesPerClass();
 
         // Create a Map of the AlfrescoPublicApi with the class/id as the key and whether or not it is deprecated as the value
         final Map<String, Boolean> warPublicApis = warInventory
@@ -63,15 +61,15 @@ public class CustomCodeChecker implements Checker
             .map(r -> (AlfrescoPublicApiResource) r)
             .collect(toMap(Resource::getId, AlfrescoPublicApiResource::isDeprecated));
 
-        return extensionClasses
+        return dependenciesPerClass
             .entrySet()
             .stream()
             .map(e -> new SimpleEntry<>(
                 e.getKey(),
-                findDependenciesForClass(e.getValue())
-                    .stream()
-                    .filter(c -> isInvalidAlfrescoDependency(c, warPublicApis, extensionClasses))
-                    .collect(toSet())
+                e.getValue()
+                 .stream()
+                 .filter(c -> isInvalidAlfrescoDependency(c, warPublicApis, dependenciesPerClass.keySet()))
+                 .collect(toSet())
             ))
             .filter(e -> !e.getValue().isEmpty())
             .map(e -> new CustomCodeConflict(
@@ -97,32 +95,12 @@ public class CustomCodeChecker implements Checker
      */
     private static boolean isInvalidAlfrescoDependency(final String clazz,
         final Map<String, Boolean> publicApis,
-        final Map<String, byte[]> extensionClasses)
+        final Set<String> extensionClasses)
     {
         return clazz.startsWith("org.alfresco") &&
-               !extensionClasses.containsKey(clazz) &&
+               !extensionClasses.contains(clazz) &&
                (!publicApis.containsKey(clazz) ||
                 (publicApis.containsKey(clazz) && publicApis.get(clazz)));
-    }
-
-    /**
-     * For a given .class file provided as byte[] this method finds all the classes this class uses.
-     *
-     * @param classData the .class file as byte[]
-     * @return a {@link Set} of the used classes
-     */
-    private static Set<String> findDependenciesForClass(final byte[] classData)
-    {
-        final DependencyVisitor visitor = new DependencyVisitor();
-        final ClassReader reader = new ClassReader(classData);
-        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-        visitor.visitEnd();
-
-        return visitor
-            .getClasses()
-            .stream()
-            .map(c -> c.replaceAll("/", "."))
-            .collect(toSet());
     }
 
     /**
