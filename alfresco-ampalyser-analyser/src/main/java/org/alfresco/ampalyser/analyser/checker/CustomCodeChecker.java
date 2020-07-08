@@ -91,10 +91,10 @@ public class CustomCodeChecker implements Checker
      */
     private static boolean isInvalidAlfrescoDependency(String clazz, Map<String, Boolean> alfrescoPublicApis, Map<String, byte[]> ampClasses)
     {
-        return clazz.startsWith("org/alfresco") &&
-            !ampClasses.containsKey(clazz + ".class") &&
-            (!alfrescoPublicApis.containsKey(clazz.replaceAll("/", ".")) ||
-             (alfrescoPublicApis.containsKey(clazz.replaceAll("/", ".")) && alfrescoPublicApis.get(clazz.replaceAll("/", "."))));
+        return clazz.startsWith("org.alfresco") &&
+            !ampClasses.containsKey(clazz) &&
+            (!alfrescoPublicApis.containsKey(clazz) ||
+             (alfrescoPublicApis.containsKey(clazz) && alfrescoPublicApis.get(clazz)));
     }
 
     /**
@@ -110,7 +110,9 @@ public class CustomCodeChecker implements Checker
         reader.accept(visitor, ClassReader.EXPAND_FRAMES);
         visitor.visitEnd();
 
-        return visitor.getClasses();
+        return visitor.getClasses().stream()
+            .map(c -> c.replaceAll("/", "."))
+            .collect(toSet());
     }
 
     /**

@@ -186,10 +186,13 @@ public class AnalyserService
                     // Iterate through the .jar
                     while (jarZe != null)
                     {
-                        if (jarZe.getName().endsWith(".class"))
+                        String jzeName = jarZe.getName();
+                        if (jzeName.endsWith(".class"))
                         {
-                            LOGGER.info("Found a class " + jarZe);
-                            javaClasses.put(jarZe.getName(), extract(jarZis));
+                            javaClasses.put(
+                                jzeName.substring(0, jzeName.length() - 6).replaceAll("/", "."),
+                                extract(jarZis));
+                            LOGGER.debug("Found a class " + jzeName);
                         }
                         jarZis.closeEntry();
                         jarZe = jarZis.getNextEntry();
