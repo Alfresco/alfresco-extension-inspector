@@ -1,10 +1,16 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Map.Entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +24,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
