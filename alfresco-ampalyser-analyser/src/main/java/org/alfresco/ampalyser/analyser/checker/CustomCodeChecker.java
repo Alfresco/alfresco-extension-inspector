@@ -52,15 +52,7 @@ public class CustomCodeChecker implements Checker
         Map<String, Set<String>> ampClassesDependencies = new HashMap<>();
 
         // Visit each class to search for all its the dependencies
-        for (Map.Entry<String, byte[]> entry : ampClasses.entrySet())
-        {
-            final DependencyVisitor visitor = new DependencyVisitor();
-            final ClassReader reader = new ClassReader(entry.getValue());
-            reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-            visitor.visitEnd();
-
-            ampClassesDependencies.put(entry.getKey(), visitor.getClasses());
-        }
+        ampClasses.forEach((k,v) -> ampClassesDependencies.put(k, findDependenciesForClass(v)));
 
         // Create a Map of the AlfrescoPublicApi with the class/id as the key and whether or not it is deprecated as the value
         Map<String, Boolean> alfrescoPublicApis = warInventory.getResources().get(ALFRESCO_PUBLIC_API).stream()
@@ -78,11 +70,7 @@ public class CustomCodeChecker implements Checker
                 e -> e
                     .getValue()
                     .stream()
-                    .filter(s ->
-                            s.startsWith("org/alfresco") &&
-                            !ampClasses.containsKey(s + ".class") &&
-                            (!alfrescoPublicApis.containsKey(s.replaceAll("/", ".")) ||
-                            (alfrescoPublicApis.containsKey(s.replaceAll("/", ".")) && alfrescoPublicApis.get(s.replaceAll("/", ".")))))
+                    .filter(c -> isInvalidAlfrescoDependency(c, alfrescoPublicApis, ampClasses))
                     .collect(toSet())
             ));
 
@@ -93,12 +81,49 @@ public class CustomCodeChecker implements Checker
     }
 
     /**
+     * For a given class this method decides whether or not this class represents and invalid Alfresco dependency
+     * by checking the following conditions:
+     *
+     * * It is an Alfresco class
+     * * It is not marked as AlfrescoPublicAPI
+     * * It is marked as AlfrescoPublicAPI but is Deprecated
+     *
+     * @param clazz
+     * @param alfrescoPublicApis
+     * @param ampClasses
+     * @return whether or not this class is an invalid Alfresco dependency
+     */
+    private static boolean isInvalidAlfrescoDependency(String clazz, Map<String, Boolean> alfrescoPublicApis, Map<String, byte[]> ampClasses)
+    {
+        return clazz.startsWith("org/alfresco") &&
+            !ampClasses.containsKey(clazz + ".class") &&
+            (!alfrescoPublicApis.containsKey(clazz.replaceAll("/", ".")) ||
+             (alfrescoPublicApis.containsKey(clazz.replaceAll("/", ".")) && alfrescoPublicApis.get(clazz.replaceAll("/", "."))));
+    }
+
+    /**
+     * For a given .class file provided as byte[] this method finds all the classes this class uses.
+     *
+     * @param classData the .class file as byte[]
+     * @return a {@link Set} of the used classes
+     */
+    private static Set<String> findDependenciesForClass(byte[] classData)
+    {
+        final DependencyVisitor visitor = new DependencyVisitor();
+        final ClassReader reader = new ClassReader(classData);
+        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+        visitor.visitEnd();
+
+        return visitor.getClasses();
+    }
+
+    /**
      * Given a java class name (found in the .jar lib of the .amp) this method find the corresponding .amp {@link org.alfresco.ampalyser.model.FileResource}
      * @param jarClass the Java class name that was found in the .jar
      * @param inventoryReport the .amp inventory to look in
      * @return the {@link org.alfresco.ampalyser.model.FileResource} coressponding to the provided class name
      */
-    private Resource findAmpResourceForJarClass(String jarClass, InventoryReport inventoryReport)
+    private static Resource findAmpResourceForJarClass(String jarClass, InventoryReport inventoryReport)
     {
         // Find the real class name by picking the string between the '/' and the '$' or '.'
         int slash = jarClass.lastIndexOf("/");
