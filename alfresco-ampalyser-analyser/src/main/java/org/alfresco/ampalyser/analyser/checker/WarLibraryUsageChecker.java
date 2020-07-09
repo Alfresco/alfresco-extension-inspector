@@ -36,7 +36,7 @@ public class WarLibraryUsageChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Map<String, Set<Resource>> extensionClassesByName = extensionResourceInfoService.retrieveClasspathElementsByName();
+        final Map<String, Set<Resource>> extensionClassesByName = extensionResourceInfoService.retrieveClassResourcesByName();
         final Set<String> extensionDependencies = extensionResourceInfoService.retrieveAllDependencies();
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension
@@ -58,8 +58,8 @@ public class WarLibraryUsageChecker implements Checker
                 e.getKey(),
                 e.getValue()
                  .stream()
-                 .filter(d -> !extensionClassesByName.containsKey(
-                     d)) // filter dependencies included in the extension
+                 // filter dependencies included in the extension
+                 .filter(d -> !extensionClassesByName.containsKey(d))
                  .filter(dependenciesInWar::contains)
                  .collect(toUnmodifiableSet())
             ))

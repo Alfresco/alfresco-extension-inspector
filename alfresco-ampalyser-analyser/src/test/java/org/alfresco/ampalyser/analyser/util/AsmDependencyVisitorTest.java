@@ -5,13 +5,13 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser;
+package org.alfresco.ampalyser.analyser.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.alfresco.ampalyser.analyser.service.DependencyVisitor;
+import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 

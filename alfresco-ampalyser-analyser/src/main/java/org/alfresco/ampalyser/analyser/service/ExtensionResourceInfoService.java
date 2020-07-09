@@ -12,22 +12,16 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
+import static org.alfresco.ampalyser.analyser.util.BytecodeReader.readBytecodeFromArtifact;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
+import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
 import org.alfresco.ampalyser.model.Resource;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
@@ -81,7 +75,7 @@ public class ExtensionResourceInfoService
         return classpathElementsById;
     }
 
-    public Map<String, Set<Resource>> retrieveClasspathElementsByName()
+    public Map<String, Set<Resource>> retrieveClassResourcesByName()
     {
         if (classpathElementsByName == null)
         {
@@ -115,13 +109,13 @@ public class ExtensionResourceInfoService
     {
         if (dependenciesPerClass == null)
         {
-            final Map<String, byte[]> bytecodePerClass = findClasses(
+            final Map<String, byte[]> bytecodePerClass = readBytecodeFromArtifact(
                 configService.getExtensionPath(), configService.getExtensionResources(FILE));
 
             dependenciesPerClass = bytecodePerClass
                 .entrySet()
                 .stream()
-                .collect(toUnmodifiableMap(Entry::getKey, e -> findDependenciesForClass(e.getValue())));
+                .collect(toUnmodifiableMap(Entry::getKey, e -> compileClassDependenciesFromBytecode(e.getValue())));
         }
         return dependenciesPerClass;
     }
@@ -176,63 +170,7 @@ public class ExtensionResourceInfoService
         return matchingSourceMapping;
     }
 
-    /**
-     * Finds and computes a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
-     *
-     * @param ampPath the location of the amp
-     * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
-     */
-    private static Map<String, byte[]> findClasses(final String ampPath, final Collection<Resource> fileResources)
-    {
-        final Map<String, byte[]> javaClasses = new HashMap<>();
 
-        int lastSlash = ampPath.lastIndexOf("/");
-        int lastDot = ampPath.lastIndexOf(".");
-        String ampNameWithVersion = ampPath.substring(lastSlash + 1, lastDot);
-        LOGGER.info("Looking for " + ampNameWithVersion + " jar");
-
-        try
-        {
-            // Iterate through the .amp
-            Resource ampJarResource = fileResources
-                .stream()
-                .filter(r -> r.getId().contains(ampNameWithVersion))
-                .findFirst().orElse(null);
-
-            ZipFile zipFile = new ZipFile(ampPath);
-            ZipEntry ampJarEntry = zipFile.getEntry(ampJarResource.getId().substring(1));
-            InputStream inputStream = zipFile.getInputStream(ampJarEntry);
-
-            // Extract the jar
-            byte[] data = extract(inputStream);
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            ZipInputStream jarZis = new ZipInputStream(bis);
-            ZipEntry jarZe = jarZis.getNextEntry();
-
-            // Iterate through the .jar
-            while (jarZe != null)
-            {
-                String jzeName = jarZe.getName();
-                if (jzeName.endsWith(".class"))
-                {
-                    javaClasses.put(
-                        jzeName.substring(0, jzeName.length() - 6), //.replaceAll("/", "."), todo?
-                        extract(jarZis));
-                    LOGGER.debug("Found a class " + jzeName);
-                }
-                jarZis.closeEntry();
-                jarZe = jarZis.getNextEntry();
-            }
-        }
-
-        catch (IOException ioe)
-        {
-            LOGGER.error("Failed to open and iterate through the provided file: " + ampPath, ioe);
-            throw new RuntimeException("Failed to open and iterate through the provided file: " + ampPath, ioe);
-        }
-
-        return javaClasses;
-    }
 
     /**
      * For a given .class file provided as byte[] this method finds all the classes this class uses.
@@ -240,7 +178,7 @@ public class ExtensionResourceInfoService
      * @param classData the .class file as byte[]
      * @return a {@link Set} of the used classes
      */
-    public static Set<String> findDependenciesForClass(final byte[] classData)
+    public static Set<String> compileClassDependenciesFromBytecode(final byte[] classData)
     {
         final DependencyVisitor visitor = new DependencyVisitor();
         final ClassReader reader = new ClassReader(classData);
