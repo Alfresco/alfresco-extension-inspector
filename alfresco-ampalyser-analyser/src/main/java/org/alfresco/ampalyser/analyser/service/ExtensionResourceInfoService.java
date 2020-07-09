@@ -70,7 +70,10 @@ public class ExtensionResourceInfoService
             classpathElementsById = configService
                 .getExtensionResources(CLASSPATH_ELEMENT)
                 .stream()
-                .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
+                .collect(groupingBy(
+                    Resource::getId,
+                    toUnmodifiableSet()
+                ));
         }
         return classpathElementsById;
     }
@@ -84,7 +87,7 @@ public class ExtensionResourceInfoService
                 .stream()
                 .filter(r -> r.getId().endsWith(".class"))
                 .collect(groupingBy(
-                    r -> r.getId().substring(1), //.replaceAll("/", "."), todo?
+                    Resource::getId,
                     toUnmodifiableSet()
                 ));
         }
@@ -109,13 +112,15 @@ public class ExtensionResourceInfoService
     {
         if (dependenciesPerClass == null)
         {
-            final Map<String, byte[]> bytecodePerClass = readBytecodeFromArtifact(
-                configService.getExtensionPath(), configService.getExtensionResources(FILE));
+            final Map<String, byte[]> bytecodePerClass = readBytecodeFromArtifact(configService.getExtensionPath());
 
             dependenciesPerClass = bytecodePerClass
                 .entrySet()
                 .stream()
-                .collect(toUnmodifiableMap(Entry::getKey, e -> compileClassDependenciesFromBytecode(e.getValue())));
+                .collect(toUnmodifiableMap(
+                    Entry::getKey,
+                    e -> compileClassDependenciesFromBytecode(e.getValue())
+                ));
         }
         return dependenciesPerClass;
     }
@@ -188,7 +193,8 @@ public class ExtensionResourceInfoService
         return visitor
             .getClasses()
             .stream()
-            //.map(c -> c.replaceAll("/", ".")) todo?
+            .filter(s -> !s.startsWith("java/")) // strip JDK dependencies
+            .map(s -> "/" + s + ".class") // change it to the Inventory Report format
             .collect(toUnmodifiableSet());
     }
 }

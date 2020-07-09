@@ -1,20 +1,19 @@
 package org.alfresco.ampalyser.analyser.util;
 
-import static java.util.Collections.emptyMap;
+import static java.util.Map.Entry;
+import static java.util.stream.Collectors.toMap;
 import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,91 +31,81 @@ public class BytecodeReader
      * @param artifactPath the location of the amp
      * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
      */
-    public static Map<String, byte[]> readBytecodeFromArtifact(
-        final String artifactPath,
-        final Collection<Resource> fileResources)
+    public static Map<String, byte[]> readBytecodeFromArtifact(final String artifactPath)
     {
         return artifactPath.endsWith(".jar") ?
                readBytecodeFromJarArtifact(artifactPath) :
-               readBytecodeFromAmpArtifact(artifactPath, fileResources);
+               readBytecodeFromAmpArtifact(artifactPath);
     }
 
-    private static Map<String, byte[]> readBytecodeFromJarArtifact(final String artifactPath)
+    /**
+     * Extract the bytecode from all the classes in the given JAR.
+     *
+     * @param jarPath
+     * @return A map of class_name -> bytecode.
+     */
+    private static Map<String, byte[]> readBytecodeFromJarArtifact(final String jarPath)
     {
-        try (final ZipInputStream inputStream = new ZipInputStream(
-            new BufferedInputStream(new FileInputStream(artifactPath))))
+        try (final InputStream inputStream = new BufferedInputStream(new FileInputStream(jarPath)))
         {
             return extractClassBytecodeFromJar(inputStream);
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to open and iterate through the provided JAR file: " + artifactPath, e);
-            throw new RuntimeException("Failed to open and iterate through the provided JAR file: " + artifactPath, e);
+            LOGGER.error("Failed to open and iterate through the provided JAR file: " + jarPath, e);
+            throw new RuntimeException("Failed to open and iterate through the provided JAR file: " + jarPath, e);
         }
     }
 
-    private static Map<String, byte[]> readBytecodeFromAmpArtifact(
-        final String artifactPath,
-        final Collection<Resource> fileResources)
+    /**
+     * Extract the bytecode from all the classes from all the JARs in the given AMP.
+     *
+     * @param ampPath
+     * @return A map of class_name -> bytecode.
+     */
+    private static Map<String, byte[]> readBytecodeFromAmpArtifact(final String ampPath)
     {
-        final String ampNameWithVersion = artifactPath.substring(
-            artifactPath.lastIndexOf("/") + 1,
-            artifactPath.lastIndexOf(".")
-        );
-        LOGGER.info("Looking for " + ampNameWithVersion + " jar");
-
-        // Iterate through the .amp
-        final Resource ampJarResource = fileResources
-            .stream()
-            .filter(r -> r.getId().contains(ampNameWithVersion))
-            .findFirst()
-            .orElse(null);
-
-        if (ampJarResource == null)
+        try (final ZipFile zipFile = new ZipFile(ampPath))
         {
-            LOGGER.info("The extension JAR artifact was not found in the AMP");
-            return emptyMap();
-        }
-
-        try (final ZipFile zipFile = new ZipFile(artifactPath))
-        {
-            final ZipEntry ampJarEntry = zipFile.getEntry(ampJarResource.getId().substring(1));
-            final InputStream inputStream = zipFile.getInputStream(ampJarEntry);
-
-            // TODO These three lines are probably not necessary (the intermediate stream)
-            //final byte[] jarData = extract(inputStream);
-            //final ByteArrayInputStream bis = new ByteArrayInputStream(jarData);
-            //return extractClassBytecodeFromJar(bis);
-            return extractClassBytecodeFromJar(new BufferedInputStream(inputStream));
+            return zipFile
+                .stream()
+                .filter(entry -> entry.getName().endsWith(".jar"))
+                .map(entry -> {
+                    try (final InputStream inputStream = zipFile.getInputStream(entry))
+                    {
+                        return extractClassBytecodeFromJar(new BufferedInputStream(inputStream));
+                    }
+                    catch (IOException e)
+                    {
+                        throw new RuntimeException("Failed to read AMP Zip entry (*.jar)", e);
+                    }
+                })
+                .flatMap(m -> m.entrySet().stream())
+                .collect(toMap(Entry::getKey, Entry::getValue));
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to open and iterate through the provided AMP file: " + artifactPath, e);
-            throw new RuntimeException("Failed to open and iterate through the provided AMP file: " + artifactPath, e);
+            LOGGER.error("Failed to open and iterate through the provided AMP file: " + ampPath, e);
+            throw new RuntimeException("Failed to open and iterate through the provided AMP file: " + ampPath, e);
         }
     }
 
-    private static Map<String, byte[]> extractClassBytecodeFromJar(final InputStream inputStream) throws IOException
+    static Map<String, byte[]> extractClassBytecodeFromJar(final InputStream inputStream) throws IOException
     {
         final Map<String, byte[]> javaClasses = new HashMap<>();
 
-        final ZipInputStream jarZis = new ZipInputStream(inputStream);
-        ZipEntry jarZe = jarZis.getNextEntry();
+        final ZipArchiveInputStream jarZis = new ZipArchiveInputStream(inputStream);
 
         // Iterate through the .jar
-        while (jarZe != null)
+        ArchiveEntry entry;
+        while ((entry = jarZis.getNextEntry()) != null)
         {
-            final String jzeName = jarZe.getName();
+            final String jzeName = entry.getName();
             if (jzeName.endsWith(".class"))
             {
-                javaClasses.put(
-                    jzeName,
-                    //jzeName.substring(0, jzeName.length() - 6), //.replaceAll("/", "."), todo?
-                    extract(jarZis));
+                javaClasses.put("/" + jzeName, extract(jarZis));
                 LOGGER.debug("Found a class " + jzeName);
             }
-            jarZis.closeEntry();
-            jarZe = jarZis.getNextEntry();
         }
 
         return javaClasses;
