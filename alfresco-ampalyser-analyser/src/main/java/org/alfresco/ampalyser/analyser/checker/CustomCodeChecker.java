@@ -50,7 +50,7 @@ public class CustomCodeChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        // Create a Map of the AlfrescoPublicApi with the class/id as the key and whether or not it is deprecated as the value
+        // Create a Map of the AlfrescoPublicApi with the class_id as the key and whether or not it is deprecated as the value
         final Map<String, Boolean> publicApis = warInventory
             .getResources().get(ALFRESCO_PUBLIC_API)
             .stream()
@@ -63,10 +63,12 @@ public class CustomCodeChecker implements Checker
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
 
+        // go through the AMP dependencies and search for conflicts
         return extensionResourceInfoService
             .retrieveDependenciesPerClass()
             .entrySet()
             .stream()
+            // map to (class_name -> {alfresco_dependencies_not_marked_as_PublicAPI})
             .map(e -> entry(
                 e.getKey(),
                 e.getValue()
@@ -76,9 +78,9 @@ public class CustomCodeChecker implements Checker
                  .filter(d -> !publicApis.containsKey(d) || publicApis.get(d)) // Not PublicAPI or Deprecated_PublicAPI
                  .collect(toUnmodifiableSet())
             ))
-            .filter(e -> !e.getValue().isEmpty())
+            .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
-                .get(e.getKey())
+                .get(e.getKey()) // a class can be provided by multiple jars, hence multiple conflicts
                 .stream()
                 .map(r -> new CustomCodeConflict(
                     r,

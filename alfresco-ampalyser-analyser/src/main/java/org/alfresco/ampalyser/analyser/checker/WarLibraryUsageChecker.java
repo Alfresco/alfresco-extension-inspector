@@ -47,19 +47,19 @@ public class WarLibraryUsageChecker implements Checker
             .stream()
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
-            .filter(s -> !s.startsWith("/org/alfresco/")) // strip any Alfresco Classes
-            .filter(allExtensionDependencies::contains) // only if the WAR entry could be a dependency of the extension
+            .filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
+            .filter(allExtensionDependencies::contains) // keep if the WAR entry could be a dependency of the extension
             .collect(toUnmodifiableSet());
 
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
 
-        // now we can go back through the AMP dependencies and
+        // now we can go back through the AMP dependencies and search for conflicts
         return extensionResourceInfoService
             .retrieveDependenciesPerClass()
             .entrySet()
             .stream()
-            // map to (class_name -> dependencies_only_present_int_the_WAR)
+            // map to (class_name -> {dependencies_only_present_int_the_WAR})
             .map(e -> entry(
                 e.getKey(),
                 e.getValue()
@@ -68,7 +68,7 @@ public class WarLibraryUsageChecker implements Checker
                  .filter(classesInWar::contains) // dependencies provided by the WAR
                  .collect(toUnmodifiableSet())
             ))
-            .filter(e -> !e.getValue().isEmpty())
+            .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
                 .get(e.getKey()) // a class can be provided by multiple jars, hence multiple conflicts
                 .stream()

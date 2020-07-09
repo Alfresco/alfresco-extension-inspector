@@ -35,6 +35,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This Bean keeps processed information about the extension (amp/jar).
+ * The extension is static/immutable, therefore we can afford to process
+ * information about it only once and cache the result for subsequent uses.
+ *
+ * Some Checkers need the same info about an Extension. But even if
+ * they need different info, they'll still need it multiple times (once
+ * for each WAR version).
+ *
  * @author Cezar Leahu
  * @author Lucian Tuca
  */
@@ -55,6 +63,13 @@ public class ExtensionResourceInfoService
     private Set<String> allDependencies;
     private Set<BeanResource> beansOfAlfrescoTypes;
 
+    /**
+     * Compile a filtered map of bean Resources by ID.
+     * The same bean can be declared in multiple context files,
+     * therefore there might be multiple bean resources with the same id.
+     *
+     * @return
+     */
     public Map<String, Set<BeanResource>> retrieveBeanOverridesById()
     {
         if (beanOverridesById == null)
@@ -71,6 +86,15 @@ public class ExtensionResourceInfoService
         return beanOverridesById;
     }
 
+    /**
+     * Return the extension classpath elements grouped by their ID. Classpath elements
+     * with the same ID is a common occurrence, as the same class (package+name) is often
+     * defined in multiple (different) libraries.
+     * <p/>
+     * The format of the dependency/class entries (ids) is: "/package/path/ClassName.class"
+     *
+     * @return
+     */
     public Map<String, Set<ClasspathElementResource>> retrieveClasspathElementsById()
     {
         if (classpathElementsById == null)
@@ -87,6 +111,11 @@ public class ExtensionResourceInfoService
         return classpathElementsById;
     }
 
+    /**
+     * Compile the WAR destinations of all the files in the extension.
+     *
+     * @return
+     */
     public Map<String, FileResource> retrieveFilesByDestination()
     {
         final Map<String, String> fileMappings = configService.getFileMappings();
@@ -102,11 +131,20 @@ public class ExtensionResourceInfoService
         return filesByDestination;
     }
 
+    /**
+     * Retrieve a map of (class_name -> {dependencies}} for the extension.
+     * This is achieved by actually parsing all the Java bytecode in the artifact.
+     * <p/>
+     * The format of the dependency/class entries (ids) is: "/package/path/ClassName.class"
+     * (both the returned map Keys & the Set values)
+     *
+     * @return a map of all the classes in the extension, with their dependencies.
+     */
     public Map<String, Set<String>> retrieveDependenciesPerClass()
     {
         if (dependenciesPerClass == null)
         {
-            // each class can have multiple definitions (in different jars)
+            // each class can have multiple definitions (different jars), hence a list of bytecode instances per class
             final Map<String, List<byte[]>> bytecodePerClass = readBytecodeFromArtifact(
                 configService.getExtensionPath());
 
@@ -118,13 +156,21 @@ public class ExtensionResourceInfoService
                     e -> e.getValue()
                           .stream()
                           .map(ExtensionResourceInfoService::compileClassDependenciesFromBytecode)
-                          .flatMap(Collection::stream)
+                          .flatMap(Collection::stream) // due to multiple instances of the same class
                           .collect(toUnmodifiableSet())
                 ));
         }
         return dependenciesPerClass;
     }
 
+    /**
+     * Retrieve a set of all the dependencies of an extension.
+     * This is achieved by actually parsing all the Java bytecode in the artifact.
+     * <p/>
+     * The format of the dependency/class entries is: "/package/path/ClassName.class"
+     *
+     * @return
+     */
     public Set<String> retrieveAllDependencies()
     {
         if (allDependencies == null)
@@ -138,6 +184,12 @@ public class ExtensionResourceInfoService
         return allDependencies;
     }
 
+    /**
+     * Compile the subset of beans defined in an AMP that have an Alfresco
+     * class type (i.e. the class is defined in an"org.alfresco..." package).
+     *
+     * @return
+     */
     public Set<BeanResource> retrieveBeansOfAlfrescoTypes()
     {
         if (beansOfAlfrescoTypes == null)
@@ -153,6 +205,13 @@ public class ExtensionResourceInfoService
         return beansOfAlfrescoTypes;
     }
 
+    /**
+     * Compute an amp file's destination when applied to a WAR.
+     *
+     * @param resource
+     * @param fileMappings
+     * @return
+     */
     private static String computeDestination(final FileResource resource, final Map<String, String> fileMappings)
     {
         // Find the most specific/deepest mapping that we can use
