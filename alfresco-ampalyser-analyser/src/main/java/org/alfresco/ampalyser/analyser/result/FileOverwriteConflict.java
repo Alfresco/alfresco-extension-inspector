@@ -26,7 +26,6 @@ public class FileOverwriteConflict extends AbstractConflict
 
     public FileOverwriteConflict()
     {
-        super();
     }
 
     public FileOverwriteConflict(Resource ampResourceInConflict, Resource warResourceInConflict,

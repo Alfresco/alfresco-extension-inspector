@@ -22,7 +22,6 @@ public class BeanOverwriteConflict extends AbstractConflict
 
     public BeanOverwriteConflict()
     {
-        super();
     }
 
     public BeanOverwriteConflict(Resource ampResourceInConflict, Resource warResourceInConflict, String alfrescoVersion)

@@ -10,8 +10,9 @@ package org.alfresco.ampalyser.analyser.service;
 import static java.util.Map.Entry;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.service.DependencyService.findDependenciesForClass;
 import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
@@ -29,7 +30,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.model.Resource;
-import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,10 @@ public class ExtensionResourceInfoService
 
     private Map<String, Set<Resource>> beanOverridesById;
     private Map<String, Set<Resource>> classpathElementsById;
+    private Map<String, Set<Resource>> classpathElementsByName;
     private Map<String, Resource> filesByDestination;
     private Map<String, Set<String>> dependenciesPerClass;
+    private Set<String> allDependencies;
 
     public Map<String, Set<Resource>> retrieveBeanOverridesById()
     {
@@ -62,7 +64,7 @@ public class ExtensionResourceInfoService
                 .getExtensionResources(BEAN)
                 .stream()
                 .filter(r -> !whitelist.contains(r.getId()))
-                .collect(groupingBy(Resource::getId, toSet()));
+                .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
         }
         return beanOverridesById;
     }
@@ -74,9 +76,25 @@ public class ExtensionResourceInfoService
             classpathElementsById = configService
                 .getExtensionResources(CLASSPATH_ELEMENT)
                 .stream()
-                .collect(groupingBy(Resource::getId, toSet()));
+                .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
         }
         return classpathElementsById;
+    }
+
+    public Map<String, Set<Resource>> retrieveClasspathElementsByName()
+    {
+        if (classpathElementsByName == null)
+        {
+            classpathElementsByName = configService
+                .getExtensionResources(CLASSPATH_ELEMENT)
+                .stream()
+                .filter(r -> r.getId().endsWith(".class"))
+                .collect(groupingBy(
+                    r -> r.getId().substring(1).replaceAll("/", "."),
+                    toUnmodifiableSet()
+                ));
+        }
+        return classpathElementsByName;
     }
 
     public Map<String, Resource> retrieveFilesByDestination()
@@ -88,7 +106,7 @@ public class ExtensionResourceInfoService
             filesByDestination = configService
                 .getExtensionResources(FILE)
                 .stream()
-                .collect(toMap(r -> computeDestination(r, fileMappings), identity()));
+                .collect(toUnmodifiableMap(r -> computeDestination(r, fileMappings), identity()));
         }
         return filesByDestination;
     }
@@ -103,9 +121,22 @@ public class ExtensionResourceInfoService
             dependenciesPerClass = bytecodePerClass
                 .entrySet()
                 .stream()
-                .collect(toMap(Entry::getKey, e -> findDependenciesForClass(e.getValue())));
+                .collect(toUnmodifiableMap(Entry::getKey, e -> findDependenciesForClass(e.getValue())));
         }
         return dependenciesPerClass;
+    }
+
+    public Set<String> retrieveAllDependencies()
+    {
+        if (allDependencies == null)
+        {
+            allDependencies = retrieveDependenciesPerClass()
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(toUnmodifiableSet());
+        }
+        return allDependencies;
     }
 
     private static String computeDestination(final Resource resource, final Map<String, String> fileMappings)
@@ -201,25 +232,5 @@ public class ExtensionResourceInfoService
         }
 
         return javaClasses;
-    }
-
-    /**
-     * For a given .class file provided as byte[] this method finds all the classes this class uses.
-     *
-     * @param classData the .class file as byte[]
-     * @return a {@link Set} of the used classes
-     */
-    private static Set<String> findDependenciesForClass(final byte[] classData)
-    {
-        final DependencyVisitor visitor = new DependencyVisitor();
-        final ClassReader reader = new ClassReader(classData);
-        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-        visitor.visitEnd();
-
-        return visitor
-            .getClasses()
-            .stream()
-            .map(c -> c.replaceAll("/", "."))
-            .collect(toSet());
     }
 }

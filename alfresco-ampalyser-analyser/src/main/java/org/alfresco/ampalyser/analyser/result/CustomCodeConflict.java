@@ -26,7 +26,6 @@ public class CustomCodeConflict extends AbstractConflict
 
     public CustomCodeConflict()
     {
-        super();
     }
 
     public CustomCodeConflict(Resource ampResourceInConflict, Resource warResourceInConflict,

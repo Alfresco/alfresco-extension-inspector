@@ -18,22 +18,16 @@ public class RestrictedBeanClassConflict extends AbstractConflict
 {
     public RestrictedBeanClassConflict()
     {
-        super();
     }
 
-    public RestrictedBeanClassConflict(Resource ampResourceInConflict, Resource warResourceInConflict, String alfrescoVersion)
+    public RestrictedBeanClassConflict(Resource ampResourceInConflict, String alfrescoVersion)
     {
-        super(RESTRICTED_BEAN_CLASS, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
+        super(RESTRICTED_BEAN_CLASS, ampResourceInConflict, null, alfrescoVersion);
     }
 
     @Override
     public String toString()
     {
-        return "RestrictedBeanClassConflict{" +
-            "type=" + getType() +
-            ", id='" + getId() + '\'' +
-            ", ampResourceInConflict='" + getAmpResourceInConflict() + '\'' +
-            ", warResourceInConflict='" + getWarResourceInConflict() + '\'' +
-            '}';
+        return "RestrictedBeanClassConflict{} " + super.toString();
     }
 }

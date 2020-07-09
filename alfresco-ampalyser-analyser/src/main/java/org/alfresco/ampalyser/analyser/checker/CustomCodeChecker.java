@@ -7,8 +7,8 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
@@ -59,7 +59,7 @@ public class CustomCodeChecker implements Checker
             .getResources().get(ALFRESCO_PUBLIC_API)
             .stream()
             .map(r -> (AlfrescoPublicApiResource) r)
-            .collect(toMap(Resource::getId, AlfrescoPublicApiResource::isDeprecated));
+            .collect(toUnmodifiableMap(Resource::getId, AlfrescoPublicApiResource::isDeprecated));
 
         return dependenciesPerClass
             .entrySet()
@@ -69,7 +69,7 @@ public class CustomCodeChecker implements Checker
                 e.getValue()
                  .stream()
                  .filter(c -> isInvalidAlfrescoDependency(c, warPublicApis, dependenciesPerClass.keySet()))
-                 .collect(toSet())
+                 .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty())
             .map(e -> new CustomCodeConflict(

@@ -61,7 +61,7 @@ public class BeanRestrictedClassesChecker implements Checker
                     && ((BeanResource) ampR).getBeanClass() != null)
                     && ((BeanResource) ampR).getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
             .filter(ampR -> !whitelist.contains(((BeanResource) ampR).getBeanClass())) // is this right?
-            .map(ampR -> new RestrictedBeanClassConflict(ampR, null, alfrescoVersion));
+            .map(ampR -> new RestrictedBeanClassConflict(ampR, alfrescoVersion));
     }
 
     @Override
