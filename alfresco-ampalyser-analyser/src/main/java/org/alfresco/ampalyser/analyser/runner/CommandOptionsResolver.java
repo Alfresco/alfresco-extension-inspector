@@ -103,7 +103,7 @@ public class CommandOptionsResolver
         {
             return null;
         }
-        // TARGET_INVENTORY option was provided by without a value, thus throw exception
+        // TARGET_INVENTORY option was provided but without a value, thus throw exception
         if(values.isEmpty())
         {
             printAnalyserUsage("Invalid target options (missing values)!");

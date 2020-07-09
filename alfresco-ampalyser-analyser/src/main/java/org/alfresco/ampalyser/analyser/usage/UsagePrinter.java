@@ -10,28 +10,50 @@ package org.alfresco.ampalyser.analyser.usage;
 
 import static java.lang.String.join;
 
+import java.util.Arrays;
+
 public class UsagePrinter
 {
     private static final String EXTENSION_FILENAME = "<extension-filename>";
-    private static final String TARGET_OPTION = "[--target-version=6.1.0[-7.0.0] | --target-inventory=/path/to/war_inventory.json]";
-    private static final String WHITELIST_BEAN_OVERRIDING_PATH = "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json]";
-    private static final String WHITELIST_BEAN_RESTRICTED_CLASSES_PATH = "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json]";
-    private static final String VERBOSE = "[--verbose]";
-    private static final String HELP = "[--help]";
-    private static final String LIST_KNOWN_VERSIONS = "[--list-known-alfresco-versions]";
+    private static final String TARGET_VERSION = "--target-version";
+    private static final String TARGET_INVENTORY = "--target-inventory";
+    private static final String TARGET_OPTION =
+        "[" + TARGET_VERSION + "=6.1.0[-7.0.0] | " 
+            + TARGET_INVENTORY + "=/path/to/war_inventory.json]";
+    private static final String WHITELIST_BEAN_OVERRIDING_PATH = "--whitelistBeanOverriding";
+    private static final String WHITELIST_BEAN_RESTRICTED_CLASSES_PATH = "--whitelistBeanRestrictedClasses";
+    private static final String VERBOSE = "--verbose";
+    private static final String HELP = "--help";
+    private static final String LIST_KNOWN_VERSIONS = "--list-known-alfresco-versions";
+
+    private static final String format = "   %-36s %s";
 
     public static void printHelp()
     {
         printUsage(
-            HELP, 
-            LIST_KNOWN_VERSIONS,
             join(" ",
                 EXTENSION_FILENAME,
                 TARGET_OPTION,
-                WHITELIST_BEAN_OVERRIDING_PATH,
-                WHITELIST_BEAN_RESTRICTED_CLASSES_PATH,
-                VERBOSE));
-        //TODO
+                "[" + WHITELIST_BEAN_OVERRIDING_PATH + "=/path/to/bean_overriding_whitelist.json]", 
+                "[" + WHITELIST_BEAN_RESTRICTED_CLASSES_PATH + "=/path/to/bean_restricted_classes_whitelist.json]", 
+                "[" + VERBOSE + "]"),
+            HELP, 
+            LIST_KNOWN_VERSIONS);
+        
+        System.out.println("Options:");
+
+        System.out.printf(format, TARGET_VERSION,
+            "An Alfresco version or a range of Alfresco versions.\n");
+        System.out.printf(format, TARGET_INVENTORY,
+            "A file path of an existing WAR inventory.\n");
+        System.out.printf(format, WHITELIST_BEAN_OVERRIDING_PATH,
+            "A file path of a JSON containing a list of beans that can be overridden.\n");
+        System.out.printf(format, WHITELIST_BEAN_RESTRICTED_CLASSES_PATH,
+            "A file path of a JSON containing a list of classes that can be instantiated.\n");
+        System.out.printf(format, VERBOSE, "Verbose output.\n");
+        System.out.printf(format, HELP, "Shows this screen.\n");
+        System.out.printf(format, LIST_KNOWN_VERSIONS,
+            "Lists all Alfresco versions with inventory reports included in the tool.");
     }
 
     public static void printAnalyserUsage(String errorMessage)
@@ -39,10 +61,10 @@ public class UsagePrinter
         System.out.println("error: " + errorMessage);
         printUsage(join(" ", 
             EXTENSION_FILENAME, 
-            TARGET_OPTION, 
-            WHITELIST_BEAN_OVERRIDING_PATH,
-            WHITELIST_BEAN_RESTRICTED_CLASSES_PATH, 
-            VERBOSE));
+            TARGET_OPTION,
+            "[" + WHITELIST_BEAN_OVERRIDING_PATH + "=/path/to/bean_overriding_whitelist.json]",
+            "[" + WHITELIST_BEAN_RESTRICTED_CLASSES_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
+            "[" + VERBOSE + "]"));
     }
     
     public static void printCommandUsage(String command, String errorMessage)
@@ -54,7 +76,9 @@ public class UsagePrinter
     public static void printUsage(String... supportedCommands)
     {
         System.out.println("Usage: ");
-        System.out.println(
-            "java -jar alfresco-ampalyser-analyser.jar " + join("\n   ", supportedCommands));
+        Arrays
+            .stream(supportedCommands)
+            .forEach(command -> 
+                System.out.println("   java -jar alfresco-ampalyser-analyser.jar " + command));
     }
 }
