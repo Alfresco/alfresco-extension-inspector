@@ -18,10 +18,12 @@ import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
+import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
@@ -38,6 +40,8 @@ public class ExtensionResourceInfoService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionResourceInfoService.class);
 
+    private static final String ORG_ALFRESCO_PREFIX = "org.alfresco";
+
     @Autowired
     private ConfigService configService;
 
@@ -47,6 +51,7 @@ public class ExtensionResourceInfoService
     private Map<String, Resource> filesByDestination;
     private Map<String, Set<String>> dependenciesPerClass;
     private Set<String> allDependencies;
+    private Set<BeanResource> beansOfAlfrescoTypes;
 
     public Map<String, Set<Resource>> retrieveBeanOverridesById()
     {
@@ -112,14 +117,20 @@ public class ExtensionResourceInfoService
     {
         if (dependenciesPerClass == null)
         {
-            final Map<String, byte[]> bytecodePerClass = readBytecodeFromArtifact(configService.getExtensionPath());
+            // each class can have multiple definitions (in different jars)
+            final Map<String, List<byte[]>> bytecodePerClass = readBytecodeFromArtifact(
+                configService.getExtensionPath());
 
             dependenciesPerClass = bytecodePerClass
                 .entrySet()
                 .stream()
                 .collect(toUnmodifiableMap(
                     Entry::getKey,
-                    e -> compileClassDependenciesFromBytecode(e.getValue())
+                    e -> e.getValue()
+                          .stream()
+                          .map(ExtensionResourceInfoService::compileClassDependenciesFromBytecode)
+                          .flatMap(Collection::stream)
+                          .collect(toUnmodifiableSet())
                 ));
         }
         return dependenciesPerClass;
@@ -136,6 +147,21 @@ public class ExtensionResourceInfoService
                 .collect(toUnmodifiableSet());
         }
         return allDependencies;
+    }
+
+    public Set<BeanResource> retrieveBeansOfAlfrescoTypes()
+    {
+        if (beansOfAlfrescoTypes == null)
+        {
+            beansOfAlfrescoTypes = configService
+                .getExtensionResources(BEAN)
+                .stream()
+                .map(r -> (BeanResource) r)
+                .filter(r -> r.getBeanClass() != null)
+                .filter(r -> r.getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
+                .collect(toUnmodifiableSet());
+        }
+        return beansOfAlfrescoTypes;
     }
 
     private static String computeDestination(final Resource resource, final Map<String, String> fileMappings)
@@ -174,8 +200,6 @@ public class ExtensionResourceInfoService
         }
         return matchingSourceMapping;
     }
-
-
 
     /**
      * For a given .class file provided as byte[] this method finds all the classes this class uses.

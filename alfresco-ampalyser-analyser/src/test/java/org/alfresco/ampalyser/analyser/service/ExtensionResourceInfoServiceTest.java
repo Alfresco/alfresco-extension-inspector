@@ -28,18 +28,18 @@ class ExtensionResourceInfoServiceTest
     void testCompileClassDependenciesFromBytecode() throws IOException
     {
         final Set<String> expected = Set.of(
-            "com/fasterxml/jackson/databind/JsonNode.class",
-            "com/fasterxml/jackson/databind/ObjectMapper.class",
-            "com/fasterxml/jackson/databind/node/ObjectNode.class",
-            "com/fasterxml/jackson/databind/node/TextNode.class",
-            "com/google/common/collect/Maps.class",
-            "com/jayway/jsonpath/DocumentContext.class",
-            "com/jayway/jsonpath/Predicate.class",
-            "org/alfresco/ai/rendition/strategy/textract/model/KeyValueSet.class",
-            "org/alfresco/ai/rendition/textract/TextractParserUtils.class",
-            "org/apache/commons/lang3/StringUtils.class",
-            "org/slf4j/Logger.class",
-            "org/slf4j/LoggerFactory.class"
+            "/com/fasterxml/jackson/databind/JsonNode.class",
+            "/com/fasterxml/jackson/databind/ObjectMapper.class",
+            "/com/fasterxml/jackson/databind/node/ObjectNode.class",
+            "/com/fasterxml/jackson/databind/node/TextNode.class",
+            "/com/google/common/collect/Maps.class",
+            "/com/jayway/jsonpath/DocumentContext.class",
+            "/com/jayway/jsonpath/Predicate.class",
+            "/org/alfresco/ai/rendition/strategy/textract/model/KeyValueSet.class",
+            "/org/alfresco/ai/rendition/textract/TextractParserUtils.class",
+            "/org/apache/commons/lang3/StringUtils.class",
+            "/org/slf4j/Logger.class",
+            "/org/slf4j/LoggerFactory.class"
         );
 
         try (final InputStream is = this.getClass().getResourceAsStream("/some-compiled.class.data"))

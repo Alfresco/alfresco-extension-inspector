@@ -1,7 +1,11 @@
 package org.alfresco.ampalyser.analyser.util;
 
+import static java.util.Collections.singletonList;
 import static java.util.Map.Entry;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 
 import java.io.BufferedInputStream;
@@ -9,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
@@ -31,7 +36,7 @@ public class BytecodeReader
      * @param artifactPath the location of the amp
      * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
      */
-    public static Map<String, byte[]> readBytecodeFromArtifact(final String artifactPath)
+    public static Map<String, List<byte[]>> readBytecodeFromArtifact(final String artifactPath)
     {
         return artifactPath.endsWith(".jar") ?
                readBytecodeFromJarArtifact(artifactPath) :
@@ -44,11 +49,17 @@ public class BytecodeReader
      * @param jarPath
      * @return A map of class_name -> bytecode.
      */
-    private static Map<String, byte[]> readBytecodeFromJarArtifact(final String jarPath)
+    private static Map<String, List<byte[]>> readBytecodeFromJarArtifact(final String jarPath)
     {
         try (final InputStream inputStream = new BufferedInputStream(new FileInputStream(jarPath)))
         {
-            return extractClassBytecodeFromJar(inputStream);
+            return extractClassBytecodeFromJar(inputStream)
+                .entrySet()
+                .stream()
+                .collect(toUnmodifiableMap(
+                    Entry::getKey,
+                    e -> singletonList(e.getValue())
+                ));
         }
         catch (IOException e)
         {
@@ -63,7 +74,7 @@ public class BytecodeReader
      * @param ampPath
      * @return A map of class_name -> bytecode.
      */
-    private static Map<String, byte[]> readBytecodeFromAmpArtifact(final String ampPath)
+    private static Map<String, List<byte[]>> readBytecodeFromAmpArtifact(final String ampPath)
     {
         try (final ZipFile zipFile = new ZipFile(ampPath))
         {
@@ -81,7 +92,10 @@ public class BytecodeReader
                     }
                 })
                 .flatMap(m -> m.entrySet().stream())
-                .collect(toMap(Entry::getKey, Entry::getValue));
+                .collect(groupingBy( // we can have the same class in multiple JARs
+                    Entry::getKey,
+                    mapping(Entry::getValue, toList())
+                ));
         }
         catch (IOException e)
         {

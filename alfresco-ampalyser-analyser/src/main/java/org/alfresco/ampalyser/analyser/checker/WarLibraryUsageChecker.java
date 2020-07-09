@@ -7,8 +7,8 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.AbstractMap.SimpleEntry;
 import static java.util.Collections.emptyList;
+import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 
@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -32,8 +31,6 @@ public class WarLibraryUsageChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WarLibraryUsageChecker.class);
 
-    @Autowired
-    private ConfigService configService;
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
 
@@ -61,7 +58,7 @@ public class WarLibraryUsageChecker implements Checker
             .entrySet()
             .stream()
             // map to (class_name -> dependencies_only_present_int_the_WAR)
-            .map(e -> new SimpleEntry<>(
+            .map(e -> entry(
                 e.getKey(),
                 e.getValue()
                  .stream()

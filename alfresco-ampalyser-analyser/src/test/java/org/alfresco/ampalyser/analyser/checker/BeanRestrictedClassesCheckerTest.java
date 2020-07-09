@@ -10,7 +10,7 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.stream.Collectors.toList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
