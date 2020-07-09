@@ -8,6 +8,7 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
@@ -70,7 +71,7 @@ public class WarLibraryUsageChecker implements Checker
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
-                .get(e.getKey()) // a class can be provided by multiple jars, hence multiple conflicts
+                .getOrDefault(e.getKey(), emptySet()) // a class can be provided by multiple jars
                 .stream()
                 .map(r -> new WarLibraryUsageConflict(
                     r,

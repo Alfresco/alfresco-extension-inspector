@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -80,7 +81,7 @@ public class CustomCodeChecker implements Checker
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
-                .get(e.getKey()) // a class can be provided by multiple jars, hence multiple conflicts
+                .getOrDefault(e.getKey(), emptySet()) // a class can be provided by multiple jars
                 .stream()
                 .map(r -> new CustomCodeConflict(
                     r,

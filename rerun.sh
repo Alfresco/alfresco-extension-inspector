@@ -1,11 +1,23 @@
 #!/bin/bash
 
+# This script uses the GNU utilities (not the default MacOS ones)
+# Embrace the dark side: $ brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep
 
-find ~/.m2/repository  -type d -name '*-SNAPSHOT*' | xargs -r -l rm -rf
+# Run with:
+# $ bash rerun.sh  alfresco/extension/path.amp
+
+EXTENSION_PATH="${1}"
+EXTENSION_NAME=$(basename "${EXTENSION_PATH}")
+
+find ${HOME}/.m2/repository  -type d -name '*-SNAPSHOT*' | xargs -r -l rm -rf
+
 mvn clean install -DskipTests
+
 pushd alfresco-ampalyser-analyser/target
-cp ${HOME}/work/github.com/Alfresco/media-management/alfresco-mm-repo-parent/alfresco-mm-repo/target/amps/alfresco-mm-repo-*.amp ./
-time java -jar alfresco-ampalyser-analyser-*-SNAPSHOT-application.jar alfresco-mm-repo-*.amp --verbose
+
+cp ${EXTENSION_PATH} ./
+
+time java -jar alfresco-ampalyser-analyser-*-SNAPSHOT-application.jar ${EXTENSION_NAME} --verbose
 
 popd
 
