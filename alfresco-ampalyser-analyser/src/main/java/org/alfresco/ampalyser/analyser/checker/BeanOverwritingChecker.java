@@ -18,8 +18,8 @@ import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +41,13 @@ public class BeanOverwritingChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Map<String, Set<Resource>> resourcesById = extensionResourceInfoService.retrieveBeanOverridesById();
+        final Map<String, Set<BeanResource>> resourcesById = extensionResourceInfoService.retrieveBeanOverridesById();
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
         return warInventory
             .getResources().getOrDefault(BEAN, emptyList())
             .stream()
+            .map(r -> (BeanResource) r)
             .filter(wr -> resourcesById.containsKey(wr.getId()))
             .flatMap(wr -> resourcesById
                 .get(wr.getId())

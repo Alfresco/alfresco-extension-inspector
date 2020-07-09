@@ -7,6 +7,11 @@
  */
 package org.alfresco.ampalyser.model;
 
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.BEAN;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.CLASSPATH_ELEMENT;
+import static org.alfresco.ampalyser.model.Resource.Type.Constants.FILE;
+
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,10 +27,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     property = "type",
     visible = true)
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = AlfrescoPublicApiResource.class, name = Resource.Type.Constants.ALFRESCO_PUBLIC_API),
-    @JsonSubTypes.Type(value = BeanResource.class, name = Resource.Type.Constants.BEAN),
-    @JsonSubTypes.Type(value = ClasspathElementResource.class, name = Resource.Type.Constants.CLASSPATH_ELEMENT),
-    @JsonSubTypes.Type(value = FileResource.class, name = Resource.Type.Constants.FILE),
+    @JsonSubTypes.Type(value = AlfrescoPublicApiResource.class, name = ALFRESCO_PUBLIC_API),
+    @JsonSubTypes.Type(value = BeanResource.class, name = BEAN),
+    @JsonSubTypes.Type(value = ClasspathElementResource.class, name = CLASSPATH_ELEMENT),
+    @JsonSubTypes.Type(value = FileResource.class, name = FILE),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface Resource extends Serializable
@@ -37,12 +42,12 @@ public interface Resource extends Serializable
         ALFRESCO_PUBLIC_API,
         CLASSPATH_ELEMENT;
 
-        public static class Constants
+        static class Constants
         {
-            public static final String FILE = "FILE";
-            public static final String BEAN = "BEAN";
-            public static final String ALFRESCO_PUBLIC_API = "ALFRESCO_PUBLIC_API";
-            public static final String CLASSPATH_ELEMENT = "CLASSPATH_ELEMENT";
+            static final String FILE = "FILE";
+            static final String BEAN = "BEAN";
+            static final String ALFRESCO_PUBLIC_API = "ALFRESCO_PUBLIC_API";
+            static final String CLASSPATH_ELEMENT = "CLASSPATH_ELEMENT";
         }
     }
 

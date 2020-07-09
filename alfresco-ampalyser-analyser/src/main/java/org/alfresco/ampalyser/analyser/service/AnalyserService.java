@@ -40,18 +40,27 @@ public class AnalyserService
     @Autowired
     private AnalyserOutputService outputService;
 
+    /**
+     * Compares the extension with the WAR inventories of the requested Alfresco Versions and prints the results.
+     *
+     * @param alfrescoVersions
+     */
     public void analyse(final SortedSet<String> alfrescoVersions)
     {
+        // In need the results (Conflicts) grouped by their type and then by their resource IDs
         final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId = alfrescoVersions
             .stream()
+            // for each WAR version call the warComparatorService (which in turn calls the Checkers)
             .flatMap(version -> warComparatorService.findConflicts(warInventoryStore.retrieve(version), version))
+            // group the found conflicts first by their type => Map<Conflict.Type, ...>
             .collect(groupingBy(
                 Conflict::getType,
-                () -> new EnumMap<>(Conflict.Type.class),
+                () -> new EnumMap<>(Conflict.Type.class), // use EnumMaps - they're fast & ordered
+                // then group the conflicts by their resource ID => Map<String, ...>
                 groupingBy(
                     conflict -> conflict.getAmpResourceInConflict().getId(),
-                    TreeMap::new,
-                    toUnmodifiableSet())
+                    TreeMap::new, // use an ordered collection
+                    toUnmodifiableSet()) // => Set<Conflict>
             ));
 
         outputService.print(conflictPerTypeAndResourceId);

@@ -7,82 +7,72 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Collections.emptyList;
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * A checker/analyser designed to find all the class dependencies of a class within the .amp
- * and to report a list of conflicts for each of those classes.
- *
- * Each class that is found containing invalid dependencies (see {@link CustomCodeConflict}) is reported
- * as the original .amp resource
- *
- * @author Lucian Tuca
- */
 @Component
-public class CustomCodeChecker implements Checker
+public class WarLibraryUsageChecker implements Checker
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomCodeChecker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WarLibraryUsageChecker.class);
 
-    @Autowired
-    private ConfigService configService;
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        // Create a Map of the AlfrescoPublicApi with the class_id as the key and whether or not it is deprecated as the value
-        final Map<String, Boolean> publicApis = warInventory
-            .getResources().get(ALFRESCO_PUBLIC_API)
+        final Set<String> allExtensionDependencies = extensionResourceInfoService.retrieveAllDependencies();
+
+        // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
+        // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
+        final Set<String> classesInWar = warInventory
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
             .stream()
-            .map(r -> (AlfrescoPublicApiResource) r)
-            .collect(toUnmodifiableMap(
-                r -> "/" + r.getId().replace(".", "/") + ".class",
-                AlfrescoPublicApiResource::isDeprecated
-            ));
+            .map(Resource::getId)
+            .filter(s -> s.endsWith(".class"))
+            .filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
+            .filter(allExtensionDependencies::contains) // keep if the WAR entry could be a dependency of the extension
+            .collect(toUnmodifiableSet());
 
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
 
-        // go through the AMP dependencies and search for conflicts
+        // now we can go back through the AMP dependencies and search for conflicts
         return extensionResourceInfoService
             .retrieveDependenciesPerClass()
             .entrySet()
             .stream()
-            // map to (class_name -> {alfresco_dependencies_not_marked_as_PublicAPI})
+            // map to (class_name -> {dependencies_only_present_int_the_WAR})
             .map(e -> entry(
                 e.getKey(),
                 e.getValue()
                  .stream()
-                 .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
-                 .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
-                 .filter(d -> !publicApis.containsKey(d) || publicApis.get(d)) // Not PublicAPI or Deprecated_PublicAPI
+                 .filter(d -> !extensionClassesById.containsKey(d)) // dependencies not provided in the extension
+                 .filter(classesInWar::contains) // dependencies provided by the WAR
                  .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
                 .get(e.getKey()) // a class can be provided by multiple jars, hence multiple conflicts
                 .stream()
-                .map(r -> new CustomCodeConflict(
+                .map(r -> new WarLibraryUsageConflict(
                     r,
                     e.getValue(),
                     alfrescoVersion
@@ -92,6 +82,6 @@ public class CustomCodeChecker implements Checker
     @Override
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return true;
+        return !extensionResourceInfoService.retrieveDependenciesPerClass().isEmpty();
     }
 }

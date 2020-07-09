@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 
@@ -37,5 +37,4 @@ class AnalyserApplicationTests {
 
 		assertNotNull(inventoryReport);
 	}
-
 }

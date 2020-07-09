@@ -19,8 +19,8 @@ import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,11 +35,13 @@ public class ClasspathConflictsChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Map<String, Set<Resource>> elementsById = extensionResourceInfoService.retrieveClasspathElementsById();
+        final Map<String, Set<ClasspathElementResource>> elementsById =
+            extensionResourceInfoService.retrieveClasspathElementsById();
 
         return warInventory
             .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
             .stream()
+            .map(r -> (ClasspathElementResource) r)
             .filter(wr -> elementsById.containsKey(wr.getId()))
             .flatMap(wr -> elementsById
                 .get(wr.getId())

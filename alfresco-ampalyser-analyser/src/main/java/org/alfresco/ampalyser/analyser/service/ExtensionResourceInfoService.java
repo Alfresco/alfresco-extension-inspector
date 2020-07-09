@@ -7,27 +7,26 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
+import static java.util.Collections.emptySet;
 import static java.util.Map.Entry;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.util.BytecodeReader.readBytecodeFromArtifact;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
+import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
+import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
@@ -36,6 +35,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This Bean keeps processed information about the extension (amp/jar).
+ * The extension is static/immutable, therefore we can afford to process
+ * information about it only once and cache the result for subsequent uses.
+ *
+ * Some Checkers need the same info about an Extension. But even if
+ * they need different info, they'll still need it multiple times (once
+ * for each WAR version).
+ *
  * @author Cezar Leahu
  * @author Lucian Tuca
  */
@@ -44,15 +51,26 @@ public class ExtensionResourceInfoService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionResourceInfoService.class);
 
+    private static final String ORG_ALFRESCO_PREFIX = "org.alfresco";
+
     @Autowired
     private ConfigService configService;
 
-    private Map<String, Set<Resource>> beanOverridesById;
-    private Map<String, Set<Resource>> classpathElementsById;
-    private Map<String, Resource> filesByDestination;
+    private Map<String, Set<BeanResource>> beanOverridesById;
+    private Map<String, Set<ClasspathElementResource>> classpathElementsById;
+    private Map<String, FileResource> filesByDestination;
     private Map<String, Set<String>> dependenciesPerClass;
+    private Set<String> allDependencies;
+    private Set<BeanResource> beansOfAlfrescoTypes;
 
-    public Map<String, Set<Resource>> retrieveBeanOverridesById()
+    /**
+     * Compile a filtered map of bean Resources by ID.
+     * The same bean can be declared in multiple context files,
+     * therefore there might be multiple bean resources with the same id.
+     *
+     * @return
+     */
+    public Map<String, Set<BeanResource>> retrieveBeanOverridesById()
     {
         if (beanOverridesById == null)
         {
@@ -62,24 +80,43 @@ public class ExtensionResourceInfoService
                 .getExtensionResources(BEAN)
                 .stream()
                 .filter(r -> !whitelist.contains(r.getId()))
-                .collect(groupingBy(Resource::getId, toSet()));
+                .map(r -> (BeanResource) r)
+                .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
         }
         return beanOverridesById;
     }
 
-    public Map<String, Set<Resource>> retrieveClasspathElementsById()
+    /**
+     * Return the extension classpath elements grouped by their ID. Classpath elements
+     * with the same ID is a common occurrence, as the same class (package+name) is often
+     * defined in multiple (different) libraries.
+     * <p/>
+     * The format of the dependency/class entries (ids) is: "/package/path/ClassName.class"
+     *
+     * @return
+     */
+    public Map<String, Set<ClasspathElementResource>> retrieveClasspathElementsById()
     {
         if (classpathElementsById == null)
         {
             classpathElementsById = configService
                 .getExtensionResources(CLASSPATH_ELEMENT)
                 .stream()
-                .collect(groupingBy(Resource::getId, toSet()));
+                .map(r -> (ClasspathElementResource) r)
+                .collect(groupingBy(
+                    Resource::getId,
+                    toUnmodifiableSet()
+                ));
         }
         return classpathElementsById;
     }
 
-    public Map<String, Resource> retrieveFilesByDestination()
+    /**
+     * Compile the WAR destinations of all the files in the extension.
+     *
+     * @return
+     */
+    public Map<String, FileResource> retrieveFilesByDestination()
     {
         final Map<String, String> fileMappings = configService.getFileMappings();
 
@@ -88,27 +125,94 @@ public class ExtensionResourceInfoService
             filesByDestination = configService
                 .getExtensionResources(FILE)
                 .stream()
-                .collect(toMap(r -> computeDestination(r, fileMappings), identity()));
+                .map(r -> (FileResource) r)
+                .collect(toUnmodifiableMap(r -> computeDestination(r, fileMappings), identity()));
         }
         return filesByDestination;
     }
 
+    /**
+     * Retrieve a map of (class_name -> {dependencies}} for the extension.
+     * This is achieved by actually parsing all the Java bytecode in the artifact.
+     * <p/>
+     * The format of the dependency/class entries (ids) is: "/package/path/ClassName.class"
+     * (both the returned map Keys & the Set values)
+     *
+     * @return a map of all the classes in the extension, with their dependencies.
+     */
     public Map<String, Set<String>> retrieveDependenciesPerClass()
     {
         if (dependenciesPerClass == null)
         {
-            final Map<String, byte[]> bytecodePerClass = findClasses(
-                configService.getExtensionPath(), configService.getExtensionResources(FILE));
+            // each class can have multiple definitions (different jars), hence a list of bytecode instances per class
+            final Map<String, List<byte[]>> bytecodePerClass = readBytecodeFromArtifact(
+                configService.getExtensionPath());
 
             dependenciesPerClass = bytecodePerClass
                 .entrySet()
                 .stream()
-                .collect(toMap(Entry::getKey, e -> findDependenciesForClass(e.getValue())));
+                .collect(toUnmodifiableMap(
+                    Entry::getKey,
+                    e -> e.getValue()
+                          .stream()
+                          .map(ExtensionResourceInfoService::compileClassDependenciesFromBytecode)
+                          .flatMap(Collection::stream) // due to multiple instances of the same class
+                          .collect(toUnmodifiableSet())
+                ));
         }
         return dependenciesPerClass;
     }
 
-    private static String computeDestination(final Resource resource, final Map<String, String> fileMappings)
+    /**
+     * Retrieve a set of all the dependencies of an extension.
+     * This is achieved by actually parsing all the Java bytecode in the artifact.
+     * <p/>
+     * The format of the dependency/class entries is: "/package/path/ClassName.class"
+     *
+     * @return
+     */
+    public Set<String> retrieveAllDependencies()
+    {
+        if (allDependencies == null)
+        {
+            allDependencies = retrieveDependenciesPerClass()
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(toUnmodifiableSet());
+        }
+        return allDependencies;
+    }
+
+    /**
+     * Compile the subset of beans defined in an AMP that have an Alfresco
+     * class type (i.e. the class is defined in an"org.alfresco..." package).
+     *
+     * @return
+     */
+    public Set<BeanResource> retrieveBeansOfAlfrescoTypes()
+    {
+        if (beansOfAlfrescoTypes == null)
+        {
+            beansOfAlfrescoTypes = configService
+                .getExtensionResources(BEAN)
+                .stream()
+                .map(r -> (BeanResource) r)
+                .filter(r -> r.getBeanClass() != null)
+                .filter(r -> r.getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
+                .collect(toUnmodifiableSet());
+        }
+        return beansOfAlfrescoTypes;
+    }
+
+    /**
+     * Compute an amp file's destination when applied to a WAR.
+     *
+     * @param resource
+     * @param fileMappings
+     * @return
+     */
+    private static String computeDestination(final FileResource resource, final Map<String, String> fileMappings)
     {
         // Find the most specific/deepest mapping that we can use
         final String matchingSourceMapping = findMostSpecificMapping(fileMappings, resource);
@@ -131,7 +235,7 @@ public class ExtensionResourceInfoService
      * @param ampResource  the .amp resource
      * @return the most specific mapping.
      */
-    public static String findMostSpecificMapping(final Map<String, String> fileMappings, final Resource ampResource)
+    public static String findMostSpecificMapping(final Map<String, String> fileMappings, final FileResource ampResource)
     {
         String matchingSourceMapping = "";
         for (String sourceMapping : fileMappings.keySet())
@@ -146,80 +250,30 @@ public class ExtensionResourceInfoService
     }
 
     /**
-     * Finds and computes a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
-     *
-     * @param ampPath the location of the amp
-     * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
-     */
-    private static Map<String, byte[]> findClasses(final String ampPath, final Collection<Resource> fileResources)
-    {
-        final Map<String, byte[]> javaClasses = new HashMap<>();
-
-        int lastSlash = ampPath.lastIndexOf("/");
-        int lastDot = ampPath.lastIndexOf(".");
-        String ampNameWithVersion = ampPath.substring(lastSlash + 1, lastDot);
-        LOGGER.info("Looking for " + ampNameWithVersion + " jar");
-
-        try
-        {
-            // Iterate through the .amp
-            Resource ampJarResource = fileResources
-                .stream()
-                .filter(r -> r.getId().contains(ampNameWithVersion))
-                .findFirst().orElse(null);
-
-            ZipFile zipFile = new ZipFile(ampPath);
-            ZipEntry ampJarEntry = zipFile.getEntry(ampJarResource.getId().substring(1));
-            InputStream inputStream = zipFile.getInputStream(ampJarEntry);
-
-            // Extract the jar
-            byte[] data = extract(inputStream);
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            ZipInputStream jarZis = new ZipInputStream(bis);
-            ZipEntry jarZe = jarZis.getNextEntry();
-
-            // Iterate through the .jar
-            while (jarZe != null)
-            {
-                String jzeName = jarZe.getName();
-                if (jzeName.endsWith(".class"))
-                {
-                    javaClasses.put(
-                        jzeName.substring(0, jzeName.length() - 6).replaceAll("/", "."),
-                        extract(jarZis));
-                    LOGGER.debug("Found a class " + jzeName);
-                }
-                jarZis.closeEntry();
-                jarZe = jarZis.getNextEntry();
-            }
-        }
-
-        catch (IOException ioe)
-        {
-            LOGGER.error("Failed to open and iterate through the provided file: " + ampPath, ioe);
-            throw new RuntimeException("Failed to open and iterate through the provided file: " + ampPath, ioe);
-        }
-
-        return javaClasses;
-    }
-
-    /**
      * For a given .class file provided as byte[] this method finds all the classes this class uses.
      *
      * @param classData the .class file as byte[]
      * @return a {@link Set} of the used classes
      */
-    private static Set<String> findDependenciesForClass(final byte[] classData)
+    static Set<String> compileClassDependenciesFromBytecode(final byte[] classData)
     {
-        final DependencyVisitor visitor = new DependencyVisitor();
-        final ClassReader reader = new ClassReader(classData);
-        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-        visitor.visitEnd();
+        try
+        {
+            final DependencyVisitor visitor = new DependencyVisitor();
+            final ClassReader reader = new ClassReader(classData);
+            reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+            visitor.visitEnd();
 
-        return visitor
-            .getClasses()
-            .stream()
-            .map(c -> c.replaceAll("/", "."))
-            .collect(toSet());
+            return visitor
+                .getClasses()
+                .stream()
+                .filter(s -> !s.startsWith("java/")) // strip JDK dependencies
+                .map(s -> "/" + s + ".class") // change it to the Inventory Report format
+                .collect(toUnmodifiableSet());
+        }
+        catch (UnsupportedOperationException ignore)
+        {
+            return emptySet();
+        }
     }
 }

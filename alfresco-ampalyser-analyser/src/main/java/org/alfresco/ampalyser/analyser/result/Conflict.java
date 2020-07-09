@@ -7,9 +7,17 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CLASSPATH_CONFLICT;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.RESTRICTED_BEAN_CLASS;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
+
+import org.alfresco.ampalyser.model.Resource;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.alfresco.ampalyser.model.Resource;
 
 /**
  * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
@@ -21,11 +29,13 @@ import org.alfresco.ampalyser.model.Resource;
     property = "type",
     visible = true)
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = BeanOverwriteConflict.class, name = Conflict.Type.Constants.BEAN_OVERWRITE),
-    @JsonSubTypes.Type(value = RestrictedBeanClassConflict.class, name = Conflict.Type.Constants.RESTRICTED_BEAN_CLASS),
-    @JsonSubTypes.Type(value = FileOverwriteConflict.class, name = Conflict.Type.Constants.FILE_OVERWRITE),
-    @JsonSubTypes.Type(value = ClasspathConflict.class, name = Conflict.Type.Constants.CLASSPATH_CONFLICT)
-})
+                  @JsonSubTypes.Type(value = BeanOverwriteConflict.class, name = BEAN_OVERWRITE),
+                  @JsonSubTypes.Type(value = RestrictedBeanClassConflict.class, name = RESTRICTED_BEAN_CLASS),
+                  @JsonSubTypes.Type(value = FileOverwriteConflict.class, name = FILE_OVERWRITE),
+                  @JsonSubTypes.Type(value = ClasspathConflict.class, name = CLASSPATH_CONFLICT),
+                  @JsonSubTypes.Type(value = CustomCodeConflict.class, name = CUSTOM_CODE),
+                  @JsonSubTypes.Type(value = WarLibraryUsageConflict.class, name = WAR_LIBRARY_USAGE),
+              })
 public interface Conflict
 {
     enum Type
@@ -34,20 +44,20 @@ public interface Conflict
         BEAN_OVERWRITE,
         RESTRICTED_BEAN_CLASS,
         CLASSPATH_CONFLICT,
-        CUSTOM_CODE;
+        CUSTOM_CODE,
+        WAR_LIBRARY_USAGE,
+        ;
 
-        public static class Constants
+        static class Constants
         {
-            public static final String FILE_OVERWRITE= "FILE_OVERWRITE";
-            public static final String BEAN_OVERWRITE= "BEAN_OVERWRITE";
-            public static final String RESTRICTED_BEAN_CLASS= "RESTRICTED_BEAN_CLASS";
-            public static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
-            public static final String CUSTOM_CODE = "CUSTOM_CODE";
+            static final String FILE_OVERWRITE = "FILE_OVERWRITE";
+            static final String BEAN_OVERWRITE = "BEAN_OVERWRITE";
+            static final String RESTRICTED_BEAN_CLASS = "RESTRICTED_BEAN_CLASS";
+            static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
+            static final String CUSTOM_CODE = "CUSTOM_CODE";
+            static final String WAR_LIBRARY_USAGE = "WAR_LIBRARY_USAGE";
         }
     }
-
-    String getId();
-    void setId(String id);
 
     Type getType();
     void setType(Type type);

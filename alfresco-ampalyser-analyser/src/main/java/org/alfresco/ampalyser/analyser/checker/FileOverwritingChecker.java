@@ -19,8 +19,8 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +47,13 @@ public class FileOverwritingChecker implements Checker
     {
         final Map<String, String> fileMappings = configService.getFileMappings();
 
-        final Map<String, Resource> resourcesByDestination = extensionResourceInfoService.retrieveFilesByDestination();
+        final Map<String, FileResource> resourcesByDestination =
+            extensionResourceInfoService.retrieveFilesByDestination();
 
         return warInventory
             .getResources().getOrDefault(FILE, emptyList())
             .stream()
+            .map(r -> (FileResource) r)
             .filter(wr -> resourcesByDestination.containsKey(wr.getId()))
             .map(wr -> new FileOverwriteConflict(
                 resourcesByDestination.get(wr.getId()),
@@ -61,7 +63,8 @@ public class FileOverwritingChecker implements Checker
             ));
     }
 
-    private static Map<String, String> computeMapping(final Resource resource, final Map<String, String> fileMappings)
+    private static Map<String, String> computeMapping(final FileResource resource,
+        final Map<String, String> fileMappings)
     {
         // Find the most specific/deepest mapping that we can use
         final String matchingSourceMapping = findMostSpecificMapping(fileMappings, resource);

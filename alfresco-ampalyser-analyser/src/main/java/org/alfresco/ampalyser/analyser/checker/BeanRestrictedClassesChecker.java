@@ -10,7 +10,6 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.RestrictedBeanClassConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
@@ -34,10 +33,10 @@ public class BeanRestrictedClassesChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanRestrictedClassesChecker.class);
 
-    private static final String ORG_ALFRESCO_PREFIX = "org.alfresco";
-
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private ExtensionResourceInfoService extensionResourceInfoService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
@@ -54,14 +53,11 @@ public class BeanRestrictedClassesChecker implements Checker
                     .map(Resource::getId))
             .collect(toUnmodifiableSet());
 
-        return configService
-            .getExtensionResources(BEAN)
+        return extensionResourceInfoService
+            .retrieveBeansOfAlfrescoTypes()
             .stream()
-            .filter(ampR -> (ampR instanceof BeanResource
-                    && ((BeanResource) ampR).getBeanClass() != null)
-                    && ((BeanResource) ampR).getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
-            .filter(ampR -> !whitelist.contains(((BeanResource) ampR).getBeanClass())) // is this right?
-            .map(ampR -> new RestrictedBeanClassConflict(ampR, null, alfrescoVersion));
+            .filter(r -> !whitelist.contains(r.getBeanClass()))
+            .map(r -> new RestrictedBeanClassConflict(r, alfrescoVersion));
     }
 
     @Override
