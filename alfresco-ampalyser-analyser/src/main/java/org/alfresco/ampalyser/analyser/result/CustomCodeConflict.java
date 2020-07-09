@@ -12,7 +12,7 @@ import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 import java.util.Objects;
 import java.util.Set;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 
 /**
  * Represents a conflict between an .amp class and its class dependencies.
@@ -28,10 +28,10 @@ public class CustomCodeConflict extends AbstractConflict
     {
     }
 
-    public CustomCodeConflict(Resource ampResourceInConflict, Resource warResourceInConflict,
+    public CustomCodeConflict(ClasspathElementResource ampResourceInConflict,
         Set<String> invalidAlfrescoDependencies, String alfrescoVersion)
     {
-        super(CUSTOM_CODE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
+        super(CUSTOM_CODE, ampResourceInConflict, null, alfrescoVersion);
         this.invalidAlfrescoDependencies = invalidAlfrescoDependencies;
     }
 

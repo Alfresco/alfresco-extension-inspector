@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.util.Collections.emptyMap;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceIds;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
@@ -17,8 +18,8 @@ import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
 import org.alfresco.ampalyser.model.BeanResource;
-
 import org.alfresco.ampalyser.model.FileResource;
 import org.junit.Test;
 
@@ -53,12 +54,12 @@ public class ConflictPrinterTest
 
         FileResource extFile2 = new FileResource("file2.txt", "file2.txt");
         FileResource warFile2 = new FileResource("file2.txt", "file2.txt");
-        
-        Conflict c1 = new BeanOverwriteConflict(extFile1, warFile1, "6.0.0.2");
-        Conflict c2 = new BeanOverwriteConflict(extFile2, warFile2, "6.0.0.2");
-        Conflict c3 = new BeanOverwriteConflict(extFile1, warFile1, "6.0.0.1");
-        Conflict c4 = new BeanOverwriteConflict(extFile1, warFile1, "6.0.0.5");
-        Conflict c5 = new BeanOverwriteConflict(extFile2, warFile2, "6.0.2");
+
+        Conflict c1 = new FileOverwriteConflict(extFile1, warFile1, emptyMap(), "6.0.0.2");
+        Conflict c2 = new FileOverwriteConflict(extFile2, warFile2, emptyMap(), "6.0.0.2");
+        Conflict c3 = new FileOverwriteConflict(extFile1, warFile1, emptyMap(), "6.0.0.1");
+        Conflict c4 = new FileOverwriteConflict(extFile1, warFile1, emptyMap(), "6.0.0.5");
+        Conflict c5 = new FileOverwriteConflict(extFile2, warFile2, emptyMap(), "6.0.2");
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5);
 

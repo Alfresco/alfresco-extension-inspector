@@ -7,13 +7,11 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -23,8 +21,8 @@ import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,78 +50,41 @@ public class CustomCodeChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Map<String, Set<String>> dependenciesPerClass = extensionResourceInfoService.retrieveDependenciesPerClass();
-
         // Create a Map of the AlfrescoPublicApi with the class/id as the key and whether or not it is deprecated as the value
-        final Map<String, Boolean> warPublicApis = warInventory
+        final Map<String, Boolean> publicApis = warInventory
             .getResources().get(ALFRESCO_PUBLIC_API)
             .stream()
             .map(r -> (AlfrescoPublicApiResource) r)
-            .collect(toUnmodifiableMap(Resource::getId, AlfrescoPublicApiResource::isDeprecated));
+            .collect(toUnmodifiableMap(
+                r -> "/" + r.getId().replace(".", "/") + ".class",
+                AlfrescoPublicApiResource::isDeprecated
+            ));
 
-        return dependenciesPerClass
+        final Map<String, Set<ClasspathElementResource>> extensionClassesById =
+            extensionResourceInfoService.retrieveClasspathElementsById();
+
+        return extensionResourceInfoService
+            .retrieveDependenciesPerClass()
             .entrySet()
             .stream()
-            .map(e -> new SimpleEntry<>(
+            .map(e -> entry(
                 e.getKey(),
                 e.getValue()
                  .stream()
-                 .filter(c -> isInvalidAlfrescoDependency(c, warPublicApis, dependenciesPerClass.keySet()))
+                 .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
+                 .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
+                 .filter(d -> !publicApis.containsKey(d) || publicApis.get(d)) // Not PublicAPI or Deprecated_PublicAPI
                  .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty())
-            .map(e -> new CustomCodeConflict(
-                findAmpResourceForJarClass(e.getKey(), configService.getExtensionResources(FILE)),
-                null,
-                e.getValue(),
-                alfrescoVersion
-            ));
-    }
-
-    /**
-     * For a given class this method decides whether or not this class represents and invalid Alfresco dependency
-     * by checking the following conditions:
-     *
-     * * It is an Alfresco class
-     * * It is not marked as AlfrescoPublicAPI
-     * * It is marked as AlfrescoPublicAPI but is Deprecated
-     *
-     * @param clazz
-     * @param publicApis
-     * @param extensionClasses
-     * @return whether or not this class is an invalid Alfresco dependency
-     */
-    private static boolean isInvalidAlfrescoDependency(final String clazz,
-        final Map<String, Boolean> publicApis,
-        final Set<String> extensionClasses)
-    {
-        return clazz.startsWith("org.alfresco") &&
-               !extensionClasses.contains(clazz) &&
-               (!publicApis.containsKey(clazz) ||
-                (publicApis.containsKey(clazz) && publicApis.get(clazz)));
-    }
-
-    /**
-     * Given a java class name (found in the .jar lib of the .amp) this method find the corresponding .amp {@link org.alfresco.ampalyser.model.FileResource}
-     *
-     * @param jarClass      the Java class name that was found in the .jar
-     * @param fileResources the extension file resources to look in
-     * @return the {@link org.alfresco.ampalyser.model.FileResource} coressponding to the provided class name
-     */
-    private static Resource findAmpResourceForJarClass(final String jarClass, final Collection<Resource> fileResources)
-    {
-        // Find the real class name by picking the string between the '/' and the '$' or '.'
-        int slash = jarClass.lastIndexOf("/");
-        int tempDollar = jarClass.lastIndexOf("$");
-        int dollar = -1 == tempDollar ? Integer.MAX_VALUE : tempDollar;
-        int dot = jarClass.lastIndexOf(".");
-        String className = jarClass.substring(slash + 1, Math.min(dollar, dot));
-
-        // Look for the corresponding .amp resources
-        return fileResources
-            .stream()
-            .filter(r -> r.getId().contains(className))
-            .findFirst().orElse(null);
+            .flatMap(e -> extensionClassesById
+                .get(e.getKey())
+                .stream()
+                .map(r -> new CustomCodeConflict(
+                    r,
+                    e.getValue(),
+                    alfrescoVersion
+                )));
     }
 
     @Override

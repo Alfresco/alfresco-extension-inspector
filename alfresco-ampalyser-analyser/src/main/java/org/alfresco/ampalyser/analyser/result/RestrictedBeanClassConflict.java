@@ -9,6 +9,7 @@ package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
 
+import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.Resource;
 
 /**
@@ -20,7 +21,7 @@ public class RestrictedBeanClassConflict extends AbstractConflict
     {
     }
 
-    public RestrictedBeanClassConflict(Resource ampResourceInConflict, String alfrescoVersion)
+    public RestrictedBeanClassConflict(BeanResource ampResourceInConflict, String alfrescoVersion)
     {
         super(RESTRICTED_BEAN_CLASS, ampResourceInConflict, null, alfrescoVersion);
     }

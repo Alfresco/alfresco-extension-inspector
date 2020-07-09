@@ -12,7 +12,7 @@ import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_U
 import java.util.Objects;
 import java.util.Set;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 
 public class WarLibraryUsageConflict extends AbstractConflict
 {
@@ -22,8 +22,8 @@ public class WarLibraryUsageConflict extends AbstractConflict
     {
     }
 
-    public WarLibraryUsageConflict(Resource ampResourceInConflict, Set<String> classDependencies, String alfrescoVersion
-    )
+    public WarLibraryUsageConflict(ClasspathElementResource ampResourceInConflict, Set<String> classDependencies,
+        String alfrescoVersion)
     {
         super(WAR_LIBRARY_USAGE, ampResourceInConflict, null, alfrescoVersion);
         this.classDependencies = classDependencies;

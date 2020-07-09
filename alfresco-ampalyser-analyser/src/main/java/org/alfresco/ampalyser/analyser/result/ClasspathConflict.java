@@ -9,7 +9,7 @@ package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 
 public class ClasspathConflict extends AbstractConflict
 {
@@ -17,8 +17,8 @@ public class ClasspathConflict extends AbstractConflict
     {
     }
 
-    public ClasspathConflict(Resource ampResourceInConflict,
-        Resource warResourceInConflict, String alfrescoVersion)
+    public ClasspathConflict(ClasspathElementResource ampResourceInConflict,
+        ClasspathElementResource warResourceInConflict, String alfrescoVersion)
     {
         super(CLASSPATH_CONFLICT, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
     }

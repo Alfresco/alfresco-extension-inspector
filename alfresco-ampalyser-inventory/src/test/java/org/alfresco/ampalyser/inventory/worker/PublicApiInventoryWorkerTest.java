@@ -131,6 +131,6 @@ public class PublicApiInventoryWorkerTest
 
     private static String getClassRelativePath(Class clazz)
     {
-        return clazz.getName().replaceAll("\\.", "/") + ".class";
+        return clazz.getName().replace(".", "/") + ".class";
     }
 }

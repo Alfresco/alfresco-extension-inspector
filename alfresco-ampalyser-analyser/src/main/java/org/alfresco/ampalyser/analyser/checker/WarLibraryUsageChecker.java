@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
@@ -50,7 +51,8 @@ public class WarLibraryUsageChecker implements Checker
             .filter(allExtensionDependencies::contains) // only if the WAR entry could be a dependency of the extension
             .collect(toUnmodifiableSet());
 
-        final Map<String, Set<Resource>> extensionClassesById = extensionResourceInfoService.retrieveClasspathElementsById();
+        final Map<String, Set<ClasspathElementResource>> extensionClassesById =
+            extensionResourceInfoService.retrieveClasspathElementsById();
 
         // now we can go back through the AMP dependencies and
         return extensionResourceInfoService

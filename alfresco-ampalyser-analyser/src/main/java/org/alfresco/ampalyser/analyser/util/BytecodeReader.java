@@ -4,7 +4,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Map.Entry;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 
@@ -94,7 +94,7 @@ public class BytecodeReader
                 .flatMap(m -> m.entrySet().stream())
                 .collect(groupingBy( // we can have the same class in multiple JARs
                     Entry::getKey,
-                    mapping(Entry::getValue, toList())
+                    mapping(Entry::getValue, toUnmodifiableList())
                 ));
         }
         catch (IOException e)

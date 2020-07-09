@@ -7,9 +7,17 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * @author Lucian Tuca
+ * @author Cezar Leahu
  */
 public class CustomCodeCheckerTest
 {
+    @Test
+    void testProcess()
+    {
+
+    }
 }

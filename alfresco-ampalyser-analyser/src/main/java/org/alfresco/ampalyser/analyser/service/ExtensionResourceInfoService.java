@@ -7,6 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
+import static java.util.Collections.emptySet;
 import static java.util.Map.Entry;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
@@ -24,6 +25,8 @@ import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
 import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
@@ -45,15 +48,14 @@ public class ExtensionResourceInfoService
     @Autowired
     private ConfigService configService;
 
-    private Map<String, Set<Resource>> beanOverridesById;
-    private Map<String, Set<Resource>> classpathElementsById;
-    private Map<String, Set<Resource>> classpathElementsByName;
-    private Map<String, Resource> filesByDestination;
+    private Map<String, Set<BeanResource>> beanOverridesById;
+    private Map<String, Set<ClasspathElementResource>> classpathElementsById;
+    private Map<String, FileResource> filesByDestination;
     private Map<String, Set<String>> dependenciesPerClass;
     private Set<String> allDependencies;
     private Set<BeanResource> beansOfAlfrescoTypes;
 
-    public Map<String, Set<Resource>> retrieveBeanOverridesById()
+    public Map<String, Set<BeanResource>> retrieveBeanOverridesById()
     {
         if (beanOverridesById == null)
         {
@@ -63,18 +65,20 @@ public class ExtensionResourceInfoService
                 .getExtensionResources(BEAN)
                 .stream()
                 .filter(r -> !whitelist.contains(r.getId()))
+                .map(r -> (BeanResource) r)
                 .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
         }
         return beanOverridesById;
     }
 
-    public Map<String, Set<Resource>> retrieveClasspathElementsById()
+    public Map<String, Set<ClasspathElementResource>> retrieveClasspathElementsById()
     {
         if (classpathElementsById == null)
         {
             classpathElementsById = configService
                 .getExtensionResources(CLASSPATH_ELEMENT)
                 .stream()
+                .map(r -> (ClasspathElementResource) r)
                 .collect(groupingBy(
                     Resource::getId,
                     toUnmodifiableSet()
@@ -83,23 +87,7 @@ public class ExtensionResourceInfoService
         return classpathElementsById;
     }
 
-    public Map<String, Set<Resource>> retrieveClassResourcesByName()
-    {
-        if (classpathElementsByName == null)
-        {
-            classpathElementsByName = configService
-                .getExtensionResources(CLASSPATH_ELEMENT)
-                .stream()
-                .filter(r -> r.getId().endsWith(".class"))
-                .collect(groupingBy(
-                    Resource::getId,
-                    toUnmodifiableSet()
-                ));
-        }
-        return classpathElementsByName;
-    }
-
-    public Map<String, Resource> retrieveFilesByDestination()
+    public Map<String, FileResource> retrieveFilesByDestination()
     {
         final Map<String, String> fileMappings = configService.getFileMappings();
 
@@ -108,6 +96,7 @@ public class ExtensionResourceInfoService
             filesByDestination = configService
                 .getExtensionResources(FILE)
                 .stream()
+                .map(r -> (FileResource) r)
                 .collect(toUnmodifiableMap(r -> computeDestination(r, fileMappings), identity()));
         }
         return filesByDestination;
@@ -164,7 +153,7 @@ public class ExtensionResourceInfoService
         return beansOfAlfrescoTypes;
     }
 
-    private static String computeDestination(final Resource resource, final Map<String, String> fileMappings)
+    private static String computeDestination(final FileResource resource, final Map<String, String> fileMappings)
     {
         // Find the most specific/deepest mapping that we can use
         final String matchingSourceMapping = findMostSpecificMapping(fileMappings, resource);
@@ -187,7 +176,7 @@ public class ExtensionResourceInfoService
      * @param ampResource  the .amp resource
      * @return the most specific mapping.
      */
-    public static String findMostSpecificMapping(final Map<String, String> fileMappings, final Resource ampResource)
+    public static String findMostSpecificMapping(final Map<String, String> fileMappings, final FileResource ampResource)
     {
         String matchingSourceMapping = "";
         for (String sourceMapping : fileMappings.keySet())
@@ -207,18 +196,25 @@ public class ExtensionResourceInfoService
      * @param classData the .class file as byte[]
      * @return a {@link Set} of the used classes
      */
-    public static Set<String> compileClassDependenciesFromBytecode(final byte[] classData)
+    static Set<String> compileClassDependenciesFromBytecode(final byte[] classData)
     {
-        final DependencyVisitor visitor = new DependencyVisitor();
-        final ClassReader reader = new ClassReader(classData);
-        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-        visitor.visitEnd();
+        try
+        {
+            final DependencyVisitor visitor = new DependencyVisitor();
+            final ClassReader reader = new ClassReader(classData);
+            reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+            visitor.visitEnd();
 
-        return visitor
-            .getClasses()
-            .stream()
-            .filter(s -> !s.startsWith("java/")) // strip JDK dependencies
-            .map(s -> "/" + s + ".class") // change it to the Inventory Report format
-            .collect(toUnmodifiableSet());
+            return visitor
+                .getClasses()
+                .stream()
+                .filter(s -> !s.startsWith("java/")) // strip JDK dependencies
+                .map(s -> "/" + s + ".class") // change it to the Inventory Report format
+                .collect(toUnmodifiableSet());
+        }
+        catch (UnsupportedOperationException ignore)
+        {
+            return emptySet();
+        }
     }
 }

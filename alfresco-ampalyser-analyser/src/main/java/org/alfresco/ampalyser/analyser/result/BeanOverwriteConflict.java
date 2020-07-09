@@ -9,7 +9,7 @@ package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.BeanResource;
 
 /**
  * Represents a conflict, usually found by {@link org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker}
@@ -24,7 +24,8 @@ public class BeanOverwriteConflict extends AbstractConflict
     {
     }
 
-    public BeanOverwriteConflict(Resource ampResourceInConflict, Resource warResourceInConflict, String alfrescoVersion)
+    public BeanOverwriteConflict(BeanResource ampResourceInConflict, BeanResource warResourceInConflict,
+        String alfrescoVersion)
     {
         super(BEAN_OVERWRITE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);
     }
