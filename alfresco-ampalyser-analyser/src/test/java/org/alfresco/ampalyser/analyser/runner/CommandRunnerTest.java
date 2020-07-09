@@ -211,4 +211,7 @@ public class CommandRunnerTest
             new DefaultApplicationArguments(extensionFileName,
                 "--whitelistBeanRestrictedClasses=" + "whitelist-does-not-exist")));
     }
+    
+    //TODO test all options
+    //TODO test both target options
 }
