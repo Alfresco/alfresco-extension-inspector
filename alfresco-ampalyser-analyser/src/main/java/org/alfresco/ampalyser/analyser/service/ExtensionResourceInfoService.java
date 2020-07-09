@@ -12,7 +12,6 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.service.DependencyService.findDependenciesForClass;
 import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
@@ -30,6 +29,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.alfresco.ampalyser.model.Resource;
+import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ public class ExtensionResourceInfoService
                 .stream()
                 .filter(r -> r.getId().endsWith(".class"))
                 .collect(groupingBy(
-                    r -> r.getId().substring(1).replaceAll("/", "."),
+                    r -> r.getId().substring(1), //.replaceAll("/", "."), todo?
                     toUnmodifiableSet()
                 ));
         }
@@ -216,7 +216,7 @@ public class ExtensionResourceInfoService
                 if (jzeName.endsWith(".class"))
                 {
                     javaClasses.put(
-                        jzeName.substring(0, jzeName.length() - 6).replaceAll("/", "."),
+                        jzeName.substring(0, jzeName.length() - 6), //.replaceAll("/", "."), todo?
                         extract(jarZis));
                     LOGGER.debug("Found a class " + jzeName);
                 }
@@ -232,5 +232,25 @@ public class ExtensionResourceInfoService
         }
 
         return javaClasses;
+    }
+
+    /**
+     * For a given .class file provided as byte[] this method finds all the classes this class uses.
+     *
+     * @param classData the .class file as byte[]
+     * @return a {@link Set} of the used classes
+     */
+    public static Set<String> findDependenciesForClass(final byte[] classData)
+    {
+        final DependencyVisitor visitor = new DependencyVisitor();
+        final ClassReader reader = new ClassReader(classData);
+        reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+        visitor.visitEnd();
+
+        return visitor
+            .getClasses()
+            .stream()
+            //.map(c -> c.replaceAll("/", ".")) todo?
+            .collect(toUnmodifiableSet());
     }
 }

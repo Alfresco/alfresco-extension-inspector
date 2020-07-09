@@ -46,8 +46,8 @@ public class WarLibraryUsageChecker implements Checker
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
             .filter(s -> !s.startsWith("/org/alfresco/"))
+            .map(s -> s.substring(1)) //.replaceAll("/", ".")) todo?
             .filter(extensionDependencies::contains)
-            .map(s -> s.substring(1).replaceAll("/", "."))
             .collect(toUnmodifiableSet());
 
         return extensionResourceInfoService
