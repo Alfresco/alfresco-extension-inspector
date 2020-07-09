@@ -8,6 +8,9 @@
 
 package org.alfresco.ampalyser.analyser.runner;
 
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.HELP;
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.VERBOSE;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_OVERRIDING;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractExtensionPath;
@@ -18,6 +21,7 @@ import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.vali
 import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
@@ -29,7 +33,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommandRunner
 {
-    public static final String VERBOSE = "verbose";
     @Autowired
     private WarInventoryReportStore warInventoryReportStore;
     @Autowired
@@ -37,16 +40,39 @@ public class CommandRunner
     @Autowired
     private CommandOptionsResolver commandOptionsResolver;
 
-    public void executeCommand(String command, Iterator<String> commandOptions)
+    public void execute(ApplicationArguments args)
+    {
+        Set<String> options = args.getOptionNames();
+        List<String> nonOptionArgs = args.getNonOptionArgs();
+
+        // Stop if no command arguments have been provided
+        if (nonOptionArgs.isEmpty() && options.isEmpty())
+        {
+            printHelp();
+            throw new IllegalArgumentException();
+        }
+
+        if (nonOptionArgs.isEmpty())
+        {
+            Iterator<String> iterator = options.iterator();
+            executeCommand(iterator.next(), iterator);
+        }
+        else
+        {
+            executeExtensionAnalysis(args);
+        }
+    }
+    
+    private void executeCommand(String command, Iterator<String> commandOptions)
     {
         switch (command)
         {
         case "help":
-            validateOptionsForCommand("--help", commandOptions);
+            validateOptionsForCommand(HELP, commandOptions);
             printHelp();
             break;
         case "list-known-alfresco-versions":
-            validateOptionsForCommand("--list-known-alfresco-versions", commandOptions);
+            validateOptionsForCommand(LIST_KNOWN_VERSIONS, commandOptions);
             listKnownAlfrescoVersions();
             break;
         default:
@@ -56,7 +82,7 @@ public class CommandRunner
         }
     }
 
-    public void executeExtensionAnalysis(ApplicationArguments args)
+    private void executeExtensionAnalysis(ApplicationArguments args)
     {
         final String extensionPath = extractExtensionPath(args.getNonOptionArgs());
         final Set<String> options = args.getOptionNames();

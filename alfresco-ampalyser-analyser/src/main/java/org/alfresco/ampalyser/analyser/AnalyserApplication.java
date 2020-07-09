@@ -40,8 +40,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
     })
 public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
 {
-    private static final Logger logger = LoggerFactory.getLogger(AnalyserApplication.class);
-
     private static final int EXIT_CODE_EXCEPTION = 1;
 
     @Autowired
@@ -57,32 +55,13 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     @Override
     public void run(ApplicationArguments args)
     {
-        final Set<String> options = args.getOptionNames();
-        final List<String> nonOptionArgs = args.getNonOptionArgs();
-
         try
         {
-            // Stop if no command arguments have been provided
-            if (nonOptionArgs.isEmpty() && options.isEmpty())
-            {
-                printHelp();
-                throw new IllegalArgumentException();
-            }
-
-            if (nonOptionArgs.isEmpty())
-            {
-                Iterator<String> iterator = options.iterator();
-                commandRunner.executeCommand(iterator.next(), iterator);
-            }
-            else
-            {
-                commandRunner.executeExtensionAnalysis(args);
-            }
+            commandRunner.execute(args);
         }
         catch (IllegalArgumentException e)
         {
             setExceptionExitCode();
-            return;
         }
     }
 

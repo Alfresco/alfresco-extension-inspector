@@ -32,6 +32,8 @@ public class CommandOptionsResolver
     public static final String WHITELIST_BEAN_OVERRIDING = "whitelistBeanOverriding";
     public static final String WHITELIST_BEAN_RESTRICTED_CLASSES = "whitelistBeanRestrictedClasses";
     public static final String VERBOSE = "verbose";
+    public static final String HELP = "help";
+    public static final String LIST_KNOWN_VERSIONS = "list-known-alfresco-versions";
     
     @Autowired
     private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
@@ -149,9 +151,11 @@ public class CommandOptionsResolver
 
     public static void validateOptionsForCommand(String command, Iterator<String> commandOptions)
     {
-        if (commandOptions != null && commandOptions.hasNext())
+        if (Set.of(HELP, LIST_KNOWN_VERSIONS).contains(command) && commandOptions != null
+            && commandOptions.hasNext())
         {
-            printCommandUsage(command, "Unknown options provided for '" + command + "' command.");
+            printCommandUsage("--" + command,
+                "Unknown options provided for '" + command + "' command.");
             throw new IllegalArgumentException();
         }
     }
