@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -43,8 +42,6 @@ public class CustomCodeChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCodeChecker.class);
 
-    @Autowired
-    private ConfigService configService;
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
 
