@@ -11,6 +11,7 @@ import static java.util.stream.Collectors.toList;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -35,6 +37,8 @@ public class FileOverwritingCheckerTest
 {
     @Mock
     private ConfigService configService;
+    @InjectMocks
+    private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
     @InjectMocks
     private Checker foChecker = new FileOverwritingChecker();
 
