@@ -48,14 +48,14 @@ class CustomCodeCheckerTest
         // AMP Classpath elements
         {
             doReturn(List.of(
-                ampRes("to_be_or_not_to_be.nope", "whatever"),
-                ampRes("no_deps.class", "whatever"),
-                ampRes("deps_outside_alf.class", "whatever"),
-                ampRes("deps_in_amp.class", "whatever"),
-                ampRes("deps_to_alfresco_public_api.class", "whatever"),
-                ampRes("deps_to_core_alf_classes_which_is_baaad.class", "whatever"),
-                ampRes("deps_to_deprecated_alfresco_public_api_classes.class", "whatever"),
-                ampRes("deps_to_everything.class", "whatever")
+                ampRes("to_be_or_not_to_be.nope"),
+                ampRes("no_deps.class"),
+                ampRes("deps_outside_alf.class"),
+                ampRes("deps_in_amp.class"),
+                ampRes("deps_to_alfresco_public_api.class"),
+                ampRes("deps_to_core_alf_classes_which_is_baaad.class"),
+                ampRes("deps_to_deprecated_alfresco_public_api_classes.class"),
+                ampRes("deps_to_everything.class")
             )).when(configService).getExtensionResources(any());
         }
 
@@ -63,8 +63,8 @@ class CustomCodeCheckerTest
         {
             warInventory.setResources(Map.of(
                 CLASSPATH_ELEMENT, List.of(
-                    warRes("c1.class", "whatever"),
-                    warRes("c2.class", "whatever")
+                    warRes("c1.class"),
+                    warRes("c2.class")
                 ),
                 ALFRESCO_PUBLIC_API, List.of(
                     apar("c_APA_1ok", false),
@@ -109,13 +109,13 @@ class CustomCodeCheckerTest
         final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());
 
         final Set<Conflict> expected = Set.of(
-            conflict(ampRes("deps_to_core_alf_classes_which_is_baaad.class", "whatever"),
+            conflict(ampRes("deps_to_core_alf_classes_which_is_baaad.class"),
                 Set.of(OAW + "c1.class", OAW + "c2.class")),
 
-            conflict(ampRes("deps_to_deprecated_alfresco_public_api_classes.class", "whatever"),
+            conflict(ampRes("deps_to_deprecated_alfresco_public_api_classes.class"),
                 Set.of(OAW + "c_APA_3deprecated.class", OAW + "c_APA_4deprecated.class")),
 
-            conflict(ampRes("deps_to_everything.class", "whatever"),
+            conflict(ampRes("deps_to_everything.class"),
                 Set.of(
                     "/hakuna/matata/jungle.class", "/nananana/batman.class",
                     OAA + "to_be_or_not_to_be.nope", OAA + "no_deps.class", OAA + "deps_outside_alf.class",
@@ -127,14 +127,14 @@ class CustomCodeCheckerTest
         expected.forEach(c -> assertTrue(expected.contains(c)));
     }
 
-    private static ClasspathElementResource ampRes(String id, String definingObject)
+    private static ClasspathElementResource ampRes(String id)
     {
-        return new ClasspathElementResource(OAA + id, definingObject);
+        return new ClasspathElementResource(OAA + id, "definingObject");
     }
 
-    private static Resource warRes(String id, String definingObject)
+    private static Resource warRes(String id)
     {
-        return new ClasspathElementResource(OAW + id, definingObject);
+        return new ClasspathElementResource(OAW + id, "definingObject");
     }
 
     private static Resource apar(String id, boolean deprecated)
