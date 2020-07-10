@@ -9,17 +9,17 @@
 EXTENSION_PATH="${1}"
 EXTENSION_NAME=$(basename "${EXTENSION_PATH}")
 
-find ${HOME}/.m2/repository  -type d -name '*-SNAPSHOT*' | xargs -r -l rm -rf
+find "${HOME}/.m2/repository"  -type d -name '*-SNAPSHOT*' | xargs -r -l rm -rf
 
-mvn clean install -DskipTests
+mvn clean install -DskipTests || exit 1
 
-pushd alfresco-ampalyser-analyser/target
+pushd alfresco-ampalyser-analyser/target || exit 2
 
-cp ${EXTENSION_PATH} ./
+cp "${EXTENSION_PATH}" ./
 
-time java -jar alfresco-ampalyser-analyser-*-SNAPSHOT-application.jar ${EXTENSION_NAME} --verbose
+time java -jar alfresco-ampalyser-analyser-*-SNAPSHOT-application.jar "${EXTENSION_NAME}" --verbose
 
-popd
+popd || exit 3
 
 wall "Done!"
 

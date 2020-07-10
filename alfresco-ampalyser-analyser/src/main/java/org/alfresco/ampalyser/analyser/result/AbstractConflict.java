@@ -8,7 +8,6 @@
 package org.alfresco.ampalyser.analyser.result;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import org.alfresco.ampalyser.model.Resource;
 

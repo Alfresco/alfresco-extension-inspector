@@ -47,7 +47,7 @@ public class AnalyserService
      */
     public void analyse(final SortedSet<String> alfrescoVersions)
     {
-        // In need the results (Conflicts) grouped by their type and then by their resource IDs
+        // The outputService needs the results (Conflicts) grouped by their type and then by their resource IDs
         final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId = alfrescoVersions
             .stream()
             // for each WAR version call the warComparatorService (which in turn calls the Checkers)

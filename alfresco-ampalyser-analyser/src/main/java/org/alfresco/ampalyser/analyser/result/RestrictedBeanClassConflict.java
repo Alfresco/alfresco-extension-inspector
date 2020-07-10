@@ -10,7 +10,6 @@ package org.alfresco.ampalyser.analyser.result;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
 
 import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.Resource;
 
 /**
  * @author Lucian Tuca
