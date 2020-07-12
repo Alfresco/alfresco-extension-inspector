@@ -10,13 +10,13 @@ package org.alfresco.ampalyser.analyser.service;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.util.BytecodeReader.readBytecodeFromArtifact;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.ampalyser.analyser.util.BytecodeReader;
 import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
 import org.objectweb.asm.ClassReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,8 @@ public class ExtensionCodeAnalysisService
 {
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private BytecodeReader bytecodeReader;
 
     private Map<String, Set<String>> dependenciesPerClass;
     private Set<String> allDependencies;
@@ -59,7 +61,7 @@ public class ExtensionCodeAnalysisService
         if (dependenciesPerClass == null)
         {
             // each class can have multiple definitions (different jars), hence a list of bytecode instances per class
-            final Map<String, List<byte[]>> bytecodePerClass = readBytecodeFromArtifact(
+            final Map<String, List<byte[]>> bytecodePerClass = bytecodeReader.readArtifact(
                 configService.getExtensionPath());
 
             dependenciesPerClass = bytecodePerClass

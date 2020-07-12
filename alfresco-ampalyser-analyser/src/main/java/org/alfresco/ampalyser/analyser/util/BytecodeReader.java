@@ -21,11 +21,15 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
+ * The methods in this class can extract the class bytecode from an artifact.
+ *
  * @author Cezar Leahu
  * @author Lucian Tuca
  */
+@Component
 public class BytecodeReader
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BytecodeReader.class);
@@ -36,20 +40,23 @@ public class BytecodeReader
      * @param artifactPath the location of the amp
      * @return a {@link Map} containing all the .class files with the filename as the key and byte[] data as the value
      */
-    public static Map<String, List<byte[]>> readBytecodeFromArtifact(final String artifactPath)
+    public Map<String, List<byte[]>> readArtifact(final String artifactPath)
     {
         return artifactPath.endsWith(".jar") ?
-               readBytecodeFromJarArtifact(artifactPath) :
-               readBytecodeFromAmpArtifact(artifactPath);
+               readJarArtifact(artifactPath) :
+               readAmpArtifact(artifactPath);
     }
 
     /**
      * Extract the bytecode from all the classes in the given JAR.
+     * <p/>
+     * In case of JARs, each entry value will be a list with one single element -
+     * as a JAR artifact cannot contain multiple instances of the same Class.
      *
      * @param jarPath
-     * @return A map of class_name -> bytecode.
+     * @return A map of (class_name -> {bytecode}).
      */
-    private static Map<String, List<byte[]>> readBytecodeFromJarArtifact(final String jarPath)
+    public Map<String, List<byte[]>> readJarArtifact(final String jarPath)
     {
         try (final InputStream inputStream = new BufferedInputStream(new FileInputStream(jarPath)))
         {
@@ -70,11 +77,14 @@ public class BytecodeReader
 
     /**
      * Extract the bytecode from all the classes from all the JARs in the given AMP.
+     * <p/>
+     * In case of AMPs, each entry value is a list of one or more elements, as an AMP
+     * can contain multiple JARs and thus multiple instances of the same Class.
      *
      * @param ampPath
-     * @return A map of class_name -> bytecode.
+     * @return A map of (class_name -> {bytecode}).
      */
-    private static Map<String, List<byte[]>> readBytecodeFromAmpArtifact(final String ampPath)
+    public Map<String, List<byte[]>> readAmpArtifact(final String ampPath)
     {
         try (final ZipFile zipFile = new ZipFile(ampPath))
         {
