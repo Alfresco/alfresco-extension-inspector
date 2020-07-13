@@ -61,7 +61,7 @@ class ExtensionCodeAnalysisServiceTest
 
         try (final InputStream is = this.getClass().getResourceAsStream("/some-compiled.class.data"))
         {
-            final Set<String> result = compileClassDependenciesFromBytecode(extract(is));
+            final Set<String> result = compileClassDependenciesFromBytecode("some-compiled.class", extract(is));
             assertNotNull(result);
             assertEquals(expected.size(), result.size());
             expected.forEach(e -> assertTrue(result.contains(e)));

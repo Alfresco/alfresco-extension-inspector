@@ -19,6 +19,8 @@ import java.util.Set;
 import org.alfresco.ampalyser.analyser.util.BytecodeReader;
 import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
 import org.objectweb.asm.ClassReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExtensionCodeAnalysisService
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionCodeAnalysisService.class);
+
     @Autowired
     private ConfigService configService;
     @Autowired
@@ -71,7 +75,7 @@ public class ExtensionCodeAnalysisService
                     Map.Entry::getKey,
                     e -> e.getValue()
                           .stream()
-                          .map(ExtensionCodeAnalysisService::compileClassDependenciesFromBytecode)
+                          .map(v -> compileClassDependenciesFromBytecode(e.getKey(), v))
                           .flatMap(Collection::stream) // due to multiple instances of the same class
                           .collect(toUnmodifiableSet())
                 ));
@@ -106,7 +110,7 @@ public class ExtensionCodeAnalysisService
      * @param classData the .class file as byte[]
      * @return a {@link Set} of the used classes
      */
-    static Set<String> compileClassDependenciesFromBytecode(final byte[] classData)
+    static Set<String> compileClassDependenciesFromBytecode(final String name, final byte[] classData)
     {
         try
         {
@@ -122,8 +126,9 @@ public class ExtensionCodeAnalysisService
                 .map(s -> "/" + s + ".class") // change it to the Inventory Report format
                 .collect(toUnmodifiableSet());
         }
-        catch (UnsupportedOperationException ignore)
+        catch (UnsupportedOperationException e)
         {
+            LOGGER.warn("Failed to parse bytecode for " + name + ": " + e.getMessage());
             return emptySet();
         }
     }
