@@ -8,17 +8,20 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceIds;
+import static java.text.MessageFormat.format;
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class LibraryUsageConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER = "Found 3rd party library usage! Although this is not an "
+    private static final String HEADER =
+        "Found 3rd party library usage! Although this is not an "
         + "immediate problem, all 3rd party libraries that come with the Alfresco "
         + "repository are considered our internal implementation detail. These "
         + "libraries will change or might even disappear in service packs without "
@@ -33,24 +36,25 @@ public class LibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return null;
-    }
-    
-    @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
-    {
-        //TODO to be discussed (https://issues.alfresco.com/jira/browse/ACS-80)
+        return WAR_LIBRARY_USAGE;
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
-        String definingObject = conflictSet.iterator().next().getAmpResourceInConflict()
-            .getDefiningObject();
+        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 
-        System.out.println(id + " in " + definingObject);
-        System.out.println("using");
-        System.out.println(joinWarResourceIds(conflictSet));
+        System.out.println(format("{0} in {1}", id, definingObject));
+        System.out.println("is using 3rd party libraries from " + joinWarVersions(conflictSet));
+        System.out.println();
+    }
+
+    @Override
+    public void print(final String id, final Set<Conflict> conflictSet)
+    {
+        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+
+        System.out.println(format("{0} in {1}", id, definingObject));
         System.out.println();
     }
 }
