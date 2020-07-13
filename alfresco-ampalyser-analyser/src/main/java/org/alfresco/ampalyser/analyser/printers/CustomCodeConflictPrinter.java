@@ -9,16 +9,21 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static java.text.MessageFormat.format;
+import static java.util.stream.Collectors.flatMapping;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
+public class CustomCodeConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found usage of internal Alfresco classes! Alfresco provides a Java API "
@@ -53,9 +58,19 @@ public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
     @Override
     public void print(final String id, final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+        final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
+            .stream()
+            .map(c -> (CustomCodeConflict) c)
+            .collect(groupingBy(
+                Conflict::getAlfrescoVersion,
+                flatMapping(c -> c.getInvalidAlfrescoDependencies().stream().sorted(), joining(", "))
+            ));
 
-        System.out.println(format("{0} in {1}", id, definingObject));
-        System.out.println();
+        System.out.println("For extension resource <" + id + "> these are the invalid dependencies used:");
+
+        dependenciesPerAlfrescoVersion.
+            forEach((k,v) -> System.out.println(k + " : " + v));
+
+        System.out.println("");
     }
 }
