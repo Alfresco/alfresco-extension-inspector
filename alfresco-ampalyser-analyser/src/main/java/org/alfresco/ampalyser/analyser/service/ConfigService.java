@@ -47,7 +47,6 @@ public class ConfigService
     private Set<String> beanClassWhitelist = emptySet();
     private boolean verboseOutput = false;
 
-    //region Simple Accessors
     public String getExtensionPath()
     {
         return extensionPath;
@@ -82,9 +81,7 @@ public class ConfigService
     {
         this.verboseOutput = verboseOutput;
     }
-    //endregion
 
-    //region Resource Loaders
     public void registerExtensionPath(final String extensionPath)
     {
         this.extensionPath = extensionPath;
@@ -103,5 +100,4 @@ public class ConfigService
     {
         beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
     }
-    //endregion
 }

@@ -1,10 +1,14 @@
 package org.alfresco.ampalyser.analyser.service;
 
+import static org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,6 +21,7 @@ import java.util.Set;
 
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.FileResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +37,7 @@ class ExtensionResourceInfoServiceTest
     private ExtensionResourceInfoService service;
 
     @Test
-    void retrieveBeanOverridesById()
+    void testRetrieveBeanOverridesById()
     {
         doReturn(Set.of(
             "bean4",
@@ -72,7 +77,7 @@ class ExtensionResourceInfoServiceTest
     }
 
     @Test
-    void retrieveClasspathElementsById()
+    void testRetrieveClasspathElementsById()
     {
         doReturn(List.of(
             new ClasspathElementResource("/package/Class1.class", "lib1.jar"),
@@ -97,13 +102,54 @@ class ExtensionResourceInfoServiceTest
     }
 
     @Test
-    void retrieveFilesByDestination()
+    void testRetrieveFilesByDestination()
     {
         //todo
+        doReturn(Map.of(
+            "/web", "/web1",
+            "/web/ignore", "/web2",
+            "/web/foo", "/web3",
+            "/web/foo/bar", "/web4",
+            "/web/foo/bar/white", "",
+            "/web/foo/bar/white/black", "/web5"
+        )).when(configService).getFileMappings();
+
+        doReturn(List.of(
+            new FileResource("/web/foo/file1", "a.jar"),
+            new FileResource("/web/foo/file2", "a.jar"),
+            new FileResource("/web/foo/file3", "b.jar"),
+            new FileResource("/web/foo/bar/file4", "a.jar"),
+            new FileResource("/web/foo/bar/white/file5", "a.jar"),
+            new FileResource("/web/foo/bar/black/file6", "b.jar"),
+            new FileResource("/web/foo/bar/white/black/file7", "b.jar"),
+            new FileResource("/web/foo/bar/white/black", "a.jar"),
+            new FileResource("/web/foo/bar/white/black.res", "a.jar")
+        )).when(configService).getExtensionResources(eq(FILE));
+
+        final Map<String, FileResource> expected = Map.of(
+            "/web3/file1", new FileResource("/web/foo/file1", "a.jar"),
+            "/web3/file2", new FileResource("/web/foo/file2", "a.jar"),
+            "/web3/file3", new FileResource("/web/foo/file3", "b.jar"),
+            "/web4/file4", new FileResource("/web/foo/bar/file4", "a.jar"),
+            "/file5", new FileResource("/web/foo/bar/white/file5", "a.jar"),
+            "/web4/black/file6", new FileResource("/web/foo/bar/black/file6", "b.jar"),
+            "/web5/file7", new FileResource("/web/foo/bar/white/black/file7", "b.jar"),
+            "/black", new FileResource("/web/foo/bar/white/black", "a.jar"),
+            "/black.res", new FileResource("/web/foo/bar/white/black.res", "a.jar")
+        );
+
+        final Map<String, FileResource> result = service.retrieveFilesByDestination();
+
+        assertNotNull(result);
+        assertEquals(expected.size(), result.size());
+        expected.forEach((k, v) -> {
+            assertTrue(result.containsKey(k));
+            assertEquals(v, result.get(k));
+        });
     }
 
     @Test
-    void retrieveBeansOfAlfrescoTypes()
+    void testRetrieveBeansOfAlfrescoTypes()
     {
         doReturn(List.of(
             new BeanResource("bean1", "context1.xml", "java.lang.String.class"),
@@ -146,8 +192,23 @@ class ExtensionResourceInfoServiceTest
     }
 
     @Test
-    void findMostSpecificMapping()
+    void testFindMostSpecificMapping()
     {
-        //todo
+        final String destination = findMostSpecificMapping(
+            Map.of(
+                "/web", "/web1",
+                "/web/ignore", "/web2",
+                "/web/foo", "/web3",
+                "/web/foo/bar", "/web4",
+                "/web/foo/bar/white", "",
+                "/web/foo/bar/white/black", "/web5",
+                "/web/foo/bar/white/black/file", "/web6",
+                "/web/foo/bar/white/black/file.res", "/web7",
+                "/web/foo/bar/white/black/file.res/nope", "/web8"
+            ),
+            new FileResource("/web/foo/bar/white/black/file.res", "a.jar")
+        );
+
+        assertEquals("/web/foo/bar/white/black", destination);
     }
 }

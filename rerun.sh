@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script uses the GNU utilities (not the default MacOS ones)
-# Embrace the dark side: $ brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep
+# Install with: $ brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep
 
 # Run with:
 # $ bash rerun.sh  alfresco/extension/path.amp
