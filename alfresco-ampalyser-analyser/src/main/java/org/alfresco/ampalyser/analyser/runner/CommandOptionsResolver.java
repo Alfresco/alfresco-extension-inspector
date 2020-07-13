@@ -172,4 +172,24 @@ public class CommandOptionsResolver
         return new File(warInventory).exists() && FilenameUtils.getExtension(warInventory)
             .equalsIgnoreCase("json");
     }
+
+    public static boolean isVerboseOutput(ApplicationArguments args)
+    {
+        if (!args.containsOption(VERBOSE))
+        {
+            return false;
+        }
+        List<String> values = args.getOptionValues(VERBOSE);
+        if (values.isEmpty())
+        {
+            return true;
+        }
+        if (values.size() > 1 || (!values.get(0).equalsIgnoreCase("true") && !values.get(0)
+            .equalsIgnoreCase("false")))
+        {
+            printAnalyserUsage("Invalid values for verbose option provided.");
+            throw new IllegalArgumentException();
+        }
+        return Boolean.parseBoolean(values.get(0));
+    }
 }

@@ -23,6 +23,7 @@ public class UsagePrinter
     private static final String WHITELIST_BEAN_OVERRIDING_PATH = "--whitelistBeanOverriding";
     private static final String WHITELIST_BEAN_RESTRICTED_CLASSES_PATH = "--whitelistBeanRestrictedClasses";
     private static final String VERBOSE = "--verbose";
+    private static final String VERBOSE_OPTION = "[" + VERBOSE + "=[true | false]]";
     private static final String HELP = "--help";
     private static final String LIST_KNOWN_VERSIONS = "--list-known-alfresco-versions";
 
@@ -36,7 +37,7 @@ public class UsagePrinter
                 TARGET_OPTION,
                 "[" + WHITELIST_BEAN_OVERRIDING_PATH + "=/path/to/bean_overriding_whitelist.json]", 
                 "[" + WHITELIST_BEAN_RESTRICTED_CLASSES_PATH + "=/path/to/bean_restricted_classes_whitelist.json]", 
-                "[" + VERBOSE + "]"),
+                VERBOSE_OPTION),
             HELP, 
             LIST_KNOWN_VERSIONS);
         
@@ -64,7 +65,7 @@ public class UsagePrinter
             TARGET_OPTION,
             "[" + WHITELIST_BEAN_OVERRIDING_PATH + "=/path/to/bean_overriding_whitelist.json]",
             "[" + WHITELIST_BEAN_RESTRICTED_CLASSES_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
-            "[" + VERBOSE + "]"));
+            VERBOSE_OPTION));
     }
     
     public static void printCommandUsage(String command, String errorMessage)

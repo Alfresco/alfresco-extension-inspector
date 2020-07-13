@@ -10,12 +10,12 @@ package org.alfresco.ampalyser.analyser.runner;
 
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.HELP;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.VERBOSE;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_OVERRIDING;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractExtensionPath;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWhitelistPath;
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.isVerboseOutput;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateAnalyserOptions;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateOptionsForCommand;
 import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
@@ -99,6 +99,7 @@ public class CommandRunner
         final String beanRestrictedClassWhitelistPath = extractWhitelistPath(
             WHITELIST_BEAN_RESTRICTED_CLASSES, args);
 
+        boolean verboseOutput = isVerboseOutput(args);
         // retrieve provided war inventories, if any
         final Set<String> warInventories = extractWarInventoryPaths(args);
         if (warInventories != null)
@@ -109,7 +110,7 @@ public class CommandRunner
                 warInventories,
                 beanOverridingWhitelistPath, 
                 beanRestrictedClassWhitelistPath,
-                args.containsOption(VERBOSE));
+                verboseOutput);
             return;
         }
 
@@ -121,7 +122,7 @@ public class CommandRunner
             null,
             beanOverridingWhitelistPath,
             beanRestrictedClassWhitelistPath, 
-            args.containsOption(VERBOSE));
+            verboseOutput);
     }
 
     private void listKnownAlfrescoVersions()

@@ -8,8 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.runner;
 
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.isVerboseOutput;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
@@ -31,7 +34,7 @@ public class CommandRunnerTest
     @Mock
     private AnalyserService analyserService;
     @Mock
-    private CommandOptionsResolverTest commandOptionsResolver;
+    private CommandOptionsResolver commandOptionsResolver;
     @InjectMocks
     private CommandRunner commandRunner;
 
@@ -184,6 +187,35 @@ public class CommandRunnerTest
     }
 
     @Test
+    public void testExecuteExtensionAnalysisWithAllOptions()
+    {
+        String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
+            .getFile();
+        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
+
+        commandRunner.execute(
+            new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
+                "--verbose=false", "--whitelistBeanOverriding=" + whitelist,
+                "--whitelistBeanRestrictedClasses=" + whitelist));
+    }
+
+    @Test
+    public void testExecuteExtensionAnalysisWithBothTargetOptions()
+    {
+        String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
+            .getFile();
+        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
+        String warInventory = getClass().getClassLoader().getResource("test.inventory.json")
+            .getFile();
+
+        assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
+            new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
+                "--target-inventory=" + warInventory, "--verbose=false",
+                "--whitelistBeanOverriding=" + whitelist,
+                "--whitelistBeanRestrictedClasses=" + whitelist)));
+    }
+
+    @Test
     public void testExecuteExtensionAnalysisWithInvalidOptionValues()
     {
         String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
@@ -199,9 +231,8 @@ public class CommandRunnerTest
             new DefaultApplicationArguments(extensionFileName,
                 "--target-inventory=" + extensionFileName)));
 
-        //TODO add check on verbose's value
-        /*assertThrows(IllegalArgumentException.class, () -> commandRunner
-            .execute(new DefaultApplicationArguments(extensionFileName, "--verbose=false")));*/
+        assertThrows(IllegalArgumentException.class, () -> commandRunner
+            .execute(new DefaultApplicationArguments(extensionFileName, "--verbose=random-value")));
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName,
@@ -211,7 +242,17 @@ public class CommandRunnerTest
             new DefaultApplicationArguments(extensionFileName,
                 "--whitelistBeanRestrictedClasses=" + "whitelist-does-not-exist")));
     }
-    
-    //TODO test all options
-    //TODO test both target options
+
+    @Test
+    public void testIsVerboseOutput()
+    {
+        assertThrows(IllegalArgumentException.class,
+            () -> isVerboseOutput(new DefaultApplicationArguments("--verbose=no")));
+        assertThrows(IllegalArgumentException.class, () -> isVerboseOutput(
+            new DefaultApplicationArguments("--verbose=true", "--verbose=false")));
+
+        assertTrue(isVerboseOutput(new DefaultApplicationArguments("--verbose")));
+        assertTrue(isVerboseOutput(new DefaultApplicationArguments("--verbose=true")));
+        assertFalse(isVerboseOutput(new DefaultApplicationArguments("--verbose=false")));
+    }
 }
