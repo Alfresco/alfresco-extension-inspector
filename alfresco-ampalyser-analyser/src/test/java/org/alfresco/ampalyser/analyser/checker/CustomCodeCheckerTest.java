@@ -18,6 +18,7 @@ import java.util.Set;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +41,8 @@ class CustomCodeCheckerTest
     private ConfigService configService;
     @InjectMocks
     private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
+    @Spy
+    private ExtensionCodeAnalysisService extensionCodeAnalysisService;
     @InjectMocks
     private CustomCodeChecker checker;
 
@@ -103,7 +107,7 @@ class CustomCodeCheckerTest
                         OAW + "c1.class", OAW + "c2.class",
                         OAW + "c_APA_3deprecated.class", OAW + "c_APA_4deprecated.class"
                     ))
-            )).when(extensionResourceInfoService).retrieveDependenciesPerClass();
+            )).when(extensionCodeAnalysisService).retrieveDependenciesPerClass();
         }
 
         final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());

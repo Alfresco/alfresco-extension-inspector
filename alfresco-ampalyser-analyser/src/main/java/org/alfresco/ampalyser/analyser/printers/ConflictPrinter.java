@@ -18,7 +18,7 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 
 public interface ConflictPrinter
 {
-    default void print(Map<String, Set<Conflict>> conflicts, boolean verbose)
+    default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
         if (isEmpty(conflicts))
         {

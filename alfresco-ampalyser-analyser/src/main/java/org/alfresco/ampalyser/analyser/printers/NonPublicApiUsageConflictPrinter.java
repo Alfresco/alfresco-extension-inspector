@@ -8,14 +8,16 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceIds;
+import static java.text.MessageFormat.format;
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
@@ -34,24 +36,26 @@ public class NonPublicApiUsageConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return null;
-    }
-    
-    @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
-    {
-        //TODO to be discussed (https://issues.alfresco.com/jira/browse/ACS-81)
+        return CUSTOM_CODE;
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
-        String definingObject = conflictSet.iterator().next().getAmpResourceInConflict()
-            .getDefiningObject();
+        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 
-        System.out.println(id + " in " + definingObject);
+        System.out.println(format("{0} in {1}", id, definingObject));
         System.out.println("using");
-        System.out.println(joinWarResourceIds(conflictSet));
+        System.out.println(joinWarVersions(conflictSet));
+        System.out.println();
+    }
+
+    @Override
+    public void print(final String id, final Set<Conflict> conflictSet)
+    {
+        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+
+        System.out.println(format("{0} in {1}", id, definingObject));
         System.out.println();
     }
 }

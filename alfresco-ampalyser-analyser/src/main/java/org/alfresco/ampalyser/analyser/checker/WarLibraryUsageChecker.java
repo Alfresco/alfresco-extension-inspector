@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
+import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -35,11 +36,13 @@ public class WarLibraryUsageChecker implements Checker
 
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
+    @Autowired
+    private ExtensionCodeAnalysisService extensionCodeAnalysisService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final Set<String> allExtensionDependencies = extensionResourceInfoService.retrieveAllDependencies();
+        final Set<String> allExtensionDependencies = extensionCodeAnalysisService.retrieveAllDependencies();
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
@@ -56,7 +59,7 @@ public class WarLibraryUsageChecker implements Checker
             extensionResourceInfoService.retrieveClasspathElementsById();
 
         // now we can go back through the AMP dependencies and search for conflicts
-        return extensionResourceInfoService
+        return extensionCodeAnalysisService
             .retrieveDependenciesPerClass()
             .entrySet()
             .stream()
@@ -78,11 +81,13 @@ public class WarLibraryUsageChecker implements Checker
                     e.getValue(),
                     alfrescoVersion
                 )));
+
+        // TODO: create conflicts for extension dependencies not satisfied by either the AMP or the WAR libraries
     }
 
     @Override
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return !extensionResourceInfoService.retrieveDependenciesPerClass().isEmpty();
+        return !extensionCodeAnalysisService.retrieveDependenciesPerClass().isEmpty();
     }
 }

@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -44,6 +45,8 @@ public class CustomCodeChecker implements Checker
 
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
+    @Autowired
+    private ExtensionCodeAnalysisService extensionCodeAnalysisService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
@@ -62,7 +65,7 @@ public class CustomCodeChecker implements Checker
             extensionResourceInfoService.retrieveClasspathElementsById();
 
         // go through the AMP dependencies and search for conflicts
-        return extensionResourceInfoService
+        return extensionCodeAnalysisService
             .retrieveDependenciesPerClass()
             .entrySet()
             .stream()

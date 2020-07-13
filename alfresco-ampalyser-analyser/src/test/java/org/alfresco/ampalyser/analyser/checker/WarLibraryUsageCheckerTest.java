@@ -17,6 +17,7 @@ import java.util.Set;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,8 @@ class WarLibraryUsageCheckerTest
     private ConfigService configService;
     @InjectMocks
     private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
+    @Spy
+    private ExtensionCodeAnalysisService extensionCodeAnalysisService;
     @InjectMocks
     private WarLibraryUsageChecker checker;
 
@@ -151,7 +155,7 @@ class WarLibraryUsageCheckerTest
 
                 // Dependencies in AMP and WAR
                 entry("/p/C61.class", Set.of("/p/A2.class", "/p/W22.class"))
-            )).when(extensionResourceInfoService).retrieveDependenciesPerClass();
+            )).when(extensionCodeAnalysisService).retrieveDependenciesPerClass();
         }
 
         final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());
