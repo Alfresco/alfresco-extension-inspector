@@ -117,14 +117,11 @@ class CustomCodeCheckerTest
 
             conflict(ampRes("deps_to_everything.class"),
                 Set.of(
-                    "/hakuna/matata/jungle.class", "/nananana/batman.class",
-                    OAA + "to_be_or_not_to_be.nope", OAA + "no_deps.class", OAA + "deps_outside_alf.class",
-                    OAW + "c_APA_1ok.class", OAW + "c_APA_2ok.class",
                     OAW + "c1.class", OAW + "c2.class",
                     OAW + "c_APA_3deprecated.class", OAW + "c_APA_4deprecated.class"
                 )));
         assertEquals(expected.size(), result.size());
-        expected.forEach(c -> assertTrue(expected.contains(c)));
+        expected.forEach(c -> assertTrue(result.contains(c)));
     }
 
     private static ClasspathElementResource ampRes(String id)
