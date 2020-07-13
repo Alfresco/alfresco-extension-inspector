@@ -12,7 +12,7 @@ import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRIT
 import java.util.Map;
 import java.util.Objects;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.ampalyser.model.FileResource;
 
 /**
  * Represents a conflict, usually found by {@link org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker}
@@ -26,10 +26,9 @@ public class FileOverwriteConflict extends AbstractConflict
 
     public FileOverwriteConflict()
     {
-        super();
     }
 
-    public FileOverwriteConflict(Resource ampResourceInConflict, Resource warResourceInConflict,
+    public FileOverwriteConflict(FileResource ampResourceInConflict, FileResource warResourceInConflict,
         Map<String, String> usedMapping, String alfrescoVersion)
     {
         super(FILE_OVERWRITE, ampResourceInConflict, warResourceInConflict, alfrescoVersion);

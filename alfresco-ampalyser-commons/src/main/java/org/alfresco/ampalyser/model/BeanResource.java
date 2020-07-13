@@ -11,6 +11,7 @@ package org.alfresco.ampalyser.model;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class BeanResource extends AbstractResource implements Serializable
 {
@@ -34,6 +35,22 @@ public class BeanResource extends AbstractResource implements Serializable
     public void setBeanClass(String beanClass)
     {
         this.beanClass = beanClass;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BeanResource that = (BeanResource) o;
+        return Objects.equals(beanClass, that.beanClass);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(super.hashCode(), beanClass);
     }
 
     @Override

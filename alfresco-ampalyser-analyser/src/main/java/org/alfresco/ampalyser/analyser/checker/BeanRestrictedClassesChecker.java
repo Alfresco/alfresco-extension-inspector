@@ -8,23 +8,21 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.RestrictedBeanClassConflict;
-import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,36 +33,36 @@ public class BeanRestrictedClassesChecker implements Checker
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanRestrictedClassesChecker.class);
 
-    private static final String ORG_ALFRESCO_PREFIX = "org.alfresco";
-    public static final String WHITELIST_BEAN_RESTRICTED_CLASSES = "WHITELIST_BEAN_RESTRICTED_CLASSES";
+    @Autowired
+    private ConfigService configService;
+    @Autowired
+    private ExtensionResourceInfoService extensionResourceInfoService;
 
     @Override
-    public List<Conflict> processInternal(final InventoryReport ampInventory, final InventoryReport warInventory, Map<String, Object> extraInfo)
+    public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        // The list coming from the file the user provided
-        Set<String> whitelist = (Set<String>) extraInfo.get(WHITELIST_BEAN_RESTRICTED_CLASSES);
+        final Set<String> whitelist = Stream
+            .concat(
+                // The list coming from the file the user provided
+                configService.getBeanClassWhitelist().stream(),
 
-        // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the complete whitelist.
-        Set<String> completeWhitelist = new HashSet<>(whitelist);
-        completeWhitelist.addAll(
-            warInventory.getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
-                .stream()
-                .map(Resource::getId)
-                .collect(toList()));
+                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
+                warInventory
+                    .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
+                    .stream()
+                    .map(Resource::getId))
+            .collect(toUnmodifiableSet());
 
-        return ampInventory.getResources().getOrDefault(BEAN, emptyList()).stream()
-                .filter(ampR -> (ampR instanceof BeanResource
-                    && ((BeanResource) ampR).getBeanClass() != null)
-                    && ((BeanResource) ampR).getBeanClass().startsWith(ORG_ALFRESCO_PREFIX))
-                .filter(ampR -> !completeWhitelist.contains(((BeanResource) ampR).getBeanClass()))
-                .map(ampR -> new RestrictedBeanClassConflict(ampR, null, (String) extraInfo.get(ALFRESCO_VERSION)))
-            .collect(toUnmodifiableList());
+        return extensionResourceInfoService
+            .retrieveBeansOfAlfrescoTypes()
+            .stream()
+            .filter(r -> !whitelist.contains(r.getBeanClass()))
+            .map(r -> new RestrictedBeanClassConflict(r, alfrescoVersion));
     }
 
-
     @Override
-    public boolean canProcess(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return extraInfo != null;
+        return true;
     }
 }

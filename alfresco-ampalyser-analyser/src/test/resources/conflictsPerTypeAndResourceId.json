@@ -2,7 +2,6 @@
   "BEAN_OVERWRITE": {
     "contentService": [
       {
-        "id": "68a08188-dca5-4906-88b6-a33b8b4bd52b",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -19,7 +18,6 @@
         "alfrescoVersion": "6.0.1"
       },
       {
-        "id": "bd57ce8c-2ea8-4eaf-8331-c96036705dc6",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -36,7 +34,6 @@
         "alfrescoVersion": "6.0.0.3"
       },
       {
-        "id": "51e7ab3a-3ee8-455e-a820-0e9324be35da",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -55,7 +52,6 @@
     ],
     "eagerContentStoreCleaner": [
       {
-        "id": "2847a7cd-e1af-4b02-8999-3e5e0b5725d4",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -72,7 +68,6 @@
         "alfrescoVersion": "6.0.0.5"
       },
       {
-        "id": "04cb4469-3766-4d7a-8ea8-6a84cbbc9d5d",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -89,7 +84,6 @@
         "alfrescoVersion": "6.0.0.3"
       },
       {
-        "id": "719b6783-fa88-42bf-a48b-f98bdfd66510",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -108,7 +102,6 @@
     ],
     "storeSelectorContentStore": [
       {
-        "id": "d741813e-c5fc-4ffc-bdcc-5d8d97862749",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -125,7 +118,6 @@
         "alfrescoVersion": "6.0.0.3"
       },
       {
-        "id": "ea9b86b5-b02e-4ddc-9aab-80b54d80b125",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -142,7 +134,6 @@
         "alfrescoVersion": "6.0.1"
       },
       {
-        "id": "a7f53488-17e4-4291-9330-46f6d8194bc6",
         "type": "BEAN_OVERWRITE",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -163,7 +154,6 @@
   "RESTRICTED_BEAN_CLASS": {
     "eagerContentStoreCleaner": [
       {
-        "id": "5a9ea739-3590-4a25-a929-3de6f1693e0c",
         "type": "RESTRICTED_BEAN_CLASS",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -175,7 +165,6 @@
         "alfrescoVersion": "6.0.0.3"
       },
       {
-        "id": "a227a289-6cbd-44fd-8534-b355e58b3005",
         "type": "RESTRICTED_BEAN_CLASS",
         "ampResourceInConflict": {
           "type": "BEAN",
@@ -187,7 +176,6 @@
         "alfrescoVersion": "6.0.1"
       },
       {
-        "id": "71fe7cbe-089a-4c91-8a6a-2ed4b6f37b51",
         "type": "RESTRICTED_BEAN_CLASS",
         "ampResourceInConflict": {
           "type": "BEAN",

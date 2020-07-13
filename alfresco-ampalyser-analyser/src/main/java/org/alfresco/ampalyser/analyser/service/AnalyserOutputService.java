@@ -23,18 +23,21 @@ import org.springframework.stereotype.Service;
 public class AnalyserOutputService
 {
     @Autowired
+    private ConfigService configService;
+    @Autowired
     private List<ConflictPrinter> printers;
 
-    public void print(Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId,
-        boolean verboseOutput)
+    public void print(final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
         printers
             .stream()
             .sorted(comparing(ConflictPrinter::getConflictType))
-            .forEach(p -> 
-                p.print(conflictPerTypeAndResourceId.get(p.getConflictType()), verboseOutput));
+            .forEach(p -> p.print(
+                conflictPerTypeAndResourceId.get(p.getConflictType()),
+                configService.isVerboseOutput()
+            ));
 
-        if (!verboseOutput)
+        if (!configService.isVerboseOutput())
         {
             System.out.println("(use option --verbose for version details)");
         }

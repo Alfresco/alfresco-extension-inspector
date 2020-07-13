@@ -1,10 +1,17 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
 package org.alfresco.ampalyser.analyser.store;
 
 import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.Arrays;
@@ -47,7 +54,7 @@ public class AlfrescoTargetVersionParser
         final List<String> targetRanges = targetStrings
             .stream()
             .flatMap(AlfrescoTargetVersionParser::parseTargetString)
-            .collect(toList());
+            .collect(toUnmodifiableList());
 
         if (targetRanges.isEmpty())
         {
