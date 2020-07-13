@@ -9,16 +9,21 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static java.text.MessageFormat.format;
+import static java.util.stream.Collectors.flatMapping;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LibraryUsageConflictPrinter implements ConflictPrinter
+public class WarLibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found 3rd party library usage! Although this is not an "
@@ -43,9 +48,20 @@ public class LibraryUsageConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+        final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
+            .stream()
+            .map(c -> (WarLibraryUsageConflict) c)
+            .collect(groupingBy(
+                Conflict::getAlfrescoVersion,
+                flatMapping(c -> c.getClassDependencies().stream().sorted(), joining(", "))
+            ));
 
-        System.out.println(format("{0} in {1}", id, definingObject));
-        System.out.println("is using 3rd party libraries from " + joinWarVersions(conflictSet));
+        System.out.println(format("Extension resource <{0}@{1}> has invalid (3rd party) dependencies:",
+            id, definingObject));
+
+        dependenciesPerAlfrescoVersion
+            .forEach((k, v) -> System.out.println(k + ": " + v));
+
         System.out.println();
     }
 
@@ -54,7 +70,10 @@ public class LibraryUsageConflictPrinter implements ConflictPrinter
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 
-        System.out.println(format("{0} in {1}", id, definingObject));
+        System.out.println(format(
+            "Extension resource <{0}@{1}> has invalid (3rd party) dependencies in: {2}",
+            id, definingObject, joinWarVersions(conflictSet)));
+
         System.out.println();
     }
 }

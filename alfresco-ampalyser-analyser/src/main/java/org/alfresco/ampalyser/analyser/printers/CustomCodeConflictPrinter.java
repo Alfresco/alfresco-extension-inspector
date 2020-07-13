@@ -48,16 +48,6 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-
-        System.out.println(format("{0} in {1}", id, definingObject));
-        System.out.println("using");
-        System.out.println(joinWarVersions(conflictSet));
-        System.out.println();
-    }
-
-    @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
-    {
         final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
             .stream()
             .map(c -> (CustomCodeConflict) c)
@@ -66,11 +56,24 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
                 flatMapping(c -> c.getInvalidAlfrescoDependencies().stream().sorted(), joining(", "))
             ));
 
-        System.out.println("For extension resource <" + id + "> these are the invalid dependencies used:");
+        System.out.println(format("Extension resource <{0}@{1}> has invalid (non PublicAPI) dependencies:",
+            id, definingObject));
 
-        dependenciesPerAlfrescoVersion.
-            forEach((k,v) -> System.out.println(k + " : " + v));
+        dependenciesPerAlfrescoVersion
+            .forEach((k, v) -> System.out.println(k + ": " + v));
 
-        System.out.println("");
+        System.out.println();
+    }
+
+    @Override
+    public void print(final String id, final Set<Conflict> conflictSet)
+    {
+        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+
+        System.out.println(format(
+            "Extension resource <{0}@{1}> has invalid (non PublicAPI) dependencies in: {2}",
+            id, definingObject, joinWarVersions(conflictSet)));
+
+        System.out.println();
     }
 }
