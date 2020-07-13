@@ -92,7 +92,7 @@ This creates an executable jar, `alfresco-ampalyser-analyser-0.0.1-SNAPSHOT-appl
 
 Usage:
 ```shell script
-java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory=/path/to/war_inventory.json] [--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] [--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] [--verbose]
+java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory=/path/to/war_inventory.json] [--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] [--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] [--verbose=[true | false]]
 
 java -jar alfresco-ampalyser-analyser.jar --help
 
