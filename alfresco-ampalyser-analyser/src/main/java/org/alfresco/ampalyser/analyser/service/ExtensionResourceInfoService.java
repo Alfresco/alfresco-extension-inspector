@@ -120,9 +120,22 @@ public class ExtensionResourceInfoService
                 .getExtensionResources(FILE)
                 .stream()
                 .map(r -> (FileResource) r)
+                .filter(r -> !retrieveExtensionFilesToIgnoreWhenOverriding().contains(r.getId()))
                 .collect(toUnmodifiableMap(r -> computeDestination(r, fileMappings), identity()));
         }
         return filesByDestination;
+    }
+
+    /**
+     * Returns a list of files that if found in the .amp, should be ignored from overriding
+     * Useful for files like the '/META-INF/MANIFEST.MF' or to better control the overriding check
+     * This functionality can be extended with an user provided list from the command line.
+     *
+     * @return
+     */
+    public Set<String> retrieveExtensionFilesToIgnoreWhenOverriding()
+    {
+        return Set.of("/META-INF/MANIFEST.MF");
     }
 
     /**
