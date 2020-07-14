@@ -74,7 +74,7 @@ public class AnalyserServiceTest
             .thenReturn(conflictsPerWarVersion.get("6.0.0.5").stream());
 
         // call the service method and capture its internal variables
-        analyserService.analyse(new TreeSet<>(Set.of("6.0.1", "6.0.0.3", "6.0.0.5")));
+        analyserService.analyseAgainstKnownVersions(new TreeSet<>(Set.of("6.0.1", "6.0.0.3", "6.0.0.5")));
 
         final ArgumentCaptor<Map<Conflict.Type, Map<String, Set<Conflict>>>> captor =
             ArgumentCaptor.forClass(Map.class);
