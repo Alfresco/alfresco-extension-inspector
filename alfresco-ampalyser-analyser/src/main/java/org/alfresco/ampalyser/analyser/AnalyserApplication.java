@@ -7,20 +7,9 @@
  */
 package org.alfresco.ampalyser.analyser;
 
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-
-import java.io.File;
-import java.util.List;
-import java.util.SortedSet;
-
-import org.alfresco.ampalyser.analyser.service.AnalyserService;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
+import org.alfresco.ampalyser.analyser.runner.CommandRunner;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
-import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -43,16 +32,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
     })
 public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
 {
-    private static final Logger logger = LoggerFactory.getLogger(AnalyserApplication.class);
-
     private static final int EXIT_CODE_EXCEPTION = 1;
 
     @Autowired
-    private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
-    @Autowired
-    private ConfigService configService;
-    @Autowired
-    private AnalyserService analyserService;
+    private CommandRunner commandRunner;
 
     private int exitCode = 0;
 
@@ -64,80 +47,14 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
     @Override
     public void run(ApplicationArguments args)
     {
-        if (args.getNonOptionArgs().isEmpty())
+        try
         {
-            logger.error("Missing extension file.");
-            printUsage();
+            commandRunner.execute(args);
+        }
+        catch (IllegalArgumentException e)
+        {
             setExceptionExitCode();
-            return;
         }
-
-        final String extensionPath = args.getNonOptionArgs().get(0);
-        if (!isExtensionValid(extensionPath))
-        {
-            logger.error("The extension file is not valid.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-        // TODO: Improve argument retrieval and validation via ACS-355
-        final List<String> beanOverrideWhitelist = args.getOptionValues("beanOverrideWhitelist");
-        if (beanOverrideWhitelist != null && beanOverrideWhitelist.size() > 1)
-        {
-            logger.error("Multiple Bean Overriding Whitelists provided.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-        if (!isEmpty(beanOverrideWhitelist))
-        {
-            configService.registerBeanOverrideWhitelistPath(beanOverrideWhitelist.get(0));
-        }
-
-        final List<String> beanClassWhitelist = args.getOptionValues("beanClassWhitelist");
-        if (beanClassWhitelist != null && beanClassWhitelist.size() > 1)
-        {
-            logger.error("Multiple Bean Restricted Classes Whitelists provided.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-        if (!isEmpty(beanClassWhitelist))
-        {
-            configService.registerBeanClassWhitelist(beanClassWhitelist.get(0));
-        }
-
-        final SortedSet<String> versions = alfrescoTargetVersionParser.parse(args.getOptionValues("target"));
-        if (versions.isEmpty())
-        {
-            logger.error("The target ACS version was not recognised.");
-            printUsage();
-            setExceptionExitCode();
-            return;
-        }
-
-        configService.registerExtensionPath(extensionPath);
-
-        configService.setVerboseOutput(args.containsOption("verbose"));
-
-        analyserService.analyse(versions);
-    }
-
-    private static boolean isExtensionValid(final String extensionPath)
-    {
-        return new File(extensionPath).exists() &&
-               (FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("amp") ||
-                FilenameUtils.getExtension(extensionPath).equalsIgnoreCase("jar"));
-    }
-
-    private static void printUsage()
-    {
-        System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target=6.1.0[-7.0.0]] "
-            + "[--whitelistBeanOverriding=/path/to/bean_overriding_whitelist.json] "
-            + "[--whitelistBeanRestrictedClasses=/path/to/bean_restricted_classes_whitelist.json] " 
-            + "[--verbose]");
     }
 
     @Bean
