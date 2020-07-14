@@ -7,8 +7,6 @@
  */
 package org.alfresco.ampalyser.analyser;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.alfresco.ampalyser.analyser.runner.CommandRunner;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
@@ -22,6 +20,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @SpringBootApplication
 @ComponentScan(

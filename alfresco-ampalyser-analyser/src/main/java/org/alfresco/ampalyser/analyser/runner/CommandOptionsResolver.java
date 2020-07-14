@@ -15,6 +15,7 @@ import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printCommandUsa
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -29,8 +30,8 @@ public class CommandOptionsResolver
 {
     public static final String TARGET_VERSION = "target-version";
     public static final String TARGET_INVENTORY = "target-inventory";
-    public static final String WHITELIST_BEAN_OVERRIDING = "whitelistBeanOverriding";
-    public static final String WHITELIST_BEAN_RESTRICTED_CLASSES = "whitelistBeanRestrictedClasses";
+    public static final String BEAN_OVERRIDE_WHITELIST = "beanOverrideWhitelist";
+    public static final String BEAN_CLASS_WHITELIST = "beanClassWhitelist";
     public static final String VERBOSE = "verbose";
     public static final String HELP = "help";
     public static final String LIST_KNOWN_VERSIONS = "list-known-alfresco-versions";
@@ -57,12 +58,12 @@ public class CommandOptionsResolver
         return extensionPath;
     }
 
-    public static String extractWhitelistPath(String whitelistOption, ApplicationArguments args)
+    public static Optional<String> extractWhitelistPath(String whitelistOption, ApplicationArguments args)
     {
         final List<String> whitelistPaths = args.getOptionValues(whitelistOption);
         if (whitelistPaths == null)
         {
-            return null;
+            return Optional.empty();
         }
         if (whitelistPaths.isEmpty())
         {
@@ -75,14 +76,14 @@ public class CommandOptionsResolver
                 "Multiple whitelists provided.(command option '" + whitelistOption + "')");
             throw new IllegalArgumentException();
         }
-        String path = whitelistPaths.get(0);
+        final String path = whitelistPaths.get(0);
         if (!new File(path).exists() || !FilenameUtils.getExtension(path).equalsIgnoreCase("json"))
         {
             printAnalyserUsage("The whitelist file is not valid or does not exist.(command option '"
                 + whitelistOption + "') Supported file format is JSON.");
             throw new IllegalArgumentException();
         }
-        return path;
+        return Optional.of(path);
     }
 
     public SortedSet<String> extractTargetVersions(ApplicationArguments args)
@@ -134,8 +135,8 @@ public class CommandOptionsResolver
         }
 
         Set<String> knownCommandOptions = Set
-            .of(TARGET_VERSION, TARGET_INVENTORY, WHITELIST_BEAN_OVERRIDING,
-                WHITELIST_BEAN_RESTRICTED_CLASSES, VERBOSE);
+            .of(TARGET_VERSION, TARGET_INVENTORY, BEAN_OVERRIDE_WHITELIST,
+                BEAN_CLASS_WHITELIST, VERBOSE);
         if (!knownCommandOptions.containsAll(options))
         {
             printAnalyserUsage("Unknown options provided.");
@@ -184,8 +185,9 @@ public class CommandOptionsResolver
         {
             return true;
         }
-        if (values.size() > 1 || (!values.get(0).equalsIgnoreCase("true") && !values.get(0)
-            .equalsIgnoreCase("false")))
+        if (values.size() > 1 ||
+            (!values.get(0).equalsIgnoreCase("true") &&
+             !values.get(0).equalsIgnoreCase("false")))
         {
             printAnalyserUsage("Invalid values for verbose option provided.");
             throw new IllegalArgumentException();

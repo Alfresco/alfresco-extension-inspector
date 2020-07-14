@@ -8,15 +8,16 @@
 
 package org.alfresco.ampalyser.analyser.service;
 
-import static java.util.Collections.unmodifiableSortedSet;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toCollection;
+import static java.util.Collections.unmodifiableSortedMap;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.function.Function;
 
 import org.alfresco.ampalyser.analyser.parser.InventoryParser;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -29,26 +30,29 @@ import org.springframework.stereotype.Service;
 public class InventoryLoaderService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryLoaderService.class);
-
     @Autowired
     private InventoryParser inventoryParser;
-    
+
     /**
      * Reads and loads {@link InventoryReport}s from a {@link Set} of .json files
      *
-     * @return a {@link SortedSet} of the provided {@link InventoryReport}s
+     * @return a {@link Map} of (alfrescoVersion -> InventoryReport)
      */
-    private SortedSet<InventoryReport> loadInventoryReports(Set<String> warInventoryPaths)
+    public SortedMap<String, InventoryReport> loadInventoryReports(final Set<String> warInventoryPaths)
     {
-        final SortedSet<InventoryReport> inventories = warInventoryPaths
+        final SortedMap<String, InventoryReport> map = warInventoryPaths
             .stream()
             .map(this::retrieveInventory)
-            .collect(toCollection(() -> new TreeSet<>(comparing(InventoryReport::getAlfrescoVersion))));
-
-        return unmodifiableSortedSet(inventories);
+            .collect(toMap(
+                InventoryReport::getAlfrescoVersion,
+                Function.identity(),
+                (a, b) -> b,
+                TreeMap::new
+            ));
+        return unmodifiableSortedMap(map);
     }
 
-    private InventoryReport retrieveInventory(String path)
+    private InventoryReport retrieveInventory(final String path)
     {
         try
         {

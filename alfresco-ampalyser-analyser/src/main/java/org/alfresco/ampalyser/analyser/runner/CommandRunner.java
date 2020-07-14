@@ -8,10 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.runner;
 
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_CLASS_WHITELIST;
+import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_OVERRIDE_WHITELIST;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.HELP;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_OVERRIDING;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.WHITELIST_BEAN_RESTRICTED_CLASSES;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractExtensionPath;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWhitelistPath;
@@ -23,6 +23,7 @@ import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
@@ -87,43 +88,36 @@ public class CommandRunner
 
     private void executeExtensionAnalysis(ApplicationArguments args)
     {
-        configService.registerExtensionPath(extractExtensionPath(args.getNonOptionArgs()));
-        final Set<String> options = args.getOptionNames();
-        
-        validateAnalyserOptions(options);
+        final String extensionPath = extractExtensionPath(args.getNonOptionArgs());
 
-        configService.registerBeanOverrideWhitelistPath(
-            extractWhitelistPath(WHITELIST_BEAN_OVERRIDING, args));
-        configService.registerBeanClassWhitelist(
-            extractWhitelistPath(WHITELIST_BEAN_RESTRICTED_CLASSES, args));
+        validateAnalyserOptions(args.getOptionNames());
 
-        boolean verboseOutput = isVerboseOutput(args);
+        extractWhitelistPath(BEAN_OVERRIDE_WHITELIST, args)
+            .ifPresent(configService::registerBeanOverrideWhitelistPath);
 
-        configService.setVerboseOutput(verboseOutput);
+        extractWhitelistPath(BEAN_CLASS_WHITELIST, args)
+            .ifPresent(configService::registerBeanClassWhitelist);
+
+        configService.setVerboseOutput(isVerboseOutput(args));
+
+        configService.registerExtensionPath(extensionPath);
 
         // retrieve provided war inventories, if any
         final Set<String> warInventories = extractWarInventoryPaths(args);
         if (warInventories != null)
         {
-            /*TODO fix 
-               analyserService.analyse(
-                extensionPath, 
-                null,
-                warInventories,
-                beanOverridingWhitelistPath, 
-                beanRestrictedClassWhitelistPath,
-                verboseOutput);
-            return;*/
+            analyserService.analyseAgainstWarInventories(warInventories);
+            return;
         }
 
         // no war inventories provided
         // check TARGET_VERSION option
-        analyserService.analyse(commandOptionsResolver.extractTargetVersions(args));
+        final SortedSet<String> versions = commandOptionsResolver.extractTargetVersions(args);
+        analyserService.analyseAgainstKnownVersions(versions);
     }
 
     private void listKnownAlfrescoVersions()
     {
         System.out.println("Known Alfresco versions: " + warInventoryReportStore.allKnownVersions());
     }
-
 }

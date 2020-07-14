@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +43,7 @@ public class CommandRunnerTest
     @InjectMocks
     private CommandRunner commandRunner;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
@@ -129,7 +129,7 @@ public class CommandRunnerTest
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName));
 
-        verify(analyserService).analyse(any());
+        verify(analyserService).analyseAgainstKnownVersions(any());
     }
 
     @Test
@@ -185,12 +185,13 @@ public class CommandRunnerTest
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName, "--verbose"));
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--whitelistBeanOverriding=" + whitelist));
+            "--beanOverrideWhitelist=" + whitelist));
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--whitelistBeanRestrictedClasses=" + whitelist));
+            "--beanClassWhitelist=" + whitelist));
 
-        verify(analyserService, times(5)).analyse(any());
+        verify(analyserService, times(1)).analyseAgainstWarInventories(any());
+        verify(analyserService, times(4)).analyseAgainstKnownVersions(any());
     }
 
     @Test
@@ -202,10 +203,10 @@ public class CommandRunnerTest
 
         commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
-                "--verbose=false", "--whitelistBeanOverriding=" + whitelist,
-                "--whitelistBeanRestrictedClasses=" + whitelist));
+                "--verbose=false", "--beanOverrideWhitelist=" + whitelist,
+                "--beanClassWhitelist=" + whitelist));
 
-        verify(analyserService).analyse(any());
+        verify(analyserService).analyseAgainstKnownVersions(any());
     }
 
     @Test
@@ -220,8 +221,8 @@ public class CommandRunnerTest
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
                 "--target-inventory=" + warInventory, "--verbose=false",
-                "--whitelistBeanOverriding=" + whitelist,
-                "--whitelistBeanRestrictedClasses=" + whitelist)));
+                "--beanOverrideWhitelist=" + whitelist,
+                "--beanClassWhitelist=" + whitelist)));
     }
 
     @Test
@@ -245,11 +246,11 @@ public class CommandRunnerTest
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName,
-                "--whitelistBeanOverriding=" + "whitelist-does-not-exist")));
+                "--beanOverrideWhitelist=" + "whitelist-does-not-exist")));
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName,
-                "--whitelistBeanRestrictedClasses=" + "whitelist-does-not-exist")));
+                "--beanClassWhitelist=" + "whitelist-does-not-exist")));
     }
 
     @Test
