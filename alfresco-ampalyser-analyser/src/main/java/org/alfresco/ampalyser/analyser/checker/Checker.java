@@ -7,10 +7,9 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
+import static java.util.stream.Stream.empty;
 
-import java.util.List;
-import java.util.Map;
+import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -22,18 +21,16 @@ import org.alfresco.ampalyser.model.InventoryReport;
  */
 public interface Checker
 {
-    String ALFRESCO_VERSION = "WAR_ALFRESCO_VERSION";
-
-    default List<Conflict> process(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo)
+    default Stream<Conflict> process(InventoryReport warInventory, String alfrescoVersion)
     {
-        if (canProcess(ampInventory, warInventory, extraInfo))
+        if (canProcess(warInventory, alfrescoVersion))
         {
-            return processInternal(ampInventory, warInventory, extraInfo);
+            return processInternal(warInventory, alfrescoVersion);
         }
-        return emptyList();
+        return empty();
     }
 
-    List<Conflict> processInternal(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo);
+    Stream<Conflict> processInternal(InventoryReport warInventory, String alfrescoVersion);
 
-    boolean canProcess(InventoryReport ampInventory, InventoryReport warInventory, Map<String, Object> extraInfo);
+    boolean canProcess(InventoryReport warInventory, String alfrescoVersion);
 }

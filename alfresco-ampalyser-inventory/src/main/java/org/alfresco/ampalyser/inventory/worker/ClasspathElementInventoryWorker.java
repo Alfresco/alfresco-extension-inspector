@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.Collections.singletonList;
 import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
 
 import java.util.List;
@@ -15,18 +16,12 @@ import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClasspathElementInventoryWorker implements InventoryWorker
 {
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
-
-    public ClasspathElementInventoryWorker(EntryProcessor processor)
-    {
-        processor.attach(this);
-    }
 
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
@@ -54,7 +49,6 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
         {
             resourceName = resourceName.substring(WEB_INF_CLASSES.length());
         }
-        return List.of(new ClasspathElementResource("/" + resourceName, "/" + definingObject));
+        return singletonList(new ClasspathElementResource("/" + resourceName, "/" + definingObject));
     }
-
 }

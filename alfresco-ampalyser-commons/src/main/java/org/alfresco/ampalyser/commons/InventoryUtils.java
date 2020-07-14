@@ -11,8 +11,9 @@ package org.alfresco.ampalyser.commons;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -34,7 +35,7 @@ public class InventoryUtils
         return path != null && path.endsWith(".jar");
     }
 
-    public static List<Resource> mergeLists(List<Resource> v1, List<Resource> v2)
+    public static <T extends Collection<Resource>> T mergeCollections(T v1, Collection<Resource> v2)
     {
         if (v1 != null && v2 != null && !v2.isEmpty())
         {
@@ -43,7 +44,7 @@ public class InventoryUtils
         return v1;
     }
 
-    public static byte[] extract(ZipInputStream zis) throws IOException
+    public static byte[] extract(InputStream zis) throws IOException
     {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

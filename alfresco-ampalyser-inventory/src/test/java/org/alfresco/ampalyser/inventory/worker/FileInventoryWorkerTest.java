@@ -16,20 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class FileInventoryWorkerTest
 {
-    @Mock
-    private EntryProcessor processor;
     @InjectMocks
     private FileInventoryWorker fileInventoryWorker;
 
@@ -43,11 +39,11 @@ public class FileInventoryWorkerTest
             .processZipEntry(entry, null, entry.getName());
         assertFalse(resourceList.isEmpty());
         assertEquals(1, resourceList.size());
-        assertTrue(resourceList.get(0) instanceof FileResource);
+        assertTrue(resourceList.iterator().next() instanceof FileResource);
 
-        assertEquals(Resource.Type.FILE, resourceList.get(0).getType());
-        assertEquals("/" + entry.getName(), resourceList.get(0).getId());
-        assertEquals("/" + entry.getName(), resourceList.get(0).getDefiningObject());
+        assertEquals(Resource.Type.FILE, resourceList.iterator().next().getType());
+        assertEquals("/" + entry.getName(), resourceList.iterator().next().getId());
+        assertEquals("/" + entry.getName(), resourceList.iterator().next().getDefiningObject());
     }
 
     @Test

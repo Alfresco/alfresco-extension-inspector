@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.Collections.singletonList;
 import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
 
 import java.util.List;
@@ -15,21 +16,15 @@ import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.FileResource;
 import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FileInventoryWorker implements InventoryWorker
 {
-    public FileInventoryWorker(EntryProcessor processor)
-    {
-        processor.attach(this);
-    }
-
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
-        return List.of(new FileResource("/" + zipEntry.getName(), "/" + definingObject));
+        return singletonList(new FileResource("/" + zipEntry.getName(), "/" + definingObject));
     }
 
     @Override

@@ -1,10 +1,18 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
-import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
-import static org.alfresco.ampalyser.analyser.service.AnalyserService.EXTENSION_FILE_TYPE;
+import static java.util.stream.Collectors.toList;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,33 +20,40 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author Lucian Tuca
  */
+@ExtendWith(MockitoExtension.class)
 public class BeanOverwritingCheckerTest
 {
-    private BeanOverwritingChecker boChecker = new BeanOverwritingChecker();
+    @Mock
+    private ConfigService configService;
+    @InjectMocks
+    private ExtensionResourceInfoService extensionResourceInfoService = spy(ExtensionResourceInfoService.class);
+    @InjectMocks
+    private BeanOverwritingChecker boChecker;
 
     @Test
     public void happyFlowTest()
     {
-        InventoryReport ampReport = new InventoryReport();
-        Map<Resource.Type, List<Resource>> ampResources = new HashMap<>();
-
         // This one should be allowed by the whitelist
         BeanResource ampBR1 = new BeanResource("bean1", "context.xml", "org.alfresco.Dummy");
         // This one should generate multiple conflicts
         BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml", "org.alfresco.Dummy");
         // This one should be ok as it doesn't overwrite anything
         BeanResource ampBR3 = new BeanResource("bean3", "amp_context.xml", "org.alfresco.Dummy");
-        ampResources.put(BEAN, List.of(ampBR1, ampBR2, ampBR3));
-
-        ampReport.addResources(ampResources);
+        when(configService.getExtensionResources(eq(BEAN))).thenReturn(List.of(ampBR1, ampBR2, ampBR3));
 
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
@@ -51,13 +66,9 @@ public class BeanOverwritingCheckerTest
 
         warReport.addResources(warResources);
 
-        Map<String, Object> extraInfo = Map.of(
-            WHITELIST_BEAN_OVERRIDING, Set.of("bean1"),
-            EXTENSION_FILE_TYPE, "amp",
-            ALFRESCO_VERSION, "6.66"
-            );
+        when(configService.getBeanOverrideWhitelist()).thenReturn(Set.of("bean1"));
 
-        List<Conflict> conflicts = boChecker.process(ampReport, warReport, extraInfo);
+        List<Conflict> conflicts = boChecker.process(warReport, "6.66").collect(toList());
         assertEquals(2, conflicts.size());
 
         Conflict conflict1 = conflicts.get(0);
