@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.inventory.data.classes.ClassDeprecated;
 import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotation;
 import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotationDeprecated;
@@ -35,7 +34,7 @@ public class PublicApiInventoryWorkerTest
 {
     private static final String TEST_ALFRESCO_PUBLIC_API = "Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;";
     @Spy
-    private AlfrescoPublicApiInventoryWorker worker = new AlfrescoPublicApiInventoryWorker(new EntryProcessor());
+    private AlfrescoPublicApiInventoryWorker worker = new AlfrescoPublicApiInventoryWorker();
 
     @Test
     public void testWorkerHasProperType()
@@ -78,9 +77,9 @@ public class PublicApiInventoryWorkerTest
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
-        assertTrue(resources.get(0) instanceof AlfrescoPublicApiResource);
+        assertTrue(resources.iterator().next() instanceof AlfrescoPublicApiResource);
 
-        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.get(0);
+        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.iterator().next();
         assertEquals(Resource.Type.ALFRESCO_PUBLIC_API, resource.getType());
         assertEquals(testClass.getName(), resource.getId(), testClass.getName() + " is part of AlfrescoPublicApi");
         assertFalse(resource.isDeprecated());
@@ -98,9 +97,9 @@ public class PublicApiInventoryWorkerTest
         List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
-        assertTrue(resources.get(0) instanceof AlfrescoPublicApiResource);
+        assertTrue(resources.iterator().next() instanceof AlfrescoPublicApiResource);
 
-        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.get(0);
+        AlfrescoPublicApiResource resource = (AlfrescoPublicApiResource) resources.iterator().next();
         assertEquals(testClass.getName(), resource.getId(), testClass.getName() + " is part of AlfrescoPublicApi");
         assertTrue(resource.isDeprecated());
     }
@@ -118,7 +117,7 @@ public class PublicApiInventoryWorkerTest
         assertEquals(0, resources.size());
     }
 
-    private byte[] getClassData(Class clazz) throws IOException
+    private static byte[] getClassData(Class clazz) throws IOException
     {
         String name = clazz.getName();
         int i = name.lastIndexOf('.');
@@ -130,9 +129,8 @@ public class PublicApiInventoryWorkerTest
         return  clsStream.readAllBytes();
     }
 
-    private String getClassRelativePath(Class clazz)
+    private static String getClassRelativePath(Class clazz)
     {
-        String path = clazz.getName().replaceAll("\\.", "/") + ".class";
-        return path;
+        return clazz.getName().replace(".", "/") + ".class";
     }
 }

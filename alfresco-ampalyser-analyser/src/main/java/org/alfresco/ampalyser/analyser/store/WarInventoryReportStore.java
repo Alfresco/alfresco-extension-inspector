@@ -1,10 +1,17 @@
+/*
+ * Copyright 2015-2020 Alfresco Software, Ltd.  All rights reserved.
+ *
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
 package org.alfresco.ampalyser.analyser.store;
 
 import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +56,7 @@ public class WarInventoryReportStore
         inventoryReportResources = Arrays
             .stream(resolver.getResources(inventoryReportResourcePattern))
             .filter(r -> r instanceof AbstractResource)
-            .collect(toMap(
+            .collect(toUnmodifiableMap(
                 r -> requireNonNull(r.getFilename()).replace(".json", ""),
                 r -> (AbstractResource) r
             ));

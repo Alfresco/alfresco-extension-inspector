@@ -10,12 +10,19 @@ package org.alfresco.ampalyser.analyser;
 import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
 
 import java.util.Iterator;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.runner.CommandRunner;
+import org.alfresco.ampalyser.analyser.service.AnalyserService;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
+import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
 import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
 import org.alfresco.ampalyser.inventory.InventoryApplication;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +49,12 @@ public class AnalyserApplication implements ApplicationRunner, ExitCodeGenerator
 {
     private static final int EXIT_CODE_EXCEPTION = 1;
 
+    @Autowired
+    private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
+    @Autowired
+    private ConfigService configService;
+    @Autowired
+    private AnalyserService analyserService;
     @Autowired
     private CommandRunner commandRunner;
 

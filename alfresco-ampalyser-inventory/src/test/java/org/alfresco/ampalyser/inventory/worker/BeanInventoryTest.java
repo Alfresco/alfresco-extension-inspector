@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class BeanInventoryTest
 {
-    private BeanInventoryWorker beanInventoryWorker = new BeanInventoryWorker(new EntryProcessor());
+    private BeanInventoryWorker beanInventoryWorker = new BeanInventoryWorker();
 
     @Test
     public void testBeanInventoryWorkerReturnsCorrectType()
@@ -64,9 +63,9 @@ public class BeanInventoryTest
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
-        assertTrue(resources.get(0) instanceof BeanResource);
+        assertTrue(resources.iterator().next() instanceof BeanResource);
 
-        BeanResource br = (BeanResource) resources.get(0);
+        BeanResource br = (BeanResource) resources.iterator().next();
         assertEquals("bean-with-id", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }
@@ -85,9 +84,9 @@ public class BeanInventoryTest
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
-        assertTrue(resources.get(0) instanceof BeanResource);
+        assertTrue(resources.iterator().next() instanceof BeanResource);
 
-        BeanResource br = (BeanResource) resources.get(0);
+        BeanResource br = (BeanResource) resources.iterator().next();
         assertEquals("bean-with-name", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }
@@ -106,9 +105,9 @@ public class BeanInventoryTest
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
-        assertTrue(resources.get(0) instanceof BeanResource);
+        assertTrue(resources.iterator().next() instanceof BeanResource);
 
-        BeanResource br = (BeanResource) resources.get(0);
+        BeanResource br = (BeanResource) resources.iterator().next();
         assertEquals("org.alfresco.ampalyser.inventory.Test", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }
@@ -128,9 +127,9 @@ public class BeanInventoryTest
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
-        assertTrue(resources.get(0) instanceof BeanResource);
+        assertTrue(resources.iterator().next() instanceof BeanResource);
 
-        BeanResource br = (BeanResource) resources.get(0);
+        BeanResource br = (BeanResource) resources.iterator().next();
         assertEquals("org.alfresco.ampalyser.inventory.Test", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }

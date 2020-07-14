@@ -21,7 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -34,11 +33,6 @@ import org.w3c.dom.NodeList;
 public class BeanInventoryWorker implements InventoryWorker
 {
     private static final Logger LOG = LoggerFactory.getLogger(BeanInventoryWorker.class);
-
-    public BeanInventoryWorker(EntryProcessor processor)
-    {
-        processor.attach(this);
-    }
 
     @Override
     public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
@@ -114,7 +108,7 @@ public class BeanInventoryWorker implements InventoryWorker
      */
     private List<Resource> findBeans(Element docElem, String filename, String definingObject)
     {
-        List<Resource> foundBeans = new ArrayList<>();
+        final List<Resource> foundBeans = new ArrayList<>();
 
         NodeList nodeList = docElem.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++)
