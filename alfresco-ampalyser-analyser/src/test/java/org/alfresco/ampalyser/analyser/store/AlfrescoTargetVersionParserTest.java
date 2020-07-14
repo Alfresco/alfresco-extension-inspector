@@ -88,64 +88,62 @@ class AlfrescoTargetVersionParserTest
     void testParse_singleRange()
     {
         final Collection<String> actualVersions = parser.parse(List.of(
-            "6.2.0.1-6.2.0.3"
+            "6.2.0-6.2.1"
         ));
         assertNotNull(actualVersions);
-        assertEquals(3, actualVersions.size());
+        assertEquals(2, actualVersions.size());
         final Iterator<String> it = actualVersions.iterator();
-        assertEquals("6.2.0.1", it.next());
-        assertEquals("6.2.0.2", it.next());
-        assertEquals("6.2.0.3", it.next());
+        assertEquals("6.2.0", it.next());
+        assertEquals("6.2.1", it.next());
     }
 
     @Test
     void testParse_singleRangeAndEmptyString()
     {
         final Collection<String> actualVersions = parser.parse(List.of(
-            " ", "6.2.0.1-6.2.0.3"
+            " ", "6.1.1-6.2.1"
         ));
         assertNotNull(actualVersions);
         assertEquals(3, actualVersions.size());
         final Iterator<String> it = actualVersions.iterator();
-        assertEquals("6.2.0.1", it.next());
-        assertEquals("6.2.0.2", it.next());
-        assertEquals("6.2.0.3", it.next());
+        assertEquals("6.1.1", it.next());
+        assertEquals("6.2.0", it.next());
+        assertEquals("6.2.1", it.next());
     }
 
     @Test
     void testParse_multipleRanges()
     {
         final Collection<String> actualVersions = parser.parse(List.of(
-            " 6.1.0.4-6.1.0.6 ", "6.2.0.1-6.2.0.3 "
+            " 6.0.0-6.1.1 ", "6.1.0-6.2.1 "
         ));
         assertNotNull(actualVersions);
         assertEquals(6, actualVersions.size());
 
         final Iterator<String> it = actualVersions.iterator();
-        assertEquals("6.1.0.4", it.next());
-        assertEquals("6.1.0.5", it.next());
-        assertEquals("6.1.0.6", it.next());
-
-        assertEquals("6.2.0.1", it.next());
-        assertEquals("6.2.0.2", it.next());
-        assertEquals("6.2.0.3", it.next());
+        assertEquals("6.0.0", it.next());
+        assertEquals("6.0.1", it.next());
+        assertEquals("6.1.0", it.next());
+        assertEquals("6.1.1", it.next());
+        assertEquals("6.2.0", it.next());
+        assertEquals("6.2.1", it.next());
     }
 
     @Test
     void testParse_singleValueAndSingleRange()
     {
         final Collection<String> actualVersions = parser.parse(List.of(
-            "6.1.0.4 ", " 6.2.0.1-6.2.0.3"
+            "6.1.0 ", " 6.0.1-6.2.0"
         ));
         assertNotNull(actualVersions);
         assertEquals(4, actualVersions.size());
 
         final Iterator<String> it = actualVersions.iterator();
-        assertEquals("6.1.0.4", it.next());
+        assertEquals("6.0.1", it.next());
 
-        assertEquals("6.2.0.1", it.next());
-        assertEquals("6.2.0.2", it.next());
-        assertEquals("6.2.0.3", it.next());
+        assertEquals("6.1.0", it.next());
+        assertEquals("6.1.1", it.next());
+        assertEquals("6.2.0", it.next());
     }
 
     @Test

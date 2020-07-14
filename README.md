@@ -12,7 +12,7 @@ The `InventoryApplication` is a Spring Boot application, implemented in the modu
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-ampalyser-inventory-0.0.1.jar`.
+This creates an executable jar, `alfresco-ampalyser-inventory-0.0.1-SNAPSHOT-application.jar`.
 
 Usage:
 ```shell script
@@ -82,9 +82,32 @@ Example structure of the report:
 }
 ```
 
-## Analyser (TBD)
+## Analyser
 
+The `AnalyserApplication` is a Spring Boot application, implemented in the module **alfresco-ampalyser-analyser**.
+This tool analyses custom extensions against war inventories.
 
+Use `mvn clean package` to build the project.
+This creates an executable jar, `alfresco-ampalyser-analyser-0.0.1-SNAPSHOT-application.jar`.
+
+Usage:
+```shell script
+java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--beanOverrideWhitelist=/path/to/bean_overriding_whitelist.json ] [--beanClassWhitelist=/path/to/bean_restricted_classes_whitelist.json] [--verbose=[true | false]]
+
+java -jar alfresco-ampalyser-analyser.jar --help
+
+java -jar alfresco-ampalyser-analyser.jar --list-known-alfresco-versions
+```
+Options:
+```bash
+   --target-version                     An Alfresco version or a range of Alfresco versions.
+   --target-inventory                   A file path of an existing WAR inventory.
+   --beanOverrideWhitelist              A file path of a JSON containing a list of beans that can be overridden.
+   --beanClassWhitelist                 A file path of a JSON containing a list of classes that can be instantiated.
+   --verbose                            Verbose output.
+   --help                               Shows this screen.
+   --list-known-alfresco-versions       Lists all Alfresco versions with inventory reports included in the tool.
+```
 
 ## Build and release process
 
