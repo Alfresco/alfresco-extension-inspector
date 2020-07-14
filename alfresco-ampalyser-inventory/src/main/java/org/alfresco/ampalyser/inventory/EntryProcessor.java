@@ -46,7 +46,11 @@ public class EntryProcessor
             .put(inventoryWorker.getType(), new ArrayList<>()));
 
         byte[] data = InventoryUtils.extract(zis);
-        processEntry(warEntry, data, warEntry.getName(), extractedResources);
+
+        if (!isFileToBeIgnored(warEntry.getName()))
+        {
+            processEntry(warEntry, data, warEntry.getName(), extractedResources);
+        }
 
         if (isJar(warEntry.getName()))
         {
@@ -55,11 +59,7 @@ public class EntryProcessor
             ZipEntry libZe = libZis.getNextEntry();
             while (libZe != null)
             {
-                if (!(libZe.isDirectory() ||
-                      libZe.getName().startsWith("META-INF/") ||
-                      libZe.getName().equals("module-info.class") ||
-                      libZe.getName().equalsIgnoreCase("license.txt") ||
-                      libZe.getName().equalsIgnoreCase("notice.txt")))
+                if (!(libZe.isDirectory() || isFileToBeIgnored(libZe.getName())))
                 {
                     byte[] libData = InventoryUtils.extract(libZis);
                     processEntry(libZe, libData, warEntry.getName(), extractedResources);
@@ -69,6 +69,20 @@ public class EntryProcessor
             }
         }
         return extractedResources;
+    }
+
+    /**
+     * Evaluates whether or not is to be ignored at the extension applying process
+     *
+     * @param fileName
+     * @return
+     */
+    private static boolean isFileToBeIgnored(String fileName)
+    {
+        return fileName.startsWith("META-INF/") ||
+            fileName.equals("module-info.class") ||
+            fileName.equalsIgnoreCase("license.txt") ||
+            fileName.equalsIgnoreCase("notice.txt");
     }
 
     private void processEntry(ZipEntry entry, byte[] data, String definingObject,
