@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -33,6 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommandRunner
 {
+    @Autowired
+    private ConfigService configService;
     @Autowired
     private WarInventoryReportStore warInventoryReportStore;
     @Autowired
@@ -84,45 +87,38 @@ public class CommandRunner
 
     private void executeExtensionAnalysis(ApplicationArguments args)
     {
-        final String extensionPath = extractExtensionPath(args.getNonOptionArgs());
+        configService.registerExtensionPath(extractExtensionPath(args.getNonOptionArgs()));
         final Set<String> options = args.getOptionNames();
         
         validateAnalyserOptions(options);
-        if (options.isEmpty())
-        {
-            analyserService.analyse(extensionPath);
-            return;
-        }
 
-        final String beanOverridingWhitelistPath = extractWhitelistPath(WHITELIST_BEAN_OVERRIDING,
-            args);
-        final String beanRestrictedClassWhitelistPath = extractWhitelistPath(
-            WHITELIST_BEAN_RESTRICTED_CLASSES, args);
+        configService.registerBeanOverrideWhitelistPath(
+            extractWhitelistPath(WHITELIST_BEAN_OVERRIDING, args));
+        configService.registerBeanClassWhitelist(
+            extractWhitelistPath(WHITELIST_BEAN_RESTRICTED_CLASSES, args));
 
         boolean verboseOutput = isVerboseOutput(args);
+
+        configService.setVerboseOutput(verboseOutput);
+
         // retrieve provided war inventories, if any
         final Set<String> warInventories = extractWarInventoryPaths(args);
         if (warInventories != null)
         {
-            analyserService.analyse(
+            /*TODO fix 
+               analyserService.analyse(
                 extensionPath, 
                 null,
                 warInventories,
                 beanOverridingWhitelistPath, 
                 beanRestrictedClassWhitelistPath,
                 verboseOutput);
-            return;
+            return;*/
         }
 
         // no war inventories provided
         // check TARGET_VERSION option
-        analyserService.analyse(
-            extensionPath,
-            commandOptionsResolver.extractTargetVersions(args), 
-            null,
-            beanOverridingWhitelistPath,
-            beanRestrictedClassWhitelistPath, 
-            verboseOutput);
+        analyserService.analyse(commandOptionsResolver.extractTargetVersions(args));
     }
 
     private void listKnownAlfrescoVersions()

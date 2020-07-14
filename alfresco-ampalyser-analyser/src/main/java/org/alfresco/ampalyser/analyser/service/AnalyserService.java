@@ -7,20 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableSortedSet;
-import static java.util.Comparator.comparing;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Collectors.toUnmodifiableList;
-import static org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker.WHITELIST_BEAN_OVERRIDING;
-import static org.alfresco.ampalyser.analyser.checker.BeanRestrictedClassesChecker.WHITELIST_BEAN_RESTRICTED_CLASSES;
-import static org.alfresco.ampalyser.analyser.checker.Checker.ALFRESCO_VERSION;
-import static org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker.FILE_MAPPING_NAME;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
 import java.util.EnumMap;
@@ -28,13 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import org.alfresco.ampalyser.analyser.comparators.WarComparatorService;
-import org.alfresco.ampalyser.analyser.parser.InventoryParser;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.slf4j.Logger;
@@ -59,22 +40,6 @@ public class AnalyserService
     @Autowired
     private AnalyserOutputService outputService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    public void analyse(final String ampPath)
-    {
-        analyse(ampPath,
-            unmodifiableSortedSet(warInventoryStore.allKnownVersions()), 
-            null,
-            null, 
-            null, 
-            false);
-    }
-
-    public void analyse(final String ampPath, SortedSet<String> alfrescoVersions,
-        final Set<String> warInventoryPaths, final String whitelistBeanOverridingPath,
-        final String whitelistRestrictedClassesPath, final boolean verboseOutput)
     /**
      * Compares the extension with the WAR inventories of the requested Alfresco Versions and prints the results.
      *
@@ -99,33 +64,5 @@ public class AnalyserService
             ));
 
         outputService.print(conflictPerTypeAndResourceId);
-    }
-
-    /**
-     * Reads and loads {@link InventoryReport}s from a {@link Set} of .json files
-     *
-     * @return a {@link SortedSet} of the provided {@link InventoryReport}s
-     */
-    private SortedSet<InventoryReport> loadInventoryReports(Set<String> warInventoryPaths)
-    {
-        final SortedSet<InventoryReport> inventories = warInventoryPaths
-            .stream()
-            .map(this::retrieveInventory)
-            .collect(toCollection(() -> new TreeSet<>(comparing(InventoryReport::getAlfrescoVersion))));
-
-        return unmodifiableSortedSet(inventories);
-    }
-
-    private InventoryReport retrieveInventory(String path)
-    {
-        try
-        {
-            return inventoryParser.parseReport(new FileInputStream(path));
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Failed to read inventory resource: " + path, e);
-            throw new RuntimeException("Failed to read inventory resource: " + path, e);
-        }
     }
 }

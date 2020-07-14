@@ -13,9 +13,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.alfresco.ampalyser.analyser.service.AnalyserService;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,8 @@ import org.springframework.boot.DefaultApplicationArguments;
 @ExtendWith(MockitoExtension.class)
 public class CommandRunnerTest
 {
+    @Mock
+    private ConfigService configService;
     @Mock
     private WarInventoryReportStore warInventoryReportStore;
     @Mock
@@ -124,7 +129,7 @@ public class CommandRunnerTest
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName));
 
-        verify(analyserService).analyse(extensionFileName);
+        verify(analyserService).analyse(any());
     }
 
     @Test
@@ -184,6 +189,8 @@ public class CommandRunnerTest
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
             "--whitelistBeanRestrictedClasses=" + whitelist));
+
+        verify(analyserService, times(5)).analyse(any());
     }
 
     @Test
@@ -197,6 +204,8 @@ public class CommandRunnerTest
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
                 "--verbose=false", "--whitelistBeanOverriding=" + whitelist,
                 "--whitelistBeanRestrictedClasses=" + whitelist));
+
+        verify(analyserService).analyse(any());
     }
 
     @Test
