@@ -49,7 +49,7 @@
       "alfrescoVersion": "6.0.1"
     },
     {
-      "type": "RESTRICTED_BEAN_CLASS",
+      "type": "BEAN_RESTRICTED_CLASS",
       "ampResourceInConflict": {
         "type": "BEAN",
         "id": "eagerContentStoreCleaner",
@@ -110,7 +110,7 @@
       "alfrescoVersion": "6.0.0.3"
     },
     {
-      "type": "RESTRICTED_BEAN_CLASS",
+      "type": "BEAN_RESTRICTED_CLASS",
       "ampResourceInConflict": {
         "type": "BEAN",
         "id": "eagerContentStoreCleaner",
@@ -171,7 +171,7 @@
       "alfrescoVersion": "6.0.0.5"
     },
     {
-      "type": "RESTRICTED_BEAN_CLASS",
+      "type": "BEAN_RESTRICTED_CLASS",
       "ampResourceInConflict": {
         "type": "BEAN",
         "id": "eagerContentStoreCleaner",
