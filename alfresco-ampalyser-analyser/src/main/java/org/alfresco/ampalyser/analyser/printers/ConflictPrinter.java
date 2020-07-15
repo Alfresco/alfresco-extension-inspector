@@ -73,45 +73,44 @@ public interface ConflictPrinter
         {
             return allKnownVersions.first() + " - " + allKnownVersions.last();
         }
-        return getRanges(conflictVersions)
+        return groupRanges(conflictVersions)
             .stream()
             .map(l -> l.size() > 2 ? l.first() + " - " + l.last() : join(", ", l))
             .collect(joining(", "));
     }
 
-    private List<SortedSet<String>> getRanges(SortedSet<String> s)
+    private List<SortedSet<String>> groupRanges(SortedSet<String> s)
     {
-        List<SortedSet<String>> list = new ArrayList<>();
-
-        List<String> bundledVersList = List.copyOf(retrieveAllKnownVersions());
-
-        Iterator<String> iterator = s.iterator();
-        String version = iterator.next();
-
+        List<SortedSet<String>> result = new ArrayList<>();
         SortedSet<String> range = new TreeSet<>();
+
+        List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
+        Iterator<String> conflictVersions = s.iterator();
+        
+        String version = conflictVersions.next();
         range.add(version);
-        int index = bundledVersList.indexOf(version);
-        while (iterator.hasNext())
+        int index = bundledVersions.indexOf(version);
+        while (conflictVersions.hasNext())
         {
-            version = iterator.next();
+            version = conflictVersions.next();
             index++;
-            if (version.equals(bundledVersList.get(index)))
+            if (version.equals(bundledVersions.get(index)))
             {
                 range.add(version);
-                if (!iterator.hasNext())
+                if (!conflictVersions.hasNext())
                 {
-                    list.add(range);
+                    result.add(range);
                 }
                 continue;
             }
-            list.add(range);
+            result.add(range);
             range = new TreeSet<>();
             
             range.add(version);
-            index = bundledVersList.indexOf(version);
+            index = bundledVersions.indexOf(version);
         }
 
-        return list;
+        return result;
     }
 
     static String joinWarResourceIds(Set<Conflict> conflictSet)
