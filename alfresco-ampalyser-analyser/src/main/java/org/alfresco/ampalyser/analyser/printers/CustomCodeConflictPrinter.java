@@ -12,14 +12,16 @@ import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.flatMapping;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,7 +33,16 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             + "the Alfresco repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
             + "The following classes are making use of internal Alfresco classes:";
-    
+
+    @Autowired
+    private WarInventoryReportStore store;
+
+    @Override
+    public SortedSet<String> retrieveAllKnownVersions()
+    {
+        return store.allKnownVersions();
+    }
+
     @Override
     public String getHeader()
     {

@@ -8,13 +8,22 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 public interface ConflictPrinter
 {
@@ -41,6 +50,8 @@ public interface ConflictPrinter
         System.out.println();
     }
     
+    SortedSet<String> retrieveAllKnownVersions();
+    
     String getHeader();
 
     Conflict.Type getConflictType();
@@ -49,14 +60,58 @@ public interface ConflictPrinter
     
     void print(String id, Set<Conflict> conflictSet);
     
-    static String joinWarVersions(Set<Conflict> conflictSet)
+    default String joinWarVersions(Set<Conflict> conflictSet)
     {
-        return conflictSet
+        SortedSet<String> allKnownVersions = retrieveAllKnownVersions();
+        
+        SortedSet<String> conflictVersions = conflictSet
             .stream()
             .map(Conflict::getAlfrescoVersion)
-            .distinct()
-            .sorted()
-            .collect(joining(", "));
+            .collect(toCollection(() -> new TreeSet<>(comparing(ComparableVersion::new))));
+
+        if (conflictVersions.equals(allKnownVersions))
+        {
+            return allKnownVersions.first() + " - " + allKnownVersions.last();
+        }
+        return getRanges(conflictVersions)
+            .stream()
+            .map(l -> l.size() > 2 ? l.first() + " - " + l.last() : l.first())
+            .collect(Collectors.joining(", "));
+    }
+
+    private List<SortedSet<String>> getRanges(SortedSet<String> s)
+    {
+        List<SortedSet<String>> list = new ArrayList<>();
+
+        List<String> bundledVersList = List.copyOf(retrieveAllKnownVersions());
+
+        Iterator<String> iterator = s.iterator();
+        String version = iterator.next();
+
+        SortedSet<String> range = new TreeSet<>();
+        range.add(version);
+        int index = bundledVersList.indexOf(version);
+        while (iterator.hasNext())
+        {
+            version = iterator.next();
+            index++;
+            if (version.equals(bundledVersList.get(index)))
+            {
+                range.add(version);
+                if (!iterator.hasNext())
+                {
+                    list.add(range);
+                }
+                continue;
+            }
+            list.add(range);
+            range = new TreeSet<>();
+            
+            range.add(version);
+            index = bundledVersList.indexOf(version);
+        }
+
+        return list;
     }
 
     static String joinWarResourceIds(Set<Conflict> conflictSet)

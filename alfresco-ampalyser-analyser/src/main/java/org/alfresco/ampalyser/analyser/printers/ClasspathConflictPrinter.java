@@ -8,12 +8,14 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +26,15 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             + "this extension, its behaviour is undefined. The following resources in your "
             + "extension are in conflict with resources on the classpath in the Alfresco "
             + "repository:";
+
+    @Autowired
+    private WarInventoryReportStore store;
+
+    @Override
+    public SortedSet<String> retrieveAllKnownVersions()
+    {
+        return store.allKnownVersions();
+    }
 
     @Override
     public String getHeader()

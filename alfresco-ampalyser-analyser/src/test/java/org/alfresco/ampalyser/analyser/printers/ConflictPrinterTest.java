@@ -11,20 +11,48 @@ package org.alfresco.ampalyser.analyser.printers;
 import static java.util.Collections.emptyMap;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceIds;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.FileResource;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ConflictPrinterTest
 {
+    @Mock
+    private WarInventoryReportStore store;
+    @InjectMocks
+    private BeanOverwriteConflictPrinter printer;
+
+    @Before
+    public void setup()
+    {
+        MockitoAnnotations.initMocks(this);
+
+        when(store.allKnownVersions()).thenReturn(
+            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.5", "6.2.1").stream()
+                .collect(Collectors.toCollection(
+                    () -> new TreeSet<>(Comparator.comparing(ComparableVersion::new)))));
+    }
     @Test
     public void testJoinWarVersions()
     {
@@ -35,15 +63,25 @@ public class ConflictPrinterTest
         BeanResource warBean1 = new BeanResource("bean1", "default_war_context.xml",
             "org.alfresco.Dummy");
 
-        Conflict c1 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.0.2");
-        Conflict c2 = new BeanOverwriteConflict(extBean11, warBean1, "6.0.0.2");
-        Conflict c3 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.0.1");
-        Conflict c4 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.0.5");
-        Conflict c5 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.2");
+        Conflict c1 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.2");
+        Conflict c2 = new BeanOverwriteConflict(extBean11, warBean1, "6.0.2");
+        Conflict c3 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.1");
+        Conflict c4 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.5");
+        Conflict c5 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.0");
+        Conflict c6 = new BeanOverwriteConflict(extBean11, warBean1, "5.2.0");
+        Conflict c7 = new BeanOverwriteConflict(extBean1, warBean1, "6.2.1");
+        Conflict c8 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.4");
+        Conflict c9 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.1");
 
-        Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5);
+        Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5, c6);
+        assertEquals("5.2.0, 6.0.0 - 6.0.5", printer.joinWarVersions(conflicts));
 
-        assertEquals("6.0.0.1, 6.0.0.2, 6.0.0.5, 6.0.2", joinWarVersions(conflicts));
+        conflicts = Set.of(c1, c2, c3, c4, c5, c6, c7, c8, c9);
+        assertEquals("5.2.0 - 6.2.1", printer.joinWarVersions(conflicts));
+
+        conflicts = Set.of(c1, c2, c3, c4, c6, c7, c9);
+        assertEquals("5.2.0, 5.2.1, 6.0.1 - 6.2.1", printer.joinWarVersions(conflicts));
+
     }
 
     @Test
