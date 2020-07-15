@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.join;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -75,8 +75,8 @@ public interface ConflictPrinter
         }
         return getRanges(conflictVersions)
             .stream()
-            .map(l -> l.size() > 2 ? l.first() + " - " + l.last() : l.first())
-            .collect(Collectors.joining(", "));
+            .map(l -> l.size() > 2 ? l.first() + " - " + l.last() : join(", ", l))
+            .collect(joining(", "));
     }
 
     private List<SortedSet<String>> getRanges(SortedSet<String> s)

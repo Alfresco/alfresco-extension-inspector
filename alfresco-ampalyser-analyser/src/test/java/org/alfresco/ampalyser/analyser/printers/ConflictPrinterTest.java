@@ -49,7 +49,8 @@ public class ConflictPrinterTest
         MockitoAnnotations.initMocks(this);
 
         when(store.allKnownVersions()).thenReturn(
-            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.5", "6.2.1").stream()
+            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.3", "6.0.5", "6.2.1")
+                .stream()
                 .collect(Collectors.toCollection(
                     () -> new TreeSet<>(Comparator.comparing(ComparableVersion::new)))));
     }
@@ -72,16 +73,19 @@ public class ConflictPrinterTest
         Conflict c7 = new BeanOverwriteConflict(extBean1, warBean1, "6.2.1");
         Conflict c8 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.4");
         Conflict c9 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.1");
+        Conflict c10 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.3");
 
-        Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5, c6);
+        Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5, c6, c10);
         assertEquals("5.2.0, 6.0.0 - 6.0.5", printer.joinWarVersions(conflicts));
 
-        conflicts = Set.of(c1, c2, c3, c4, c5, c6, c7, c8, c9);
+        conflicts = Set.of(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10);
         assertEquals("5.2.0 - 6.2.1", printer.joinWarVersions(conflicts));
 
-        conflicts = Set.of(c1, c2, c3, c4, c6, c7, c9);
+        conflicts = Set.of(c1, c2, c3, c4, c6, c7, c9, c10);
         assertEquals("5.2.0, 5.2.1, 6.0.1 - 6.2.1", printer.joinWarVersions(conflicts));
 
+        conflicts = Set.of(c3, c4, c6, c7, c8, c9, c10);
+        assertEquals("5.2.0 - 5.2.4, 6.0.1, 6.0.3 - 6.2.1", printer.joinWarVersions(conflicts));
     }
 
     @Test
