@@ -145,10 +145,10 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     public void checkFileType()
     {
         List<Resource> report = client.retrieveInventoryResources(FILE, inventoryReport);
-        assertEquals(report.size(), 10);
+        assertEquals(report.size(), 9);
 
-        Resource resource = client.retrieveInventoryResource(FILE, "/META-INF/MANIFEST.MF", inventoryReport);
-        assertEquals(resource.getDefiningObject(), "/META-INF/MANIFEST.MF");
-        assertEquals(resource.getId(), "/META-INF/MANIFEST.MF");
+        Resource resource = client.retrieveInventoryResource(FILE, "/WEB-INF/web.xml", inventoryReport);
+        assertEquals(resource.getDefiningObject(), "/WEB-INF/web.xml");
+        assertEquals(resource.getId(), "/WEB-INF/web.xml");
     }
 }
