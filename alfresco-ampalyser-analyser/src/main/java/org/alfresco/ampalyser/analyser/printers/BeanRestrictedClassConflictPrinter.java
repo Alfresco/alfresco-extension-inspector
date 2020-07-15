@@ -54,7 +54,6 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
         BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
 
         System.out.println(id + " instantiates " + resource.getBeanClass());
-        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
         System.out.println();
     }
 }
