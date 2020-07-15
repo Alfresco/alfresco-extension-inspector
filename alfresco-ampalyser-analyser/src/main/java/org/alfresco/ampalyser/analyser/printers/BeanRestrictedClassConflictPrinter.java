@@ -9,15 +9,16 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.model.BeanResource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestrictedBeanConflictPrinter implements ConflictPrinter
+public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER = "Found beans for restricted classes! The following beans "
         + "instantiate classes from Alfresco or 3rd party libraries which are "
@@ -32,13 +33,16 @@ public class RestrictedBeanConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return RESTRICTED_BEAN_CLASS;
+        return BEAN_RESTRICTED_CLASS;
     }
 
     @Override
     public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id);
+        Conflict conflict = conflictSet.iterator().next();
+        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+
+        System.out.println(id + " instantiates " + resource.getBeanClass()  + " in " + resource.getDefiningObject());
         System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
         System.out.println();
     }
@@ -46,7 +50,11 @@ public class RestrictedBeanConflictPrinter implements ConflictPrinter
     @Override
     public void print(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id);
+        Conflict conflict = conflictSet.iterator().next();
+        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+
+        System.out.println(id + " instantiates " + resource.getBeanClass());
+        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
         System.out.println();
     }
 }

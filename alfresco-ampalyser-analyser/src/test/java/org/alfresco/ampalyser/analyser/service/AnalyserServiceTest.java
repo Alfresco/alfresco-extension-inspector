@@ -10,7 +10,7 @@ package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Objects.requireNonNull;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,6 +85,6 @@ public class AnalyserServiceTest
         assertEquals(expectedResult, result);
         assertEquals(2, result.size());
         assertEquals(3, result.get(BEAN_OVERWRITE).size());
-        assertEquals(1, result.get(RESTRICTED_BEAN_CLASS).size());
+        assertEquals(1, result.get(BEAN_RESTRICTED_CLASS).size());
     }
 }
