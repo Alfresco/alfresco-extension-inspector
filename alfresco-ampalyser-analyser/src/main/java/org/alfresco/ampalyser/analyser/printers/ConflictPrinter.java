@@ -70,6 +70,14 @@ public interface ConflictPrinter
             .map(Conflict::getAlfrescoVersion)
             .collect(toCollection(() -> new TreeSet<>(comparing(ComparableVersion::new))));
 
+        if (conflictVersions.isEmpty())
+        {
+            return "";
+        }
+        if (conflictVersions.size() <= 2)
+        {
+            return join(", ", conflictVersions);
+        }
         if (conflictVersions.equals(allKnownVersions))
         {
             return allKnownVersions.first() + " - " + allKnownVersions.last();
