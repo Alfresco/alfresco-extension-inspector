@@ -85,16 +85,16 @@ public interface ConflictPrinter
      * Two versions are consecutive if they follow each other continuously in the `allKnownVersions`
      * {@link SortedSet} provided by {@link WarInventoryReportStore}.
      * 
-     * @param s A set of Alfresco versions
+     * @param versions A set of Alfresco versions
      * @return A {@link List} containing groups of consecutive Alfresco versions
      */
-    private List<SortedSet<String>> groupRanges(SortedSet<String> s)
+    private List<SortedSet<String>> groupRanges(SortedSet<String> versions)
     {
         List<SortedSet<String>> groups = new ArrayList<>();
         SortedSet<String> range = new TreeSet<>();
 
         List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
-        Iterator<String> conflictVersions = s.iterator();
+        Iterator<String> conflictVersions = versions.iterator();
         
         String version = conflictVersions.next();
         range.add(version);
