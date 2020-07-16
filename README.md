@@ -16,7 +16,7 @@ This creates an executable jar, `alfresco-ampalyser-inventory-0.0.1-SNAPSHOT-app
 
 ### Usage:
 ```shell script
-java -jar alfresco-ampalyser-inventory.jar <alfresco_war_path> [--o=<report_file_path>]
+java -jar alfresco-ampalyser-inventory-<version>-application.jar <alfresco_war_path> [--o=<report_file_path>]
 ```
 - the first parameter is a path to a valid war file
 - the optional `--o` parameter is for the output of the report, a given file or a folder location where a report with the default name, `<war_name>.inventory.json`, is generated. 
@@ -94,13 +94,13 @@ This creates an executable jar, `alfresco-ampalyser-analyser-0.0.1-SNAPSHOT-appl
 ### Usage:
 ```shell script
 # Analyse a given Alfresco extension
-java -jar alfresco-ampalyser-analyser.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--beanOverrideWhitelist=/path/to/bean_overriding_whitelist.json ] [--beanClassWhitelist=/path/to/bean_restricted_classes_whitelist.json] [--verbose=[true | false]]
+java -jar alfresco-ampalyser-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--beanOverrideWhitelist=/path/to/bean_overriding_whitelist.json ] [--beanClassWhitelist=/path/to/bean_restricted_classes_whitelist.json] [--verbose=[true | false]]
 
 # Help command
-java -jar alfresco-ampalyser-analyser.jar --help
+java -jar alfresco-ampalyser-analyser-<version>-application.jar --help
 
 # List all versions with bundled inventories
-java -jar alfresco-ampalyser-analyser.jar --list-known-alfresco-versions
+java -jar alfresco-ampalyser-analyser-<version>-application.jar --list-known-alfresco-versions
 ```
 Options:
 ```bash
