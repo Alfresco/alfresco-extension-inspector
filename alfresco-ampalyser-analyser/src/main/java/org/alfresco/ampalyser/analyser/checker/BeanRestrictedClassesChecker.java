@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.RestrictedBeanClassConflict;
+import org.alfresco.ampalyser.analyser.result.BeanRestrictedClassConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -57,7 +57,7 @@ public class BeanRestrictedClassesChecker implements Checker
             .retrieveBeansOfAlfrescoTypes()
             .stream()
             .filter(r -> !whitelist.contains(r.getBeanClass()))
-            .map(r -> new RestrictedBeanClassConflict(r, alfrescoVersion));
+            .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 
     @Override

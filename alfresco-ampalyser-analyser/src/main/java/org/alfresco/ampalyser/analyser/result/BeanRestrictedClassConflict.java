@@ -7,22 +7,22 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.RESTRICTED_BEAN_CLASS;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 
 import org.alfresco.ampalyser.model.BeanResource;
 
 /**
  * @author Lucian Tuca
  */
-public class RestrictedBeanClassConflict extends AbstractConflict
+public class BeanRestrictedClassConflict extends AbstractConflict
 {
-    public RestrictedBeanClassConflict()
+    public BeanRestrictedClassConflict()
     {
     }
 
-    public RestrictedBeanClassConflict(BeanResource ampResourceInConflict, String alfrescoVersion)
+    public BeanRestrictedClassConflict(BeanResource ampResourceInConflict, String alfrescoVersion)
     {
-        super(RESTRICTED_BEAN_CLASS, ampResourceInConflict, null, alfrescoVersion);
+        super(BEAN_RESTRICTED_CLASS, ampResourceInConflict, null, alfrescoVersion);
     }
 
     @Override

@@ -147,7 +147,10 @@ public class BeanInventoryWorker implements InventoryWorker
                     // Anonymous beans will not be added to the report.
                     if (beanId != null && !beanId.isEmpty())
                     {
-                        BeanResource beanResource = new BeanResource(beanId, filename + "@" + definingObject, beanClass);
+                        BeanResource beanResource = new BeanResource(
+                            beanId,
+                            definingObject.endsWith("jar") ? filename + "@" + definingObject : filename,
+                            beanClass);
                         foundBeans.add(beanResource);
 
                         if (LOG.isTraceEnabled())
