@@ -14,7 +14,6 @@ import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarRe
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
