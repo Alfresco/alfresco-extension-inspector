@@ -11,6 +11,7 @@ package org.alfresco.ampalyser.analyser.printers;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
@@ -24,6 +25,8 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             + "this extension, its behaviour is undefined. The following resources in your "
             + "extension are in conflict with resources on the classpath in the Alfresco "
             + "repository:";
+
+    private static final Set<String> CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED = new HashSet<>();
 
     @Override
     public String getHeader()
@@ -40,7 +43,9 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id);
+        final Conflict conflict = conflictSet.iterator().next();
+        System.out.println(id + " in " + conflict.getAmpResourceInConflict().getDefiningObject()
+            + " conflicts with " + conflict.getWarResourceInConflict().getDefiningObject());
         System.out.println("Conflicting with " + joinWarVersions(conflictSet));
         System.out.println();
     }
@@ -48,7 +53,16 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     @Override
     public void print(String id, Set<Conflict> conflictSet)
     {
-        System.out.println(id);
-        System.out.println();
+        final Conflict conflict = conflictSet.iterator().next();
+        final String ampResourceDefiningObject = conflict.getAmpResourceInConflict().getDefiningObject();
+        final String warResourceDefiningObject = conflict.getWarResourceInConflict().getDefiningObject();
+
+        // Keep an internal lists of conflicts per defining jar object.
+        if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(ampResourceDefiningObject))
+        {
+            System.out.println("Multiple resources in " + ampResourceDefiningObject + " conflicting with " + warResourceDefiningObject);
+            System.out.println();
+            CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(ampResourceDefiningObject);
+        }
     }
 }
