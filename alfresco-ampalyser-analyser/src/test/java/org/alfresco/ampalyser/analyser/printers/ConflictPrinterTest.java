@@ -86,6 +86,9 @@ public class ConflictPrinterTest
 
         conflicts = Set.of(c3, c4, c6, c7, c8, c9, c10);
         assertEquals("5.2.0 - 5.2.4, 6.0.1, 6.0.3 - 6.2.1", printer.joinWarVersions(conflicts));
+
+        conflicts = Set.of(c6, c8, c9, c10);
+        assertEquals("5.2.0 - 5.2.4, 6.0.3", printer.joinWarVersions(conflicts));
     }
 
     @Test

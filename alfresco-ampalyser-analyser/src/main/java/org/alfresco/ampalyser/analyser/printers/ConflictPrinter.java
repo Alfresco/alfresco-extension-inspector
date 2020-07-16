@@ -81,7 +81,7 @@ public interface ConflictPrinter
 
     private List<SortedSet<String>> groupRanges(SortedSet<String> s)
     {
-        List<SortedSet<String>> result = new ArrayList<>();
+        List<SortedSet<String>> groups = new ArrayList<>();
         SortedSet<String> range = new TreeSet<>();
 
         List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
@@ -99,18 +99,22 @@ public interface ConflictPrinter
                 range.add(version);
                 if (!conflictVersions.hasNext())
                 {
-                    result.add(range);
+                    groups.add(range);
                 }
                 continue;
             }
-            result.add(range);
+            groups.add(range);
             range = new TreeSet<>();
             
             range.add(version);
+            if (!conflictVersions.hasNext())
+            {
+                groups.add(range);
+            }
             index = bundledVersions.indexOf(version);
         }
 
-        return result;
+        return groups;
     }
 
     static String joinWarResourceIds(Set<Conflict> conflictSet)
