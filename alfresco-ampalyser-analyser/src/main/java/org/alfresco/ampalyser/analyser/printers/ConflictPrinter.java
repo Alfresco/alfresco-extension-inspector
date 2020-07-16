@@ -97,21 +97,19 @@ public interface ConflictPrinter
             if (version.equals(bundledVersions.get(index)))
             {
                 range.add(version);
-                if (!conflictVersions.hasNext())
-                {
-                    groups.add(range);
-                }
-                continue;
             }
-            groups.add(range);
-            range = new TreeSet<>();
-            
-            range.add(version);
+            else
+            {
+                groups.add(range);
+                range = new TreeSet<>();
+
+                range.add(version);
+                index = bundledVersions.indexOf(version);
+            }
             if (!conflictVersions.hasNext())
             {
                 groups.add(range);
             }
-            index = bundledVersions.indexOf(version);
         }
 
         return groups;
