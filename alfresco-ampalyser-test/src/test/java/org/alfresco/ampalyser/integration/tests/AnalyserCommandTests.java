@@ -31,7 +31,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
         {
                 String ampResourcePath = TestResource.getTestResourcePath("ampTest.amp");
                 String version = "6.1.1";
-                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
 
                 // Generate new analyser report
                 cmdOut = client.runAnalyserCommand(cmdOptions);
