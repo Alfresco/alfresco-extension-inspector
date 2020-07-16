@@ -57,8 +57,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
 
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
             + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println(
-            "Overwriting bean in " + joinWarVersions(conflictSet));
+        System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
