@@ -78,8 +78,8 @@ public class AmpalyserClient
                 }
                 finally
                 {
-                        cmd.getCommandOptions().clear();
-                        cmd.addCommandOptions(commandOptions);
+                        cmdAnalyser.getCommandOptions().clear();
+                        cmdAnalyser.addCommandOptions(commandOptions);
                 }
 
                 return cmdOut;

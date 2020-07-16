@@ -1,5 +1,6 @@
 package org.alfresco.ampalyser.integration.tests;
 
+import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -30,20 +31,21 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
         {
                 String ampResourcePath = TestResource.getTestResourcePath("ampTest.amp");
                 String version = "6.1.1";
-                List<String> cmdOptions = List.of(ampResourcePath, "--target=" + version);
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
 
                 // Generate new analyser report
                 cmdOut = client.runAnalyserCommand(cmdOptions);
                 System.out.println(cmdOut.getOutput());
-
                 assertEquals(cmdOut.getExitCode(), 0);
         }
 
         @Test
         public void runCommandWithExitCodeError()
         {
-                cmdOut = client.runAnalyserCommand(Collections.emptyList());
+                String ampResourcePath2 = TestResource.getTestResourcePath("test.txt");
+                List<String> cmdOptions = List.of(ampResourcePath2);
+                cmdOut = client.runAnalyserCommand(cmdOptions);
                 assertEquals(cmdOut.getExitCode(), 1);
-                assertTrue(cmdOut.containsMessage("Missing extension file."));
+                assertTrue(cmdOut.containsMessage("The extension file is not valid or does not exist. Supported file formats are AMP and JAR."));
         }
 }
