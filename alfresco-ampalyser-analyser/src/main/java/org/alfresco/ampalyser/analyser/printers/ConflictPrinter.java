@@ -23,6 +23,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 public interface ConflictPrinter
@@ -75,10 +76,18 @@ public interface ConflictPrinter
         }
         return groupRanges(conflictVersions)
             .stream()
-            .map(l -> l.size() > 2 ? l.first() + " - " + l.last() : join(", ", l))
+            .map(s -> s.size() > 2 ? s.first() + " - " + s.last() : join(", ", s))
             .collect(joining(", "));
     }
 
+    /**
+     * Processes a given {@link SortedSet} and creates groups of consecutive Alfresco versions.
+     * Two versions are consecutive if they follow each other continuously in the `allKnownVersions`
+     * {@link SortedSet} provided by {@link WarInventoryReportStore}.
+     * 
+     * @param s A set of Alfresco versions
+     * @return A {@link List} containing groups of consecutive Alfresco versions
+     */
     private List<SortedSet<String>> groupRanges(SortedSet<String> s)
     {
         List<SortedSet<String>> groups = new ArrayList<>();
