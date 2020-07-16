@@ -84,7 +84,7 @@ public interface ConflictPrinter
      * Processes a given {@link SortedSet} and creates groups of consecutive Alfresco versions.
      * Two versions are consecutive if they follow each other continuously in the `allKnownVersions`
      * {@link SortedSet} provided by {@link WarInventoryReportStore}.
-     * 
+     *
      * @param versions A set of Alfresco versions
      * @return A {@link List} containing groups of consecutive Alfresco versions
      */
@@ -95,7 +95,7 @@ public interface ConflictPrinter
 
         List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
         Iterator<String> conflictVersions = versions.iterator();
-        
+
         String version = conflictVersions.next();
         range.add(version);
         int index = bundledVersions.indexOf(version);
