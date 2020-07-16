@@ -12,7 +12,7 @@ The `InventoryApplication` is a Spring Boot application, implemented in the modu
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-ampalyser-inventory-0.0.1-SNAPSHOT-application.jar`.
+This creates an executable jar, `alfresco-ampalyser-inventory-<version>-application.jar`.
 
 ### Usage:
 ```shell script
@@ -89,7 +89,7 @@ The `AnalyserApplication` is a Spring Boot application, implemented in the modul
 This tool analyses custom extensions against war inventories.
 
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-ampalyser-analyser-0.0.1-SNAPSHOT-application.jar`.
+This creates an executable jar, `alfresco-ampalyser-analyser-<version>-application.jar`.
 
 ### Usage:
 ```shell script
