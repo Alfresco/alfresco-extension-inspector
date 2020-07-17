@@ -42,7 +42,7 @@ jobs:
       script: travis_wait 30 bash _ci/source_clear.sh
 
     - name: "Static Analysis (SAST)"
-      if: branch = master AND type != pull_request
+      if: branch = feature/ACS-311 AND type != pull_request
       stage: build
       before_install:
         - bash _ci/static_analysis_init.sh
