@@ -41,7 +41,6 @@ jobs:
     script: travis_wait 30 bash _ci/source_clear.sh
 
       - name: "Static Analysis (SAST)"
-        ## TODO ATS-721: only run on master until it is possible to run concurrent SAST scans
         if: branch = master AND type != pull_request
         stage: build
         before_install:
