@@ -58,6 +58,8 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
 
+                // The list contains also the "header" comment for this section
+                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
@@ -68,17 +70,20 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions1);
 
+                // The list contains also the "header" comment for this section
+                assertEquals(cmdOut.getPublicAPIConflicts().size(), 2);
                 assertFalse(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
 
                 // Run against multiple Alfresco versions
                 version = "6.0.0-6.2.2";
-
                 List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version);
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
 
+                // The list contains also the "header" comment for this section
+                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
                 assertTrue(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class", "PUBLIC_API")
                         .contains("6.1.0, 6.1.1, 6.2.0, 6.2.1, 6.2.2"));
                 assertTrue(cmdOut.retrieveOutputLine("UseInternalClass.class", "PUBLIC_API")
