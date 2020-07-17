@@ -17,13 +17,13 @@ public class TestResource
     public static final String INVALID_XML_MESSAGE = "Failed to analyse beans in xml file: ";
     public static final String INVALID_XML = "alfresco/invalidXML.xml";
 
-    static final String WAR_PATH = "testdata/";
+    static final String TEST_RESOURCE_PATH = "testdata/";
     static final String DEFAULT_INV_REPORT_PATH = "./inventoryTest.inventory.json";
     static final String TARGET_PATH = "./target";
 
     public static String getTestResourcePath(String filename)
     {
-        return TestResource.class.getClassLoader().getResource(WAR_PATH + filename).getPath();
+        return TestResource.class.getClassLoader().getResource(TEST_RESOURCE_PATH + filename).getPath();
     }
 
     public static File getTestInventoryReport()

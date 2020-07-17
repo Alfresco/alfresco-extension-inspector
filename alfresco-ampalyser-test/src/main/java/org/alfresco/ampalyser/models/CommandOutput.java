@@ -15,6 +15,28 @@ public class CommandOutput
 {
         private int exitCode;
         private List<String> output = new ArrayList<>();
+        private List<String> publicAPIConflicts = new ArrayList<>();
+        private List<String> thirdPartyLibConflicts = new ArrayList<>();
+
+        public List<String> getPublicAPIConflicts()
+        {
+                return publicAPIConflicts;
+        }
+
+        public void setPublicAPIConflicts(List<String> publicAPIConflicts)
+        {
+                this.publicAPIConflicts = publicAPIConflicts;
+        }
+
+        public List<String> getThirdPartyLibConflicts()
+        {
+                return thirdPartyLibConflicts;
+        }
+
+        public void setThirdPartyLibConflicts(List<String> thirdPartyLibConflicts)
+        {
+                this.thirdPartyLibConflicts = thirdPartyLibConflicts;
+        }
 
         public List<String> getOutput()
         {
@@ -36,7 +58,22 @@ public class CommandOutput
                 this.exitCode = exitCode;
         }
 
-        public boolean containsMessage(String message)
+        public boolean isInOutput(String message)
+        {
+                return contains(output, message);
+        }
+
+        public boolean isInThirdPartyLibConflicts(String str)
+        {
+                return contains(thirdPartyLibConflicts, str);
+        }
+
+        public boolean isInPublicAPIConflicts(String str)
+        {
+                return contains(publicAPIConflicts, str);
+        }
+
+        public boolean contains(List<String> output, String message)
         {
                 return output.stream().anyMatch(s -> s.contains(message));
         }

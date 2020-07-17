@@ -8,8 +8,7 @@
 
 package org.alfresco.ampalyser.command;
 
-import org.alfresco.ampalyser.models.AnalyserCommand;
-import org.alfresco.ampalyser.models.InventoryCommand;
+import org.alfresco.ampalyser.models.CommandModel;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.springframework.stereotype.Component;
 
@@ -22,34 +21,7 @@ public class CommandReceiver
 {
         CommandOutput cmdOut;
 
-        public CommandOutput runInventoryCmd(InventoryCommand comm)
-        {
-                cmdOut = new CommandOutput();
-
-                ProcessBuilder processBuilder = new ProcessBuilder();
-                processBuilder.command(comm.getCommandOptions());
-                try
-                {
-                        Process process = processBuilder.start();
-                        processBuilder.redirectErrorStream(true);
-                        recordOutput(process, cmdOut);
-
-                        int exitCode = process.waitFor();
-                        cmdOut.setExitCode(exitCode);
-                        System.out.println("\nExited with error code : " + exitCode);
-                }
-                catch (IOException e)
-                {
-                        e.printStackTrace();
-                }
-                catch (InterruptedException e) {
-                        e.printStackTrace();
-                }
-
-                return cmdOut;
-        }
-
-        public CommandOutput runAnalyserCmd(AnalyserCommand comm)
+        public CommandOutput runAnalyserCmd(CommandModel comm)
         {
                 cmdOut = new CommandOutput();
 
@@ -83,6 +55,15 @@ public class CommandReceiver
                 while ((line = in.readLine()) != null)
                 {
                         cmdOut.getOutput().add(line);
+                        if (line.contains("PublicAPI"))
+                        {
+                                cmdOut.getPublicAPIConflicts().add(line);
+                        }
+                        else if (line.contains("3rd party"))
+                        {
+                                cmdOut.getThirdPartyLibConflicts().add(line);
+                        }
+
                         System.out.println(line);
                 }
         }
