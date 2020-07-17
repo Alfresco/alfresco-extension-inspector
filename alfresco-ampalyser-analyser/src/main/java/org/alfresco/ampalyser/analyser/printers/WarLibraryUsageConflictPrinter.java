@@ -32,7 +32,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
         + "immediate problem, all 3rd party libraries that come with the Alfresco "
         + "repository are considered our internal implementation detail. These "
         + "libraries will change or might even disappear in service packs without "
-        + "notice. The following classes are making use of 3rd party libraries:";
+        + "notice.\nThe following classes are making use of 3rd party libraries:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -67,8 +67,9 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
                 flatMapping(c -> c.getClassDependencies().stream().sorted(), joining(", "))
             ));
 
-        System.out.println(format("Extension resource <{0}@{1}> has invalid (3rd party) dependencies:",
-            id, definingObject));
+        System.out.println(
+            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
+                + " has invalid (3rd party) dependencies:");
 
         dependenciesPerAlfrescoVersion
             .forEach((k, v) -> System.out.println(k + ": " + v));
@@ -81,10 +82,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 
-        System.out.println(format(
-            "Extension resource <{0}@{1}> has invalid (3rd party) dependencies in: {2}",
-            id, definingObject, joinWarVersions(conflictSet)));
-
+        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
         System.out.println();
     }
 }
