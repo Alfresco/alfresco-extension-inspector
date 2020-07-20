@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Collections.singletonList;
+import static org.alfresco.ampalyser.commons.InventoryUtils.isFromExtension;
 import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
 
 import java.util.List;
@@ -38,8 +39,11 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
     @Override
     public boolean canProcessEntry(ZipEntry entry, String definingObject)
     {
-        return !(entry == null || definingObject == null) && !entry.isDirectory() &&
-            (entry.getName().endsWith(".class") || isFromJar(entry, definingObject));
+        return !(entry == null || definingObject == null) &&
+            !entry.isDirectory() &&
+            (entry.getName().startsWith(WEB_INF_CLASSES)
+                || isFromExtension(entry)
+                || isFromJar(entry, definingObject));
     }
 
     private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)

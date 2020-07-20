@@ -44,9 +44,22 @@ public class ClasspathElementInventoryWorkerTest
         assertEquals("/TestEntry.txt", resourceList.iterator().next().getId());
         assertEquals("/" + entry.getName(), resourceList.iterator().next().getDefiningObject());
     }
+    
+    @Test
+    public void testCanProcessTxtEntryFromExtension()
+    {
+        ZipEntry entry = new ZipEntry("config/TestEntry.txt");
+        assertTrue(worker.canProcessEntry(entry, entry.getName()));
+
+        entry = new ZipEntry("alfresco/TestEntry.txt");
+        assertTrue(worker.canProcessEntry(entry, entry.getName()));
+
+        entry = new ZipEntry("TestEntry.class");
+        assertTrue(worker.canProcessEntry(entry, entry.getName()));
+    }
 
     @Test
-    public void testCannotProcessEntryIfNotFromJarOrFromWebInfClasses()
+    public void testCannotProcessEntryIfNotFromJarOrFromWebInfClassesOrFromExtension()
     {
         ZipEntry entry = new ZipEntry("TestEntry.txt");
         assertFalse(worker.canProcessEntry(entry, "TestEntry.txt"));
