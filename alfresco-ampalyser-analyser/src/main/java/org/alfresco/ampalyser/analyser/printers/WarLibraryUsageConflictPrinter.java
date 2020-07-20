@@ -12,14 +12,16 @@ import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.flatMapping;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,6 +33,15 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
         + "repository are considered our internal implementation detail. These "
         + "libraries will change or might even disappear in service packs without "
         + "notice. The following classes are making use of 3rd party libraries:";
+
+    @Autowired
+    private WarInventoryReportStore store;
+
+    @Override
+    public SortedSet<String> retrieveAllKnownVersions()
+    {
+        return store.allKnownVersions();
+    }
 
     @Override
     public String getHeader()

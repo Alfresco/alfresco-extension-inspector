@@ -8,12 +8,14 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +26,15 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
             + "resources present in various Alfresco versions. It will not be "
             + "possible to install this extension on these versions. (You can use the "
             + "option --target to limit this scan to specific Alfresco versions)";
+
+    @Autowired
+    private WarInventoryReportStore store;
+
+    @Override
+    public SortedSet<String> retrieveAllKnownVersions()
+    {
+        return store.allKnownVersions();
+    }
 
     @Override
     public String getHeader()
