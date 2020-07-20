@@ -73,8 +73,20 @@ public class CommandOutput
                 return contains(publicAPIConflicts, str);
         }
 
-        public boolean contains(List<String> output, String message)
+        private boolean contains(List<String> output, String message)
         {
                 return output.stream().anyMatch(s -> s.contains(message));
         }
+
+        public String retrieveOutputLine(String resource, String conflictType)
+        {
+                switch (conflictType)
+                {
+                        case "PUBLIC_API": return publicAPIConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                        case "3RD_PARTY_LIBS": return thirdPartyLibConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                }
+
+                return null;
+        }
+
 }
