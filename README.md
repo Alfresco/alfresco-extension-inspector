@@ -117,7 +117,15 @@ Options:
 ### Output
 When running the analysing command, **Amp-a-lyser** writes the conflicts directly to the console, grouped by their type.
 
-Example:
+The conflict types that can be detected by **Amp-a-lyser** are the following:
+* File overwrites
+* Bean overwrites
+* Classpath conflicts
+* Beans instantiating restricted classes
+* Usage of non @AlfrescoPublicAPI classes
+* Usage of 3rd party libraries
+
+Example of output:
 ```text
 Found bean overwrites! Spring beans defined by Alfresco constitute a fundamental building block of the repository and must not be overwritten unless explicitly allowed. Found the following beans overwriting default Alfresco functionality:
 
