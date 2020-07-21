@@ -132,14 +132,14 @@ public interface ConflictPrinter
         return groups;
     }
 
-    static String joinWarResourceIds(Set<Conflict> conflictSet)
+    static String joinWarResourceDefiningObjs(Set<Conflict> conflictSet)
     {
         return conflictSet
             .stream()
-            .map(conflict -> conflict.getWarResourceInConflict().getId())
+            .map(conflict -> conflict.getWarResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
-            .collect(joining("\n"));
+            .collect(joining(", "));
     }
 
     static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)

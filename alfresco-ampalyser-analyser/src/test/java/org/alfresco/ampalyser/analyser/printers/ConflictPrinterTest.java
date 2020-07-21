@@ -10,7 +10,7 @@ package org.alfresco.ampalyser.analyser.printers;
 
 import static java.util.Collections.emptyMap;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceIds;
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -116,7 +116,7 @@ public class ConflictPrinterTest
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5);
 
-        assertEquals("file1.txt\nfile2.txt", joinWarResourceIds(conflicts));
+        assertEquals("file1.txt, file2.txt", joinWarResourceDefiningObjs(conflicts));
     }
 
     @Test
