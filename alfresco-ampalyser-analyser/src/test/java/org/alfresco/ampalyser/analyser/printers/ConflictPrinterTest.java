@@ -100,7 +100,7 @@ public class ConflictPrinterTest
     }
 
     @Test
-    public void testJoinWarResourceIds()
+    public void testJoinWarResourceDefiningObjs()
     {
         FileResource extFile1 = new FileResource("file1.txt", "file1.txt");
         FileResource warFile1 = new FileResource("file1.txt", "file1.txt");
