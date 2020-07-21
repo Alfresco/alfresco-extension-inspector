@@ -1,7 +1,6 @@
 package org.alfresco.ampalyser.integration.tests;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
@@ -47,64 +46,6 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getExitCode(), 1);
                 assertTrue(cmdOut.isInOutput("The extension file is not valid or does not exist. Supported file formats are AMP and JAR."));
         }
-
-        @Test
-        public void testAnalyseAmpPublicAPI()
-        {
-                // Run against Alfresco version 6.2.2
-                String ampResourcePath = TestResource.getTestResourcePath("analyserTest.amp");
-                String version = "6.2.2";
-                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
-
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
-
-                // The list contains also the "header" comment for this section
-                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
-                assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
-                assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
-                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
-
-                // Run against Alfresco version 6.0.0
-                version = "6.0.0";
-                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
-
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions1);
-
-                // The list contains also the "header" comment for this section
-                assertEquals(cmdOut.getPublicAPIConflicts().size(), 2);
-                assertFalse(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
-                assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
-                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
-
-                // Run against multiple Alfresco versions
-                version = "6.0.0-6.2.2";
-                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version);
-
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
-
-                // The list contains also the "header" comment for this section
-                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
-                assertTrue(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class", "PUBLIC_API")
-                        .contains("6.1.0, 6.1.1, 6.2.0, 6.2.1, 6.2.2"));
-                assertTrue(cmdOut.retrieveOutputLine("UseInternalClass.class", "PUBLIC_API")
-                        .contains("6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.2.0, 6.2.1, 6.2.2"));
-                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
-        }
-
-        // TODO: Uncomment after fixing ACS-435
-        /*@Test
-        public void testAnalyseJarPublicAPI()
-        {
-                String ampResourcePath = TestResource.getTestResourcePath("analyserTest.jar");
-                String version = "6.2.2";
-                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
-
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
-
-                assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
-                assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
-                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
-        }*/
 
         @Test
         public void testAnalyseAmpInvalidVersion()

@@ -17,6 +17,7 @@ public class CommandOutput
         private List<String> output = new ArrayList<>();
         private List<String> publicAPIConflicts = new ArrayList<>();
         private List<String> thirdPartyLibConflicts = new ArrayList<>();
+        private List<String> fileOverwriteConflicts = new ArrayList<>();
 
         public List<String> getPublicAPIConflicts()
         {
@@ -37,6 +38,17 @@ public class CommandOutput
         {
                 this.thirdPartyLibConflicts = thirdPartyLibConflicts;
         }
+
+        public List<String> getFileOverwriteConflicts()
+        {
+                return fileOverwriteConflicts;
+        }
+
+        public void setFileOverwriteConflicts(List<String> fileOverwriteConflicts)
+        {
+                this.fileOverwriteConflicts = fileOverwriteConflicts;
+        }
+
 
         public List<String> getOutput()
         {
@@ -73,6 +85,11 @@ public class CommandOutput
                 return contains(publicAPIConflicts, str);
         }
 
+        public boolean isInFileOverwrite(String str)
+        {
+                return contains(fileOverwriteConflicts, str);
+        }
+
         private boolean contains(List<String> output, String message)
         {
                 return output.stream().anyMatch(s -> s.contains(message));
@@ -84,6 +101,7 @@ public class CommandOutput
                 {
                         case "PUBLIC_API": return publicAPIConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                         case "3RD_PARTY_LIBS": return thirdPartyLibConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                        case "FILE_OVERWRITE": return fileOverwriteConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                 }
 
                 return null;

@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CommandReceiver
@@ -63,8 +65,12 @@ public class CommandReceiver
                         {
                                 cmdOut.getThirdPartyLibConflicts().add(line);
                         }
-
+                        else if (line.contains("conflicting with"))
+                        {
+                                cmdOut.getFileOverwriteConflicts().add(line);
+                        }
                         System.out.println(line);
                 }
+
         }
 }
