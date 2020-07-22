@@ -59,21 +59,18 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
+        final String invalidDependencies = conflictSet
             .stream()
             .map(c -> (CustomCodeConflict) c)
-            .collect(groupingBy(
-                Conflict::getAlfrescoVersion,
-                flatMapping(c -> c.getInvalidAlfrescoDependencies().stream().sorted(), joining(", "))
-            ));
+            .flatMap(c -> c.getInvalidAlfrescoDependencies().stream())
+            .distinct()
+            .sorted()
+            .collect(joining(", "));
 
         System.out.println(
             "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (non PublicAPI) dependencies:");
-
-        dependenciesPerAlfrescoVersion
-            .forEach((k, v) -> System.out.println(k + ": " + v));
-
+                + " has invalid (non PublicAPI) dependencies: " + invalidDependencies);
+        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
