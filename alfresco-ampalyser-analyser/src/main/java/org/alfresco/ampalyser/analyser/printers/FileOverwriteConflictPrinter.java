@@ -53,7 +53,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     {
         String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
 
-        System.out.println(id + " (conflicting with " + warResourceId + ")");
+        System.out.println(id + " (resource conflicting with " + warResourceId + ")");
         System.out.println("Conflicting with " + joinWarVersions(conflictSet));
         System.out.println();
     }
