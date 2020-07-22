@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class ClasspathConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found classpath conflicts! Although it might be possible to install "
+        "Found classpath conflicts. Although it might be possible to install "
             + "this extension, its behaviour is undefined.\nThe following resources in your "
             + "extension are in conflict with resources on the classpath in the Alfresco "
             + "repository:";

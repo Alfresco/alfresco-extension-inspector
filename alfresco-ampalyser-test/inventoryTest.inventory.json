@@ -41,12 +41,12 @@
     "BEAN" : [ {
       "type" : "BEAN",
       "id" : "webscripts.configsource",
-      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "definingObject" : "WEB-INF/web-application-context.xml",
       "beanClass" : "org.springframework.extensions.config.source.UrlConfigSource"
     }, {
       "type" : "BEAN",
       "id" : "web.config",
-      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "definingObject" : "WEB-INF/web-application-context.xml",
       "beanClass" : "org.springframework.extensions.config.xml.XMLConfigService"
     }, {
       "type" : "BEAN",
