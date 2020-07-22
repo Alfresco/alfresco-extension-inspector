@@ -59,21 +59,18 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
+        final String invalidDependencies = conflictSet
             .stream()
             .map(c -> (WarLibraryUsageConflict) c)
-            .collect(groupingBy(
-                Conflict::getAlfrescoVersion,
-                flatMapping(c -> c.getClassDependencies().stream().sorted(), joining(", "))
-            ));
+            .flatMap(c -> c.getClassDependencies().stream())
+            .distinct()
+            .sorted()
+            .collect(joining(", "));
 
         System.out.println(
             "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (3rd party) dependencies:");
-
-        dependenciesPerAlfrescoVersion
-            .forEach((k, v) -> System.out.println(k + ": " + v));
-
+                + " has invalid (3rd party) dependencies: " + invalidDependencies);
+        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
