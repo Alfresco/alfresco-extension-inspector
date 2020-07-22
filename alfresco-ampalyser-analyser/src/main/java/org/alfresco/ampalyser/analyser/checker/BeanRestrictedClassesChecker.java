@@ -8,9 +8,15 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.stripEnd;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -20,6 +26,7 @@ import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +48,18 @@ public class BeanRestrictedClassesChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
+        final List<String> warJavaClasses = warInventory
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+            .stream()
+            .filter(r -> r.getId().endsWith(".class"))
+            .map(Resource::getId)
+            .map(id -> replace(
+                stripStart(
+                    stripEnd(id, ".class"), 
+                    "/"), 
+                "/", "."))
+            .collect(toUnmodifiableList());
+        
         final Set<String> whitelist = Stream
             .concat(
                 // The list coming from the file the user provided
@@ -56,7 +75,8 @@ public class BeanRestrictedClassesChecker implements Checker
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
-            .filter(r -> !whitelist.contains(r.getBeanClass()))
+            .filter(r -> warJavaClasses.contains(r.getBeanClass()) && 
+                !whitelist.contains(r.getBeanClass()))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 
