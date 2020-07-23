@@ -69,6 +69,10 @@ public class CommandReceiver
                         {
                                 cmdOut.getFileOverwriteConflicts().add(line);
                         }
+                        else if (line.contains("in conflict with bean defined"))
+                        {
+                                cmdOut.getBeanOverwriteConflicts().add(line);
+                        }
                         System.out.println(line);
                 }
 

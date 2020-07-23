@@ -33,13 +33,29 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
-                System.out.println(cmdOut.getFileOverwriteConflicts().toString());
-
                 // The list contains also the "header" comment for this section
                 assertEquals(cmdOut.getFileOverwriteConflicts().size(), 2);
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/mp4.gif"));
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/pdf.png"));
                 assertFalse(cmdOut.isInFileOverwrite("/images/filetype/testfile.bmp"));
+
+        }
+
+        @Test
+        public void testAnalyseBeanOverwrite()
+        {
+                // Run against Alfresco version 6.1.1
+                String ampResourcePath = TestResource.getTestResourcePath("analyserTest.amp");
+                String version = "6.1.1";
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+                System.out.println(cmdOut.getBeanOverwriteConflicts().toString());
+
+                assertEquals(cmdOut.getBeanOverwriteConflicts().size(), 2);
+                assertTrue(cmdOut.isInBeanOverwrite("trashcanCleaner"));
+                assertTrue(cmdOut.isInBeanOverwrite("trashcanSchedulerAccessor"));
+
 
         }
 
@@ -71,20 +87,18 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
 
-                // TODO: Uncomment after fixing the issue:
                 // Run against multiple Alfresco versions
-                //                version = "6.0.0-6.2.2";
-                //                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
-                //
-                //                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
 
-                // The list contains also the "header" comment for this section
-                //                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
-                //                assertTrue(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class", "PUBLIC_API")
-                //                        .contains("6.1.0 - 6.2.2"));
-                //                assertTrue(cmdOut.retrieveOutputLine("UseInternalClass.class", "PUBLIC_API")
-                //                        .contains("6.0.0 - 6.2.2"));
-                //                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
+                 // The list contains also the "header" comment for this section
+                assertEquals(cmdOut.getPublicAPIConflicts().size(), 3);
+                assertTrue(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class", "PUBLIC_API")
+                                        .contains("6.1.0 - 6.2.2"));
+                assertTrue(cmdOut.retrieveOutputLine("UseInternalClass.class", "PUBLIC_API")
+                                        .contains("6.0.0 - 6.2.2"));
+                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
         }
 
         @Test
@@ -100,8 +114,6 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
+
         }
-
-
-
 }

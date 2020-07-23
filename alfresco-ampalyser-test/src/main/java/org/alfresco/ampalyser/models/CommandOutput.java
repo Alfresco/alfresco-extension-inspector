@@ -18,6 +18,7 @@ public class CommandOutput
         private List<String> publicAPIConflicts = new ArrayList<>();
         private List<String> thirdPartyLibConflicts = new ArrayList<>();
         private List<String> fileOverwriteConflicts = new ArrayList<>();
+        private List<String> beanOverwriteConflicts = new ArrayList<>();
 
         public List<String> getPublicAPIConflicts()
         {
@@ -49,6 +50,15 @@ public class CommandOutput
                 this.fileOverwriteConflicts = fileOverwriteConflicts;
         }
 
+        public List<String> getBeanOverwriteConflicts()
+        {
+                return beanOverwriteConflicts;
+        }
+
+        public void seBeanOverwriteConflicts(List<String> fileOverwriteConflicts)
+        {
+                this.beanOverwriteConflicts = fileOverwriteConflicts;
+        }
 
         public List<String> getOutput()
         {
@@ -88,6 +98,11 @@ public class CommandOutput
         public boolean isInFileOverwrite(String str)
         {
                 return contains(fileOverwriteConflicts, str);
+        }
+
+        public boolean isInBeanOverwrite(String str)
+        {
+                return contains(beanOverwriteConflicts, str);
         }
 
         private boolean contains(List<String> output, String message)
