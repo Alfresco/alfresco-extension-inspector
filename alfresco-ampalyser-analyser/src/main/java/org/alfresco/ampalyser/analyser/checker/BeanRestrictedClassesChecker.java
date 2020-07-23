@@ -26,7 +26,6 @@ import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,17 +47,8 @@ public class BeanRestrictedClassesChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        final List<String> warJavaClasses = warInventory
-            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
-            .stream()
-            .filter(r -> r.getId().endsWith(".class"))
-            .map(Resource::getId)
-            .map(id -> replace(
-                stripStart(
-                    stripEnd(id, ".class"), 
-                    "/"), 
-                "/", "."))
-            .collect(toUnmodifiableList());
+        final Set<String> extensionClassesById = extensionResourceInfoService
+            .retrieveClasspathElementsById().keySet();
         
         final Set<String> whitelist = Stream
             .concat(
@@ -75,8 +65,9 @@ public class BeanRestrictedClassesChecker implements Checker
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
-            .filter(r -> warJavaClasses.contains(r.getBeanClass()) && 
-                !whitelist.contains(r.getBeanClass()))
+            .filter(r -> !extensionClassesById
+                .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
+            .filter(r -> !whitelist.contains(r.getBeanClass()))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 
