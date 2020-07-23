@@ -116,6 +116,7 @@ public class CommandOutput
                 {
                         case "PUBLIC_API": return publicAPIConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                         case "3RD_PARTY_LIBS": return thirdPartyLibConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                        case "BEAN": return beanOverwriteConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                         case "FILE_OVERWRITE": return fileOverwriteConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                 }
 
