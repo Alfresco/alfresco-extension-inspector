@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Comparator.comparing;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,6 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.shell.table.ArrayTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -83,12 +80,7 @@ public class AnalyserOutputService
         if (conflictsTotal > 0)
         {
             System.out.println("Across the provided target versions, the following number of conflicts have been found:");
-            TableModel tableModel = new ArrayTableModel(data);
-            TableBuilder tableBuilder = new TableBuilder(tableModel);
-            tableBuilder.addInnerBorder(BorderStyle.fancy_light);
-            tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
-            System.out.println(tableBuilder.build().render(255));
-            System.out.println();
+            printTable(data);
         }
         else {
             System.out.println("Across the provided target versions, no conflicts have been found.");
