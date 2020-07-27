@@ -59,8 +59,7 @@ public class AnalyserOutputService
             System.out.println("================");
             System.out.println("REPORT SUMMARY");
             System.out.println("================");
-            System.out.println("Across the following Alfresco versions the following number of conflicts have been found");
-            System.out.println(String.join(", ", store.allKnownVersions()));
+            System.out.println("Across the provided target versions, the following number of conflicts have been found");
             new TextTable(new CsvTableModel(csv.toString())).printTable();
             System.out.println();
         }
