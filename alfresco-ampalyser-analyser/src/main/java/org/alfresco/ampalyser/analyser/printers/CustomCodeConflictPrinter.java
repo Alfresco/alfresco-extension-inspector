@@ -8,15 +8,21 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import dnl.utils.text.table.TextTable;
+import dnl.utils.text.table.csv.CsvTableModel;
 
 @Component
 public class CustomCodeConflictPrinter implements ConflictPrinter
@@ -50,8 +56,23 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(final Set<Conflict> conflictSet)
+    public void printVerboseOutput(final Set<Conflict> conflictSet) throws IOException
     {
+        StringBuilder csv = new StringBuilder();
+        csv.append("Extension Resource ID,Extension Defining Object,WAR Version,Invalid Dependencies").append(System.lineSeparator());
+        for (Conflict conflict : conflictSet)
+        {
+            csv
+                .append(conflict.getAmpResourceInConflict().getId()).append(",")
+                .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
+                .append(conflict.getAlfrescoVersion()).append(",")
+                .append(((CustomCodeConflict) conflict).getInvalidAlfrescoDependencies().stream().distinct().sorted().collect(joining("; "))).append(System.lineSeparator());
+        }
+
+        new TextTable(new CsvTableModel(csv.toString())).printTable();
+        System.out.println();
+
+
 //        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 //        final String invalidDependencies = conflictSet
 //            .stream()

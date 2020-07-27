@@ -55,13 +55,13 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
         StringBuilder csv = new StringBuilder();
-        csv.append("Bean Resource Id,Restricted Class,Extension Defining Object,WAR Version").append(System.lineSeparator());
+        csv.append("Extension Bean Resource ID,Extension Defining Object,Restricted Class,WAR Version").append(System.lineSeparator());
         for (Conflict conflict : conflictSet)
         {
             csv
                 .append(conflict.getAmpResourceInConflict().getId()).append(",")
-                .append(((BeanResource) conflict.getAmpResourceInConflict()).getBeanClass()).append(",")
                 .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
+                .append(((BeanResource) conflict.getAmpResourceInConflict()).getBeanClass()).append(",")
                 .append(conflict.getAlfrescoVersion()).append(System.lineSeparator());
         }
 

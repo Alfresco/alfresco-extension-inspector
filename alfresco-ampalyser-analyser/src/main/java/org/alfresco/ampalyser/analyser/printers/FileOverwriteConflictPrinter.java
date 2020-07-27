@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.printers;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -17,6 +18,9 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import dnl.utils.text.table.TextTable;
+import dnl.utils.text.table.csv.CsvTableModel;
 
 @Component
 public class FileOverwriteConflictPrinter implements ConflictPrinter
@@ -49,13 +53,21 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-//        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
-//
-//        System.out.println(id + " (resource conflicting with " + warResourceId + ")");
-//        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
-//        System.out.println();
+        StringBuilder csv = new StringBuilder();
+        csv.append("Extension Resource ID,Extension Defining Object,WAR Resource ID,WAR Version").append(System.lineSeparator());
+        for (Conflict conflict : conflictSet)
+        {
+            csv
+                .append(conflict.getAmpResourceInConflict().getId()).append(",")
+                .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
+                .append(conflict.getWarResourceInConflict().getId()).append(",")
+                .append(conflict.getAlfrescoVersion()).append(",").append(System.lineSeparator());
+        }
+
+        new TextTable(new CsvTableModel(csv.toString())).printTable();
+        System.out.println();
     }
 
     @Override
