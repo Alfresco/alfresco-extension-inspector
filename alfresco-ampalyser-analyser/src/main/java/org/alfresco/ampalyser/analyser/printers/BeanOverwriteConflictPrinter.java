@@ -56,7 +56,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
         StringBuilder csv = new StringBuilder();
-        csv.append("ID,Extension Defining Object,WAR Version").append(System.lineSeparator());
+        csv.append("Bean Resource Id,Extension Defining Object,WAR Version").append(System.lineSeparator());
         for (Conflict conflict : conflictSet)
         {
             csv
