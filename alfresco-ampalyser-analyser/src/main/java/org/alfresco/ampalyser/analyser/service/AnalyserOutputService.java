@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.service;
 
 import static java.util.Comparator.comparing;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,9 @@ import org.springframework.shell.table.TableBuilder;
 import org.springframework.shell.table.TableModel;
 import org.springframework.stereotype.Service;
 
+import dnl.utils.text.table.TextTable;
+import dnl.utils.text.table.csv.CsvTableModel;
+
 @Service
 public class AnalyserOutputService
 {
@@ -38,6 +42,7 @@ public class AnalyserOutputService
     public void print(final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
         printSummary(conflictPerTypeAndResourceId);
+
         printers
             .stream()
             .sorted(comparing(ConflictPrinter::getConflictType))
