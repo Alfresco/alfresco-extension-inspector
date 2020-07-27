@@ -8,9 +8,15 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.stripEnd;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -41,6 +47,9 @@ public class BeanRestrictedClassesChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
+        final Set<String> extensionClassesById = extensionResourceInfoService
+            .retrieveClasspathElementsById().keySet();
+        
         final Set<String> whitelist = Stream
             .concat(
                 // The list coming from the file the user provided
@@ -56,6 +65,8 @@ public class BeanRestrictedClassesChecker implements Checker
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
+            .filter(r -> !extensionClassesById
+                .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
             .filter(r -> !whitelist.contains(r.getBeanClass()))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
