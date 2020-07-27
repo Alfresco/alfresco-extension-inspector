@@ -12,6 +12,7 @@ import static java.lang.String.join;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -22,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
@@ -41,10 +41,12 @@ public interface ConflictPrinter
             return;
         }
 
+        // TODO: We can even sort the conflicts based on the war version for a prettier output?
         final Set<Conflict> allConflicts = conflicts.values()
             .stream()
             .flatMap(Set::stream)
-            .collect(Collectors.toSet());
+            .collect(toSet());
+
 
         System.out.println("===============================");
         System.out.println(getConflictType() + " CONFLICTS");
@@ -65,7 +67,7 @@ public interface ConflictPrinter
         }
         catch (Exception e)
         {
-            LOGGER.warn("Failed to print " + getConflictType() + " conflicts!");
+            LOGGER.warn("Failed to print " + getConflictType() + " conflicts!", e);
         }
 
         System.out.println("-------------------------------------------------------------------");
