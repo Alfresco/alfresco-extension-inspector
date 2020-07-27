@@ -32,7 +32,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             + "that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in "
             + "the Alfresco repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
-            + "The following classes are making use of internal Alfresco classes:";
+            + "\nThe following classes are making use of internal Alfresco classes:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -59,20 +59,18 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final Map<String, String> dependenciesPerAlfrescoVersion = conflictSet
+        final String invalidDependencies = conflictSet
             .stream()
             .map(c -> (CustomCodeConflict) c)
-            .collect(groupingBy(
-                Conflict::getAlfrescoVersion,
-                flatMapping(c -> c.getInvalidAlfrescoDependencies().stream().sorted(), joining(", "))
-            ));
+            .flatMap(c -> c.getInvalidAlfrescoDependencies().stream())
+            .distinct()
+            .sorted()
+            .collect(joining(", "));
 
-        System.out.println(format("Extension resource <{0}@{1}> has invalid (non PublicAPI) dependencies:",
-            id, definingObject));
-
-        dependenciesPerAlfrescoVersion
-            .forEach((k, v) -> System.out.println(k + ": " + v));
-
+        System.out.println(
+            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
+                + " has invalid (non PublicAPI) dependencies: " + invalidDependencies);
+        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
@@ -81,10 +79,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 
-        System.out.println(format(
-            "Extension resource <{0}@{1}> has invalid (non PublicAPI) dependencies in: {2}",
-            id, definingObject, joinWarVersions(conflictSet)));
-
+        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
         System.out.println();
     }
 }

@@ -25,6 +25,16 @@ import org.alfresco.ampalyser.model.Resource;
 
 public class InventoryUtils
 {
+    public static boolean isFromExtension(ZipEntry entry)
+    {
+        return entry != null && 
+            (entry.getName().endsWith(".class") ||
+                // when the extension is an AMP
+                entry.getName().startsWith("config/") || 
+                // when the extension is a JAR
+                entry.getName().startsWith("alfresco/"));
+    }
+
     public static boolean isFromJar(ZipEntry entry, String definingObject)
     {
         return entry != null && !isJar(entry.getName()) && isJar(definingObject);

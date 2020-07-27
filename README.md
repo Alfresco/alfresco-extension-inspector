@@ -117,7 +117,15 @@ Options:
 ### Output
 When running the analysing command, **Amp-a-lyser** writes the conflicts directly to the console, grouped by their type.
 
-Example:
+The conflict types that can be detected by **Amp-a-lyser** are the following:
+* File overwrites (`FILE_OVERWRITE`)
+* Bean overwrites (`BEAN_OVERWRITE`)
+* Classpath conflicts (`CLASSPATH_CONFLICT`)
+* Beans instantiating restricted classes (`BEAN_RESTRICTED_CLASS`)
+* Usage of non @AlfrescoPublicAPI classes (`CUSTOM_CODE`)
+* Usage of 3rd party libraries (`WAR_LIBRARY_USAGE`)
+
+Example of output:
 ```text
 Found bean overwrites! Spring beans defined by Alfresco constitute a fundamental building block of the repository and must not be overwritten unless explicitly allowed. Found the following beans overwriting default Alfresco functionality:
 
@@ -143,6 +151,18 @@ Multiple resources in /lib/extension-lib.jar conflicting with /WEB-INF/lib/war-l
 
 (use option --verbose for version details)
 ```
+
+### Implementation details
+
+Alfresco extensions might hide conflicts of types `BEAN_RESTRICTED_CLASS`, `WAR_LIBRARY_USAGE` and `CUSTOM_CODE` if they contain Alfresco specific libraries.
+
+That's because the aforementioned types of conflicts exclude from processing all the classes in the extension's classpath.
+
+**Note:**
+
+Including in the processing a class present in both extension and war would partially solve the issue because:
+1. Two classes with the same canonical name could come from two different libraries, e.g. an extension specific library and an Alfresco one, or two different versions of the same Alfresco library. Thus checking the class name is not enough.
+2. Comparing their libraries would help only when the same library with the same version is used in both the extension and the war. In case of different versions of the same library, the class won't be recognized as Alfresco internal class.
 
 ## Build and release process
 
