@@ -8,9 +8,9 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -18,6 +18,9 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import dnl.utils.text.table.TextTable;
+import dnl.utils.text.table.csv.CsvTableModel;
 
 @Component
 public class BeanOverwriteConflictPrinter implements ConflictPrinter
@@ -50,25 +53,25 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
+        StringBuilder csv = new StringBuilder();
+        csv.append("ID,Extension Defining Object,WAR Version").append(System.lineSeparator());
+        for (Conflict conflict : conflictSet)
+        {
+            csv
+                .append(conflict.getAmpResourceInConflict().getId()).append(",")
+                .append(conflict.getWarResourceInConflict().getDefiningObject()).append(",")
+                .append(conflict.getAlfrescoVersion()).append(System.lineSeparator());
+        }
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
+        new TextTable(new CsvTableModel(csv.toString())).printTable();
         System.out.println();
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println();
     }
 }

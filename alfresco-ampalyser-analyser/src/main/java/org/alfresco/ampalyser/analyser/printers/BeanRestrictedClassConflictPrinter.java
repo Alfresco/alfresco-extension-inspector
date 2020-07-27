@@ -15,7 +15,6 @@ import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.alfresco.ampalyser.model.BeanResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,7 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
@@ -48,23 +47,23 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        Conflict conflict = conflictSet.iterator().next();
-        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
-
-        System.out.println(id + " instantiates " + resource.getBeanClass()  + " in " + resource.getDefiningObject());
-        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
-        System.out.println();
+//        Conflict conflict = conflictSet.iterator().next();
+//        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+//
+//        System.out.println(id + " instantiates " + resource.getBeanClass()  + " in " + resource.getDefiningObject());
+//        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
+//        System.out.println();
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        Conflict conflict = conflictSet.iterator().next();
-        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
-
-        System.out.println(id + " instantiates " + resource.getBeanClass());
-        System.out.println();
+//        Conflict conflict = conflictSet.iterator().next();
+//        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+//
+//        System.out.println(id + " instantiates " + resource.getBeanClass());
+//        System.out.println();
     }
 }

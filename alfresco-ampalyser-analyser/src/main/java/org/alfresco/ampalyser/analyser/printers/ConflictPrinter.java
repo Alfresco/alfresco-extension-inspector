@@ -14,6 +14,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,13 +22,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface ConflictPrinter
 {
+    Logger LOGGER = LoggerFactory.getLogger(ConflictPrinter.class);
+
     default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
         if (isEmpty(conflicts))
@@ -35,16 +41,31 @@ public interface ConflictPrinter
             return;
         }
 
+        final Set<Conflict> allConflicts = conflicts.values()
+            .stream()
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
+
+        System.out.println("===============================");
+        System.out.println(getConflictType() + " CONFLICTS");
+        System.out.println("===============================");
         System.out.println(getHeader());
         System.out.println();
 
-        if (verbose)
+        try
         {
-            conflicts.forEach(this::printVerboseOutput);
+            if (verbose)
+            {
+                printVerboseOutput(allConflicts);
+            }
+            else
+            {
+                print(allConflicts);
+            }
         }
-        else
+        catch (Exception e)
         {
-            conflicts.forEach(this::print);
+            LOGGER.warn("Failed to print " + getConflictType() + " conflicts!");
         }
 
         System.out.println("-------------------------------------------------------------------");
@@ -57,9 +78,9 @@ public interface ConflictPrinter
 
     Conflict.Type getConflictType();
 
-    void printVerboseOutput(String id, Set<Conflict> conflictSet);
+    void printVerboseOutput(Set<Conflict> conflictSet) throws IOException;
     
-    void print(String id, Set<Conflict> conflictSet);
+    void print(Set<Conflict> conflictSet);
     
     default String joinWarVersions(Set<Conflict> conflictSet)
     {

@@ -8,18 +8,12 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.text.MessageFormat.format;
-import static java.util.stream.Collectors.flatMapping;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,30 +50,30 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
+    public void printVerboseOutput(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final String invalidDependencies = conflictSet
-            .stream()
-            .map(c -> (WarLibraryUsageConflict) c)
-            .flatMap(c -> c.getClassDependencies().stream())
-            .distinct()
-            .sorted()
-            .collect(joining(", "));
-
-        System.out.println(
-            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (3rd party) dependencies: " + invalidDependencies);
-        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
-        System.out.println();
+//        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+//        final String invalidDependencies = conflictSet
+//            .stream()
+//            .map(c -> (WarLibraryUsageConflict) c)
+//            .flatMap(c -> c.getClassDependencies().stream())
+//            .distinct()
+//            .sorted()
+//            .collect(joining(", "));
+//
+//        System.out.println(
+//            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
+//                + " has invalid (3rd party) dependencies: " + invalidDependencies);
+//        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
+//        System.out.println();
     }
 
     @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
+    public void print(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-
-        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-        System.out.println();
+//        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+//
+//        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
+//        System.out.println();
     }
 }

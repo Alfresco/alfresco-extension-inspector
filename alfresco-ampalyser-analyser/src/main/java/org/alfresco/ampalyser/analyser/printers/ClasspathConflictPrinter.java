@@ -8,7 +8,6 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 
 import java.util.HashSet;
@@ -39,7 +38,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
@@ -53,29 +52,29 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        final Conflict conflict = conflictSet.iterator().next();
-        System.out.println(id + " in " + conflict.getAmpResourceInConflict().getDefiningObject()
-            + " conflicts with " + joinWarResourceDefiningObjs(conflictSet));
-        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
-        System.out.println();
+//        final Conflict conflict = conflictSet.iterator().next();
+//        System.out.println(id + " in " + conflict.getAmpResourceInConflict().getDefiningObject()
+//            + " conflicts with " + joinWarResourceDefiningObjs(conflictSet));
+//        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
+//        System.out.println();
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        final Conflict conflict = conflictSet.iterator().next();
-        final String ampResourceDefiningObject = conflict.getAmpResourceInConflict().getDefiningObject();
-
-        // Keep an internal lists of conflicts per defining jar object.
-        if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(ampResourceDefiningObject))
-        {
-            System.out.println(
-                "Multiple resources in " + ampResourceDefiningObject + " conflicting with "
-                    + joinWarResourceDefiningObjs(conflictSet));
-            System.out.println();
-            CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(ampResourceDefiningObject);
-        }
+//        final Conflict conflict = conflictSet.iterator().next();
+//        final String ampResourceDefiningObject = conflict.getAmpResourceInConflict().getDefiningObject();
+//
+//        // Keep an internal lists of conflicts per defining jar object.
+//        if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(ampResourceDefiningObject))
+//        {
+//            System.out.println(
+//                "Multiple resources in " + ampResourceDefiningObject + " conflicting with "
+//                    + joinWarResourceDefiningObjs(conflictSet));
+//            System.out.println();
+//            CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(ampResourceDefiningObject);
+//        }
     }
 }

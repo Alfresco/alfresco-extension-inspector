@@ -49,19 +49,19 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
-
-        System.out.println(id + " (resource conflicting with " + warResourceId + ")");
-        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
-        System.out.println();
+//        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
+//
+//        System.out.println(id + " (resource conflicting with " + warResourceId + ")");
+//        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
+//        System.out.println();
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        System.out.println(id);
-        System.out.println();
+//        System.out.println(id);
+//        System.out.println();
     }
 }
