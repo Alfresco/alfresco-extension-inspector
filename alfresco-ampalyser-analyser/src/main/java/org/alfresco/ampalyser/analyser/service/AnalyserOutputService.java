@@ -70,7 +70,7 @@ public class AnalyserOutputService
             }
             catch (IOException e)
             {
-                LOGGER.warn("Failed to summarize the output for the requested analysis.");
+                LOGGER.warn("Failed to summarize the output for the requested analysis.", e);
             }
         }
         else {
