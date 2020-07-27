@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.printers.ConflictPrinter;
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,6 @@ public class AnalyserOutputService
     private ConfigService configService;
     @Autowired
     private List<ConflictPrinter> printers;
-    @Autowired
-    private WarInventoryReportStore store;
 
     public void print(final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
@@ -70,7 +67,7 @@ public class AnalyserOutputService
             }
             catch (IOException e)
             {
-                LOGGER.warn("Failed to summarize the output for the requested analysis.");
+                LOGGER.warn("Failed to summarize the output for the requested analysis.", e);
             }
         }
         else {
