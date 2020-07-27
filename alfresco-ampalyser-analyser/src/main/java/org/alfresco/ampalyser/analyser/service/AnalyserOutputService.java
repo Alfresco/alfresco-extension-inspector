@@ -40,32 +40,41 @@ public class AnalyserOutputService
 
     public void print(final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
+        int conflictsTotal = 0;
+
         StringBuilder csv = new StringBuilder();
         csv.append("Type,Total").append(System.lineSeparator());
 
         for (Map.Entry<Conflict.Type, Map<String, Set<Conflict>>> perType : conflictPerTypeAndResourceId.entrySet())
         {
-            int sum = 0;
+            int conflictsPerType = 0;
             for (Map.Entry<String, Set<Conflict>> perVersion : perType.getValue().entrySet())
             {
-                sum += perVersion.getValue().size();
+                conflictsPerType += perVersion.getValue().size();
             }
-            csv.append(perType.getKey().toString()).append(",").append(sum).append(System.lineSeparator());
+            csv.append(perType.getKey().toString()).append(",").append(conflictsPerType).append(System.lineSeparator());
+            conflictsTotal += conflictsPerType;
         }
 
-        try
+        System.out.println("================");
+        System.out.println("REPORT SUMMARY");
+        System.out.println("================");
+
+        if (conflictsTotal > 0)
         {
-            // Output the summary of the analysis
-            System.out.println("================");
-            System.out.println("REPORT SUMMARY");
-            System.out.println("================");
-            System.out.println("Across the provided target versions, the following number of conflicts have been found");
-            new TextTable(new CsvTableModel(csv.toString())).printTable();
-            System.out.println();
+            try
+            {
+                System.out.println("Across the provided target versions, the following number of conflicts have been found:");
+                new TextTable(new CsvTableModel(csv.toString())).printTable();
+                System.out.println();
+            }
+            catch (IOException e)
+            {
+                LOGGER.warn("Failed to summarize the output for the requested analysis.");
+            }
         }
-        catch (IOException e)
-        {
-            LOGGER.warn("Failed to summarize the output for the requested analysis.");
+        else {
+            System.out.println("Across the provided target versions, no conflicts have been found.");
         }
 
 
