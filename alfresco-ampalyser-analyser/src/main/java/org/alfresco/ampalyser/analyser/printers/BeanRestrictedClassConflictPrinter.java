@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.io.IOException;
 import java.util.Set;
@@ -20,8 +21,6 @@ import org.alfresco.ampalyser.model.BeanResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import dnl.utils.text.table.TextTable;
-import dnl.utils.text.table.csv.CsvTableModel;
 
 @Component
 public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
@@ -54,19 +53,23 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-        StringBuilder csv = new StringBuilder();
-        csv.append("Extension Bean Resource ID,Extension Defining Object,Restricted Class,WAR Version").append(System.lineSeparator());
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "Restricted Class";
+        data[0][3] = "WAR Version";
+
+        int row = 1;
         for (Conflict conflict : conflictSet)
         {
-            csv
-                .append(conflict.getAmpResourceInConflict().getId()).append(",")
-                .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
-                .append(((BeanResource) conflict.getAmpResourceInConflict()).getBeanClass()).append(",")
-                .append(conflict.getAlfrescoVersion()).append(System.lineSeparator());
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = ((BeanResource)conflict.getAmpResourceInConflict()).getBeanClass();
+            data[row][3] = conflict.getAlfrescoVersion();
+            row++;
         }
 
-        new TextTable(new CsvTableModel(csv.toString())).printTable();
-        System.out.println();
+        printTable(data);
     }
 
     @Override

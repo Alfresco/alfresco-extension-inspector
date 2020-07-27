@@ -8,8 +8,8 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.io.IOException;
 import java.util.Set;
@@ -21,8 +21,6 @@ import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import dnl.utils.text.table.TextTable;
-import dnl.utils.text.table.csv.CsvTableModel;
 
 @Component
 public class CustomCodeConflictPrinter implements ConflictPrinter
@@ -58,35 +56,23 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(final Set<Conflict> conflictSet) throws IOException
     {
-        StringBuilder csv = new StringBuilder();
-        csv.append("Extension Resource ID,Extension Defining Object,WAR Version,Invalid Dependencies").append(System.lineSeparator());
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
+        data[0][3] = "Invalid Dependencies";
+
+        int row = 1;
         for (Conflict conflict : conflictSet)
         {
-            csv
-                .append(conflict.getAmpResourceInConflict().getId()).append(",")
-                .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
-                .append(conflict.getAlfrescoVersion()).append(",")
-                .append(((CustomCodeConflict) conflict).getInvalidAlfrescoDependencies().stream().distinct().sorted().collect(joining("; "))).append(System.lineSeparator());
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            data[row][2] = String.join(";", ((CustomCodeConflict)conflict).getInvalidAlfrescoDependencies());
+            row++;
         }
 
-        new TextTable(new CsvTableModel(csv.toString())).printTable();
-        System.out.println();
-
-
-//        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-//        final String invalidDependencies = conflictSet
-//            .stream()
-//            .map(c -> (CustomCodeConflict) c)
-//            .flatMap(c -> c.getInvalidAlfrescoDependencies().stream())
-//            .distinct()
-//            .sorted()
-//            .collect(joining(", "));
-//
-//        System.out.println(
-//            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-//                + " has invalid (non PublicAPI) dependencies: " + invalidDependencies);
-//        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
-//        System.out.println();
+        printTable(data);
     }
 
     @Override

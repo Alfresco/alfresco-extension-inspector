@@ -70,7 +70,6 @@ public interface ConflictPrinter
             LOGGER.warn("Failed to print " + getConflictType() + " conflicts!", e);
         }
 
-        System.out.println("-------------------------------------------------------------------");
         System.out.println();
     }
     

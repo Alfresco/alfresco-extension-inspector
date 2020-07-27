@@ -8,7 +8,6 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 
 import java.io.IOException;
@@ -55,20 +54,24 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(final Set<Conflict> conflictSet) throws IOException
     {
-        StringBuilder csv = new StringBuilder();
-        csv.append("Extension Resource ID,Extension Defining Object,WAR Version,Invalid 3rd Party Dependencies").append(System.lineSeparator());
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
+        data[0][3] = "Invalid 3rd Party Dependencies";
+
+        int row = 0;
         for (Conflict conflict : conflictSet)
         {
-            csv
-                .append(conflict.getAmpResourceInConflict().getId()).append(",")
-                .append(conflict.getAmpResourceInConflict().getDefiningObject()).append(",")
-                .append(conflict.getAlfrescoVersion()).append(",")
-                .append(((WarLibraryUsageConflict) conflict).getClassDependencies().stream().distinct().sorted().collect(joining("; "))).append(System.lineSeparator());
+            row++;
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            data[row][3] = String.join(";",((WarLibraryUsageConflict) conflict).getClassDependencies());
         }
 
-        // TODO: Enable this when we eliminate the false positives. More chars than the console buffer.
-        // new TextTable(new CsvTableModel(csv.toString())).printTable();
-        System.out.println();
+        // TODO: Enable when we eliminate the false positives. Outpur is larger than console buffer.
+        // printTable(data);
     }
 
     @Override

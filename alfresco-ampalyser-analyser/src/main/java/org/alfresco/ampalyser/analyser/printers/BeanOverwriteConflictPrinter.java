@@ -53,17 +53,18 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-        String[][] data = new String[conflictSet.size()][3];
+        String[][] data = new String[conflictSet.size() + 1][3];
         data[0][0] = "Extension Bean Resource ID";
         data[0][1] = "Extension Defining Object";
         data[0][2] = "WAR Version";
 
-        int row = 0;
+        int row = 1;
         for (Conflict conflict : conflictSet)
         {
             data[row][0] = conflict.getAmpResourceInConflict().getId();
             data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
             data[row][2] = conflict.getAlfrescoVersion();
+            row++;
         }
 
         printTable(data);
