@@ -25,6 +25,7 @@ import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,12 @@ public class BeanRestrictedClassesCheckerTest
         BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml", "org.alfresco.C2");
         // This one should generate a conflict
         BeanResource ampBR3 = new BeanResource("bean3", "amp_context.xml", "org.alfresco.C3");
+        // This one should be allowed as it instantiates an extension specific class 
+        ClasspathElementResource ampCER4 = new ClasspathElementResource("/org/alfresco/C4",
+            "/WEB-INF/lib/an_extension.jar");
         doReturn(List.of(ampBR1, ampBR2, ampBR3)).when(configService).getExtensionResources(eq(BEAN));
+        doReturn(Map.of("/org/alfresco/C4.class", Set.of(ampCER4)))
+            .when(extensionResourceInfoService).retrieveClasspathElementsById();
 
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
