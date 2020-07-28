@@ -82,7 +82,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
         for (Conflict conflict : conflictSet)
         {
             data[row][0] = conflict.getAmpResourceInConflict().getId();
-            data[row][1] = ConflictPrinter.joinExtensionDefiningObjs(conflictSet); // TODO: I'm not sure this is ok
+            data[row][1] = ConflictPrinter.joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet);
             data[row][2] = conflict.getWarResourceInConflict().getDefiningObject();
             row++;
         }

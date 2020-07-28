@@ -89,7 +89,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(extDefObj))
             {
                 data[row][0] = extDefObj;
-                data[row][1] = ConflictPrinter.joinWarResourceDefiningObjs(conflictSet); // TODO: I'm not sure this is ok
+                data[row][1] = ConflictPrinter.joinWarResourceDefiningObjs(conflict.getWarResourceInConflict().getId(), conflictSet);
                 CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(extDefObj);
                 row++;
             }
