@@ -7,21 +7,15 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.StringUtils.stripEnd;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.BeanRestrictedClassConflict;
+import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -57,7 +51,7 @@ public class BeanRestrictedClassesChecker implements Checker
 
                 // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
                 warInventory
-                    .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
+                    .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptySet())
                     .stream()
                     .map(Resource::getId))
             .collect(toUnmodifiableSet());

@@ -9,13 +9,12 @@
 package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,11 +40,11 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
     private static final String ALFRESCO_PUBLIC_API_ANNOTATION = "Lorg/alfresco/api/AlfrescoPublicApi;";
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
+    public Set<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         if (data == null)
         {
-            return emptyList();
+            return emptySet();
         }
         ClassParser cp = new ClassParser(new ByteArrayInputStream(data), null);
         try
@@ -70,13 +69,16 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             }
             if (isAlfrescoPublicApi)
             {
-                List<Resource> resources = new ArrayList<>();
+                Set<Resource> resources = new HashSet<>();
                 resources.add(new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated));
                 resources.addAll(findImplicitAlfrescoPublicApis(jc));
-                
+
                 if (LOG.isTraceEnabled())
                 {
-                    LOG.trace("AlfrescoPublicApi: " + resources.get(0).toString());
+                    resources
+                        .iterator()
+                        .forEachRemaining(
+                            resource -> LOG.trace("AlfrescoPublicApi: " + resource.toString()));
                 }
                 return resources;
             }
@@ -85,7 +87,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
         {
             LOG.error("Class parsing error: ", e.getMessage());
         }
-        return emptyList();
+        return emptySet();
     }
 
     private static Set<AlfrescoPublicApiResource> findImplicitAlfrescoPublicApis(JavaClass javaClass)

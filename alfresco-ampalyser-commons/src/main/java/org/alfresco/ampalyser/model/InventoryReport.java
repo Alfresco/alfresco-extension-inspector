@@ -8,9 +8,9 @@
 package org.alfresco.ampalyser.model;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.alfresco.ampalyser.commons.InventoryUtils;
 import org.alfresco.ampalyser.model.Resource.Type;
@@ -23,7 +23,7 @@ public class InventoryReport
 
     private String schemaVersion;
     private String alfrescoVersion;
-    private Map<Type, List<Resource>> resources = new EnumMap<>(Type.class);
+    private Map<Type, Set<Resource>> resources = new EnumMap<>(Type.class);
 
     public InventoryReport()
     {
@@ -50,17 +50,17 @@ public class InventoryReport
         this.alfrescoVersion = alfrescoVersion;
     }
 
-    public Map<Type, List<Resource>> getResources()
+    public Map<Type, Set<Resource>> getResources()
     {
         return resources;
     }
 
-    public void setResources(Map<Type, List<Resource>> resources)
+    public void setResources(Map<Type, Set<Resource>> resources)
     {
         this.resources = resources;
     }
 
-    public void addResources(Map<Type, List<Resource>> resources)
+    public void addResources(Map<Type, Set<Resource>> resources)
     {
         resources.forEach((k, v) -> this.resources.merge(k, v, InventoryUtils::mergeCollections));
     }

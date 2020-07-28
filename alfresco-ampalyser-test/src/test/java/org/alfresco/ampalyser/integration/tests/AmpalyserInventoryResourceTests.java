@@ -25,6 +25,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import org.alfresco.ampalyser.AmpalyserClient;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
@@ -79,7 +80,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     @Test
     public void testPublicApiAnnotation()
     {
-        List<Resource> publicApiResources = client.retrieveInventoryResources(ALFRESCO_PUBLIC_API, inventoryReport);
+        Set<Resource> publicApiResources = client.retrieveInventoryResources(ALFRESCO_PUBLIC_API, inventoryReport);
         assertEquals(publicApiResources.size(), 4);
 
         AlfrescoPublicApiResource publicApiRs = (AlfrescoPublicApiResource) client
@@ -129,7 +130,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     @Test
     public void testClassPathType()
     {
-        List<Resource> classPathRs = client.retrieveInventoryResources(CLASSPATH_ELEMENT, inventoryReport);
+        Set<Resource> classPathRs = client.retrieveInventoryResources(CLASSPATH_ELEMENT, inventoryReport);
         assertEquals(classPathRs.size(), 12);
 
         Resource classPathResource = client.retrieveInventoryResource(CLASSPATH_ELEMENT, "/org/alfresco/repo/node/NodeServicePolicies.class", inventoryReport);
@@ -144,7 +145,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     @Test
     public void checkFileType()
     {
-        List<Resource> report = client.retrieveInventoryResources(FILE, inventoryReport);
+        Set<Resource> report = client.retrieveInventoryResources(FILE, inventoryReport);
         assertEquals(report.size(), 9);
 
         Resource resource = client.retrieveInventoryResource(FILE, "/WEB-INF/web.xml", inventoryReport);

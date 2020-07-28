@@ -60,16 +60,16 @@ public class BeanRestrictedClassesCheckerTest
         // This one should be allowed as it instantiates an extension specific class 
         ClasspathElementResource ampCER4 = new ClasspathElementResource("/org/alfresco/C4",
             "/WEB-INF/lib/an_extension.jar");
-        doReturn(List.of(ampBR1, ampBR2, ampBR3)).when(configService).getExtensionResources(eq(BEAN));
+        doReturn(Set.of(ampBR1, ampBR2, ampBR3)).when(configService).getExtensionResources(eq(BEAN));
         doReturn(Map.of("/org/alfresco/C4.class", Set.of(ampCER4)))
             .when(extensionResourceInfoService).retrieveClasspathElementsById();
 
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
-        Map<Resource.Type, List<Resource>> warResources = new HashMap<>();
+        Map<Resource.Type, Set<Resource>> warResources = new HashMap<>();
         AlfrescoPublicApiResource warAPAR1 = new AlfrescoPublicApiResource("org.alfresco.C1", false);
         AlfrescoPublicApiResource warAPAR2 = new AlfrescoPublicApiResource("org.alfresco.D1", false);
-        warResources.put(ALFRESCO_PUBLIC_API, List.of(warAPAR1, warAPAR2));
+        warResources.put(ALFRESCO_PUBLIC_API, Set.of(warAPAR1, warAPAR2));
 
         warReport.addResources(warResources);
 
