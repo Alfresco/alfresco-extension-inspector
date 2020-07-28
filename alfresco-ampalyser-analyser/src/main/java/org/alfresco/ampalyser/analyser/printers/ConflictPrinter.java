@@ -13,6 +13,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -47,12 +48,10 @@ public interface ConflictPrinter
             .flatMap(Set::stream)
             .collect(toSet());
 
-
-        System.out.println("===============================");
-        System.out.println(getConflictType() + " CONFLICTS");
-        System.out.println("===============================");
-        System.out.println(getHeader());
-        System.out.println();
+        String[][] data = new String[2][1];
+        data[0][0] = getConflictType() + " CONFLICTS";
+        data[1][0] = getHeader();
+        printTable(data);
 
         try
         {

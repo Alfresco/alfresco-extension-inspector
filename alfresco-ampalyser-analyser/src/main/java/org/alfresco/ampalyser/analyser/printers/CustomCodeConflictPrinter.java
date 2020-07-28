@@ -57,7 +57,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     public void printVerboseOutput(final Set<Conflict> conflictSet) throws IOException
     {
         String[][] data = new String[conflictSet.size() + 1][4];
-        data[0][0] = "Extension Bean Resource ID";
+        data[0][0] = "Extension Resource ID";
         data[0][1] = "Extension Defining Object";
         data[0][2] = "WAR Version";
         data[0][3] = "Invalid Dependencies";
@@ -78,9 +78,19 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     @Override
     public void print(final Set<Conflict> conflictSet)
     {
-//        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-//
-//        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-//        System.out.println();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID using Custom Code";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            final String id = conflict.getAmpResourceInConflict().getId();;
+            final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+            data[row][0] = id.equals(definingObject) ? id : id + "@" + definingObject;
+
+            row++;
+        }
+
+        printTable(data);
     }
 }

@@ -74,7 +74,15 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-//        System.out.println(id);
-//        System.out.println();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID overwriting WAR resources";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row++][0] = conflict.getAmpResourceInConflict().getId();
+        }
+
+        printTable(data);
     }
 }

@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.analyser.printers;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.io.IOException;
 import java.util.Set;
@@ -77,9 +78,19 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public void print(final Set<Conflict> conflictSet)
     {
-//        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-//
-//        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-//        System.out.println();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID using 3rd Party library code";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            final String id = conflict.getAmpResourceInConflict().getId();;
+            final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+            data[row][0] = id.equals(definingObject) ? id : id + "@" + definingObject;
+
+            row++;
+        }
+
+        printTable(data);
     }
 }

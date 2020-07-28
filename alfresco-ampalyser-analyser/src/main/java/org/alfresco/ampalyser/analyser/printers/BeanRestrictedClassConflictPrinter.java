@@ -75,10 +75,17 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-//        Conflict conflict = conflictSet.iterator().next();
-//        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
-//
-//        System.out.println(id + " instantiates " + resource.getBeanClass());
-//        System.out.println();
+        String[][]data = new String[conflictSet.size() + 1][2];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Restricted Class";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = ((BeanResource)conflict.getAmpResourceInConflict()).getBeanClass();
+            row++;
+        }
+        printTable(data);
     }
 }

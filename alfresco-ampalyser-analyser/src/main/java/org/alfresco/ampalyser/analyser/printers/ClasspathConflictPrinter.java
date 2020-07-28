@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -76,17 +77,26 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-//        final Conflict conflict = conflictSet.iterator().next();
-//        final String ampResourceDefiningObject = conflict.getAmpResourceInConflict().getDefiningObject();
-//
-//        // Keep an internal lists of conflicts per defining jar object.
-//        if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(ampResourceDefiningObject))
-//        {
-//            System.out.println(
-//                "Multiple resources in " + ampResourceDefiningObject + " conflicting with "
-//                    + joinWarResourceDefiningObjs(conflictSet));
-//            System.out.println();
-//            CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(ampResourceDefiningObject);
-//        }
+
+        String[][] data = new String[conflictSet.stream().map(el -> el.getAmpResourceInConflict().getDefiningObject()).collect(toSet()).size() + 1][3];
+        data[0][0] = "Extension Bean Resource Defining Object";
+        data[0][1] = "WAR Defining Object";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            final String extDefObj = conflict.getAmpResourceInConflict().getDefiningObject();
+            if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(extDefObj))
+            {
+                data[row][0] = extDefObj;
+                data[row][1] = ConflictPrinter.joinWarResourceDefiningObjs(conflictSet); // TODO: I'm not sure this is ok
+                CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(extDefObj);
+                row++;
+            }
+        }
+
+
+
+        printTable(data);
     }
 }
