@@ -12,6 +12,7 @@ import static java.lang.String.join;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
+import static org.alfresco.ampalyser.analyser.util.SpringContext.getBean;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 import java.util.ArrayList;
@@ -51,8 +52,6 @@ public interface ConflictPrinter
         System.out.println();
     }
     
-    SortedSet<String> retrieveAllKnownVersions();
-    
     String getHeader();
 
     Conflict.Type getConflictType();
@@ -60,11 +59,11 @@ public interface ConflictPrinter
     void printVerboseOutput(String id, Set<Conflict> conflictSet);
     
     void print(String id, Set<Conflict> conflictSet);
-    
-    default String joinWarVersions(Set<Conflict> conflictSet)
+
+    static String joinWarVersions(Set<Conflict> conflictSet)
     {
-        SortedSet<String> allKnownVersions = retrieveAllKnownVersions();
-        
+        final SortedSet<String> allKnownVersions = getBean(WarInventoryReportStore.class).allKnownVersions();
+
         SortedSet<String> conflictVersions = conflictSet
             .stream()
             .map(Conflict::getAlfrescoVersion)
@@ -96,12 +95,12 @@ public interface ConflictPrinter
      * @param versions A set of Alfresco versions
      * @return A {@link List} containing groups of consecutive Alfresco versions
      */
-    private List<SortedSet<String>> groupRanges(SortedSet<String> versions)
+    private static List<SortedSet<String>> groupRanges(SortedSet<String> versions)
     {
         List<SortedSet<String>> groups = new ArrayList<>();
         SortedSet<String> range = new TreeSet<>();
 
-        List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
+        List<String> bundledVersions = List.copyOf(getBean(WarInventoryReportStore.class).allKnownVersions());
         Iterator<String> conflictVersions = versions.iterator();
 
         String version = conflictVersions.next();

@@ -81,8 +81,6 @@ public class WarLibraryUsageChecker implements Checker
                     e.getValue(),
                     alfrescoVersion
                 )));
-
-        // TODO: create conflicts for extension dependencies not satisfied by either the AMP or the WAR libraries
     }
 
     @Override
