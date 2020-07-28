@@ -37,8 +37,9 @@ public class UsagePrinter
             join(" ",
                 EXTENSION_FILENAME,
                 TARGET_OPTION,
-                "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_whitelist.json]",
-                "[" + BEAN_CLASS_WHITELIST_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
+                "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_sanctioned_list.json]",
+                "[" + BEAN_CLASS_WHITELIST_PATH
+                    + "=/path/to/bean_restricted_classes_sanctioned_list.json]",
                 VERBOSE_OPTION),
             HELP, 
             LIST_KNOWN_VERSIONS);
@@ -65,8 +66,8 @@ public class UsagePrinter
         printUsage(join(" ", 
             EXTENSION_FILENAME, 
             TARGET_OPTION,
-            "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_whitelist.json]",
-            "[" + BEAN_CLASS_WHITELIST_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
+            "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_sanctioned_list.json]",
+            "[" + BEAN_CLASS_WHITELIST_PATH + "=/path/to/bean_restricted_classes_sanctioned_list.json]",
             VERBOSE_OPTION));
     }
     

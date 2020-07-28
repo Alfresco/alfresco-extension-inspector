@@ -28,8 +28,8 @@ public class WhitelistService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
 
-    private static final String DEFAULT_BEAN_OVERRIDE_WHITELIST = "/bean-overriding-whitelist.default.json";
-    private static final String DEFAULT_BEAN_CLASS_WHITELIST = "/bean-restricted-classes-whitelist.default.json";
+    private static final String DEFAULT_BEAN_OVERRIDE_WHITELIST = "/sanctionedBeanOverwriteList.default.json";
+    private static final String DEFAULT_BEAN_CLASS_WHITELIST = "/sanctionedBeanClassesList.default.json";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -51,10 +51,10 @@ public class WhitelistService
         }
         catch (IOException ioe)
         {
-            LOGGER.error("Failed to read DEFAULT Bean Overriding Whitelist file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST,
+            LOGGER.error("Failed to read DEFAULT Bean Overriding Sanctioned List file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT Bean Overriding Whitelist file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST, ioe);
+                "Failed to read DEFAULT Bean Overriding Sanctioned List file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST, ioe);
         }
 
         if (path == null)
@@ -70,8 +70,8 @@ public class WhitelistService
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to read Bean Overriding Whitelist file: " + path, e);
-            throw new RuntimeException("Failed to read Bean Overriding Whitelist file: " + path, e);
+            LOGGER.error("Failed to read Bean Overriding Sanctioned List file: " + path, e);
+            throw new RuntimeException("Failed to read Bean Overriding Sanctioned List file: " + path, e);
         }
 
         return whitelist;
@@ -95,10 +95,10 @@ public class WhitelistService
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT Bean Restricted Classes Whitelist file: " + DEFAULT_BEAN_CLASS_WHITELIST,
+                "Failed to read DEFAULT Bean Restricted Classes Sanctioned List file: " + DEFAULT_BEAN_CLASS_WHITELIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT Bean Restricted Whitelist file: " + DEFAULT_BEAN_CLASS_WHITELIST,
+                "Failed to read DEFAULT Bean Restricted Sanctioned List file: " + DEFAULT_BEAN_CLASS_WHITELIST,
                 ioe);
         }
 
@@ -115,9 +115,9 @@ public class WhitelistService
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to read Bean Restricted Classes Whitelist file: " + path, e);
+            LOGGER.error("Failed to read Bean Restricted Classes Sanctioned List file: " + path, e);
             throw new RuntimeException(
-                "Failed to read Bean Restricted Classes Whitelist file: " + path, e);
+                "Failed to read Bean Restricted Classes Sanctioned List file: " + path, e);
         }
 
         return whitelist;

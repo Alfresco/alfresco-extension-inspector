@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 public class WarLibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found 3rd party library usage! Although this is not an "
+        "Found 3rd party library usage. Although this is not an "
         + "immediate problem, all 3rd party libraries that come with the Alfresco "
         + "repository are considered our internal implementation detail. These "
         + "libraries will change or might even disappear in service packs without "

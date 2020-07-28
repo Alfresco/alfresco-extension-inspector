@@ -24,10 +24,10 @@ import org.springframework.stereotype.Component;
 public class BeanOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found bean overwrites! Spring beans defined by Alfresco constitute "
-        + "a fundamental building block of the repository and must not be "
-        + "overwritten unless explicitly allowed.\nThe following beans "
-        + "are overwriting default Alfresco functionality:";
+        "Found bean overwrites. Spring beans defined by Alfresco constitute "
+            + "a fundamental building block of the repository and must not be "
+            + "overwritten unless explicitly allowed.\nThe following beans "
+            + "are overwriting default Alfresco functionality:";
 
     @Autowired
     private WarInventoryReportStore store;

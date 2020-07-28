@@ -185,10 +185,10 @@ public class CommandRunnerTest
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName, "--verbose"));
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--beanOverrideWhitelist=" + whitelist));
+            "--beanOverrideSanctionedList=" + whitelist));
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--beanClassWhitelist=" + whitelist));
+            "--beanClassSanctionedList=" + whitelist));
 
         verify(analyserService, times(1)).analyseAgainstWarInventories(any());
         verify(analyserService, times(4)).analyseAgainstKnownVersions(any());
@@ -203,8 +203,8 @@ public class CommandRunnerTest
 
         commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
-                "--verbose=false", "--beanOverrideWhitelist=" + whitelist,
-                "--beanClassWhitelist=" + whitelist));
+                "--verbose=false", "--beanOverrideSanctionedList=" + whitelist,
+                "--beanClassSanctionedList=" + whitelist));
 
         verify(analyserService).analyseAgainstKnownVersions(any());
     }
@@ -221,8 +221,8 @@ public class CommandRunnerTest
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
                 "--target-inventory=" + warInventory, "--verbose=false",
-                "--beanOverrideWhitelist=" + whitelist,
-                "--beanClassWhitelist=" + whitelist)));
+                "--beanOverrideSanctionedList=" + whitelist,
+                "--beanClassSanctionedList=" + whitelist)));
     }
 
     @Test

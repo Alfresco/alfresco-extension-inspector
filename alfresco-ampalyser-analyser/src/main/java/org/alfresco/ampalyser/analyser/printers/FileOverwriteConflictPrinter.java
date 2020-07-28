@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found resource conflicts!\nThe following resources will conflict with "
+        "Found resource conflicts.\nThe following resources will conflict with "
             + "resources present in various Alfresco versions. It will not be "
             + "possible to install this extension on these versions. (You can use the "
             + "option --target to limit this scan to specific Alfresco versions)";

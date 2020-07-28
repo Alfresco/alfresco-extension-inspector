@@ -30,8 +30,8 @@ public class CommandOptionsResolver
 {
     public static final String TARGET_VERSION = "target-version";
     public static final String TARGET_INVENTORY = "target-inventory";
-    public static final String BEAN_OVERRIDE_WHITELIST = "beanOverrideWhitelist";
-    public static final String BEAN_CLASS_WHITELIST = "beanClassWhitelist";
+    public static final String BEAN_OVERRIDE_WHITELIST = "beanOverrideSanctionedList";
+    public static final String BEAN_CLASS_WHITELIST = "beanClassSanctionedList";
     public static final String VERBOSE = "verbose";
     public static final String HELP = "help";
     public static final String LIST_KNOWN_VERSIONS = "list-known-alfresco-versions";
@@ -67,19 +67,19 @@ public class CommandOptionsResolver
         }
         if (whitelistPaths.isEmpty())
         {
-            printAnalyserUsage("Invalid whitelist path provided (missing value).");
+            printAnalyserUsage("Invalid sanctioned list path provided (missing value).");
             throw new IllegalArgumentException();
         }
         if (whitelistPaths.size() > 1)
         {
             printAnalyserUsage(
-                "Multiple whitelists provided.(command option '" + whitelistOption + "')");
+                "Multiple sanctioned lists provided.(command option '" + whitelistOption + "')");
             throw new IllegalArgumentException();
         }
         final String path = whitelistPaths.get(0);
         if (!new File(path).exists() || !FilenameUtils.getExtension(path).equalsIgnoreCase("json"))
         {
-            printAnalyserUsage("The whitelist file is not valid or does not exist.(command option '"
+            printAnalyserUsage("The sanctioned list file is not valid or does not exist.(command option '"
                 + whitelistOption + "') Supported file format is JSON.");
             throw new IllegalArgumentException();
         }
