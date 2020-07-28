@@ -80,7 +80,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     public void testPublicApiAnnotation()
     {
         List<Resource> publicApiResources = client.retrieveInventoryResources(ALFRESCO_PUBLIC_API, inventoryReport);
-        assertEquals(publicApiResources.size(), 2);
+        assertEquals(publicApiResources.size(), 4);
 
         AlfrescoPublicApiResource publicApiRs = (AlfrescoPublicApiResource) client
             .retrieveInventoryResource(ALFRESCO_PUBLIC_API, "org.alfresco.repo.node.NodeServicePolicies", inventoryReport);

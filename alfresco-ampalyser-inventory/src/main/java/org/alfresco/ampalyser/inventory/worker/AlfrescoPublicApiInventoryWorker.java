@@ -8,12 +8,18 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
@@ -21,6 +27,8 @@ import org.alfresco.ampalyser.model.Resource;
 import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -62,13 +70,15 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             }
             if (isAlfrescoPublicApi)
             {
-                AlfrescoPublicApiResource resource = new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated);
-
+                List<Resource> resources = new ArrayList<>();
+                resources.add(new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated));
+                resources.addAll(findImplicitAlfrescoPublicApis(jc));
+                
                 if (LOG.isTraceEnabled())
                 {
-                    LOG.trace("AlfrescoPublicApi: " + resource.toString());
+                    LOG.trace("AlfrescoPublicApi: " + resources.get(0).toString());
                 }
-                return singletonList(resource);
+                return resources;
             }
         }
         catch (IOException e)
@@ -76,6 +86,36 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             LOG.error("Class parsing error: ", e.getMessage());
         }
         return emptyList();
+    }
+
+    private static Set<AlfrescoPublicApiResource> findImplicitAlfrescoPublicApis(JavaClass javaClass)
+    {
+        // Add to the AlfrescoPublicApi resources all Alfresco classes used as methods arguments in given javaClass
+        Set<AlfrescoPublicApiResource> methodArgs = stream(javaClass.getMethods())
+            .flatMap(method -> 
+                stream(method.getArgumentTypes())
+                    .filter(t -> t instanceof ObjectType)
+                    .map(t -> ((ObjectType) t).getClassName())
+                    .filter(classname -> classname.startsWith("org.alfresco.") || classname
+                        .startsWith("com.alfresco."))
+                    .distinct()
+                    .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
+            .collect(Collectors.toUnmodifiableSet());
+
+        // Add to the AlfrescoPublicApi resources all Alfresco Exceptions thrown by the given javaClass's methods
+        Set<AlfrescoPublicApiResource> exceptions = stream(javaClass.getMethods())
+            .map(Method::getExceptionTable)
+            .filter(Objects::nonNull)
+            .flatMap(exceptionTable ->  stream(exceptionTable.getExceptionNames())
+                .filter(classname -> classname.startsWith("org.alfresco.") || 
+                    classname.startsWith("com.alfresco."))
+                .distinct()
+                .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
+            .collect(Collectors.toUnmodifiableSet());
+
+        return Stream.of(methodArgs, exceptions)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     public Resource.Type getType()
