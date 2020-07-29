@@ -71,7 +71,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             data[row][3] = String.join(";",((WarLibraryUsageConflict) conflict).getClassDependencies());
         }
 
-        // TODO: Enable when we eliminate the false positives. Outpur is larger than console buffer.
+        // TODO: Enable when we eliminate the false positives (https://issues.alfresco.com/jira/browse/ACS-80). Output is larger than console buffer.
         // printTable(data);
     }
 
