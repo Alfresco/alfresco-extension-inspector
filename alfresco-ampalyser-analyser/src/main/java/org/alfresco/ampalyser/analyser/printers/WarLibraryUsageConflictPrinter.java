@@ -28,11 +28,11 @@ import org.springframework.stereotype.Component;
 public class WarLibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found 3rd party library usage. Although this is not an "
-        + "immediate problem, all 3rd party libraries that come with the Alfresco "
-        + "repository are considered our internal implementation detail. These "
-        + "libraries will change or might even disappear in service packs without "
-        + "notice.\nThe following classes are making use of 3rd party libraries:";
+        "Found 3rd party library usage. Although this isn't an "
+        + "immediate problem, all 3rd party libraries that are delivered with the "
+        + "repository are considered as our internal implementation detail. These "
+        + "libraries will change or may be removed in future service packs without "
+        + "notice.\nThe following classes use 3rd party libraries:";
 
     @Autowired
     private WarInventoryReportStore store;

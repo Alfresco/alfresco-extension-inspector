@@ -23,10 +23,10 @@ import org.springframework.stereotype.Component;
 public class BeanOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found bean overwrites. Spring beans defined by Alfresco constitute "
-            + "a fundamental building block of the repository and must not be "
+        "Found bean overwrites. Spring beans defined by Alfresco are a "
+            + "fundamental building block of the repository, and must not be "
             + "overwritten unless explicitly allowed.\nThe following beans "
-            + "are overwriting default Alfresco functionality:";
+            + "overwrite default functionality:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -36,13 +36,13 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
         return HEADER;
     }
-    
+
     @Override
     public Conflict.Type getConflictType()
     {
@@ -56,7 +56,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
             .getDefiningObject();
 
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
+            + " is in conflict with bean defined in " + warBeanDefiningObject);
         System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
         System.out.println();
     }
@@ -68,7 +68,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
             .getDefiningObject();
 
         System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
+            + " is in conflict with bean defined in " + warBeanDefiningObject);
         System.out.println();
     }
 }
