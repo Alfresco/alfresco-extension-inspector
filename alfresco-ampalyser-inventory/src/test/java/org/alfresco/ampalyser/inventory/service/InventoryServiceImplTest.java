@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.ampalyser.inventory.EntryProcessor;
 import org.alfresco.ampalyser.model.FileResource;
@@ -70,9 +70,9 @@ public class InventoryServiceImplTest
     @Test
     public void testExtractInventoryReportFromValidWar() throws IOException
     {
-        List<Resource> resourceList = new ArrayList<>();
+        Set<Resource> resourceList = new LinkedHashSet<>();
         resourceList.add(new FileResource("file.txt", "file.txt"));
-        Map<Resource.Type, List<Resource>> resources = Map.of(Resource.Type.FILE, resourceList);
+        Map<Resource.Type, Set<Resource>> resources = Map.of(Resource.Type.FILE, resourceList);
         when(entryProcessor.processWarEntry(any(), any())).thenReturn(resources);
 
         String warPath = ResourceUtils.getFile("classpath:test.war").getPath();

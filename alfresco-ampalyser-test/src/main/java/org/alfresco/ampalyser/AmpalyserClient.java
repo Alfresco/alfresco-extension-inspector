@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class AmpalyserClient
@@ -86,7 +87,7 @@ public class AmpalyserClient
                     .orElse(null);
         }
 
-        public List<Resource> retrieveInventoryResources(Resource.Type resourceType, File jsonReport)
+        public Set<Resource> retrieveInventoryResources(Resource.Type resourceType, File jsonReport)
         {
                 final InventoryReport inventoryReport = jsonInventory.getInventoryReportFromJson(jsonReport);
 

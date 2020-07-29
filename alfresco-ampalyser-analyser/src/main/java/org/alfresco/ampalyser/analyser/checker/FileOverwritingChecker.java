@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
@@ -51,7 +51,7 @@ public class FileOverwritingChecker implements Checker
             extensionResourceInfoService.retrieveFilesByDestination();
 
         return warInventory
-            .getResources().getOrDefault(FILE, emptyList())
+            .getResources().getOrDefault(FILE, emptySet())
             .stream()
             .map(r -> (FileResource) r)
             .filter(wr -> resourcesByDestination.containsKey(wr.getId()))

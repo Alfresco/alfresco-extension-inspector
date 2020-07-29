@@ -44,7 +44,7 @@ public class DependencyVisitor extends ClassVisitor
 
     public DependencyVisitor()
     {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM8);
     }
 
     //region ClassVisitor
@@ -128,7 +128,7 @@ public class DependencyVisitor extends ClassVisitor
     {
         public AnnotationDependencyVisitor()
         {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM8);
         }
 
         @Override
@@ -166,7 +166,7 @@ public class DependencyVisitor extends ClassVisitor
     {
         public FieldDependencyVisitor()
         {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM8);
         }
 
         @Override
@@ -190,7 +190,7 @@ public class DependencyVisitor extends ClassVisitor
     {
         public MethodDependencyVisitor()
         {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM8);
         }
 
         @Override
@@ -319,7 +319,7 @@ public class DependencyVisitor extends ClassVisitor
 
         public SignatureDependencyVisitor()
         {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM8);
         }
 
         @Override

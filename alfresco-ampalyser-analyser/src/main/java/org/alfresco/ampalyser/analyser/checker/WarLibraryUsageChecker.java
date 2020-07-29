@@ -47,7 +47,7 @@ public class WarLibraryUsageChecker implements Checker
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
         final Set<String> classesInWar = warInventory
-            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())
             .stream()
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
