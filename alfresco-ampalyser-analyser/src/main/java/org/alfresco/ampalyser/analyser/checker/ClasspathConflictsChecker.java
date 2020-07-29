@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -39,7 +39,7 @@ public class ClasspathConflictsChecker implements Checker
             extensionResourceInfoService.retrieveClasspathElementsById();
 
         return warInventory
-            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())
             .stream()
             .map(r -> (ClasspathElementResource) r)
             .filter(wr -> elementsById.containsKey(wr.getId()))

@@ -16,6 +16,7 @@ import static org.mockito.Mockito.spy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
@@ -49,14 +50,14 @@ public class FileOverwritingCheckerTest
         FileResource ampFR1 = new FileResource("/web/fr1.txt", "/web/fr1.txt");
         // This resource should not generate a conflict because to the mapping
         FileResource ampFR2 = new FileResource("/web/abc/fr2.txt", "/web/abc/fr2.txt");
-        doReturn(List.of(ampFR1, ampFR2)).when(configService).getExtensionResources(FILE);
+        doReturn(Set.of(ampFR1, ampFR2)).when(configService).getExtensionResources(FILE);
 
         InventoryReport warReport = new InventoryReport();
         warReport.setAlfrescoVersion("6.66");
-        Map<Resource.Type, List<Resource>> warResources = new HashMap<>();
+        Map<Resource.Type, Set<Resource>> warResources = new HashMap<>();
         FileResource warFR1 = new FileResource("/fr1.txt", "/fr1.txt");
         FileResource warFR2 = new FileResource("/abc/fr2.txt", "/abc/fr2.txt");
-        warResources.put(FILE, List.of(warFR1, warFR2));
+        warResources.put(FILE, Set.of(warFR1, warFR2));
 
         warReport.addResources(warResources);
 

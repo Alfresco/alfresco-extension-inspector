@@ -18,6 +18,7 @@ import static org.mockito.Mockito.spy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.ClasspathConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
@@ -45,13 +46,13 @@ class ClasspathConflictsCheckerTest
     @Test
     void testProcessInternal()
     {
-        final List<Resource> ampResources = List.of(
+        final Set<Resource> ampResources = Set.of(
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-west-2.0.jar"),
             new ClasspathElementResource("/org/alfresco/Blue.class", "/WEB-INF/lib/lib-east-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/White.class", "/WEB-INF/lib/lib-south-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Purple.class", "/WEB-INF/lib/lib-south-1.0.jar")
         );
-        final List<Resource> warResources = List.of(
+        final Set<Resource> warResources = Set.of(
             new ClasspathElementResource("/org/alfresco/Red.class", "/WEB-INF/lib/lib-west-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-west-1.0.jar"),
             new ClasspathElementResource("/org/alfresco/Black.class", "/WEB-INF/lib/lib-east-1.0.jar"),
