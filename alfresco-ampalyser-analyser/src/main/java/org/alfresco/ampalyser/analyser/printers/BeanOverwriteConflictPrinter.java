@@ -8,9 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -50,25 +51,41 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
+        String[][] data = new String[conflictSet.size() + 1][3];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
+        String[][] data = new String[conflictSet.size() + 1][3];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Objects";
+        data[0][2] = "WAR Defining object";
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = ConflictPrinter.joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet);
+            data[row][2] = conflict.getWarResourceInConflict().getDefiningObject();
+            row++;
+        }
+        printTable(data);
     }
 }

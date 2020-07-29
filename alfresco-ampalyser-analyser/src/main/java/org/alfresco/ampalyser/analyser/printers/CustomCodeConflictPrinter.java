@@ -8,13 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.text.MessageFormat.format;
-import static java.util.stream.Collectors.flatMapping;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.util.Map;
+import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -23,6 +20,7 @@ import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class CustomCodeConflictPrinter implements ConflictPrinter
@@ -56,30 +54,43 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
+    public void printVerboseOutput(final Set<Conflict> conflictSet) throws IOException
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final String invalidDependencies = conflictSet
-            .stream()
-            .map(c -> (CustomCodeConflict) c)
-            .flatMap(c -> c.getInvalidAlfrescoDependencies().stream())
-            .distinct()
-            .sorted()
-            .collect(joining(", "));
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
+        data[0][3] = "Invalid Dependencies";
 
-        System.out.println(
-            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (non PublicAPI) dependencies: " + invalidDependencies);
-        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            data[row][2] = String.join(";", ((CustomCodeConflict)conflict).getInvalidAlfrescoDependencies());
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
+    public void print(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID using Custom Code";
 
-        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            final String id = conflict.getAmpResourceInConflict().getId();;
+            final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+            data[row][0] = id.equals(definingObject) ? id : id + "@" + definingObject;
+
+            row++;
+        }
+
+        printTable(data);
     }
 }

@@ -8,9 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
+import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -39,7 +41,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
@@ -53,29 +55,48 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
     {
-        final Conflict conflict = conflictSet.iterator().next();
-        System.out.println(id + " in " + conflict.getAmpResourceInConflict().getDefiningObject()
-            + " conflicts with " + joinWarResourceDefiningObjs(conflictSet));
-        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
-        System.out.println();
+        String[][] data = new String[conflictSet.size() + 1][3];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        final Conflict conflict = conflictSet.iterator().next();
-        final String ampResourceDefiningObject = conflict.getAmpResourceInConflict().getDefiningObject();
 
-        // Keep an internal lists of conflicts per defining jar object.
-        if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(ampResourceDefiningObject))
+        String[][] data = new String[conflictSet.stream().map(el -> el.getAmpResourceInConflict().getDefiningObject()).collect(toSet()).size() + 1][3];
+        data[0][0] = "Extension Bean Resource Defining Object";
+        data[0][1] = "WAR Defining Object";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
         {
-            System.out.println(
-                "Multiple resources in " + ampResourceDefiningObject + " conflicting with "
-                    + joinWarResourceDefiningObjs(conflictSet));
-            System.out.println();
-            CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(ampResourceDefiningObject);
+            final String extDefObj = conflict.getAmpResourceInConflict().getDefiningObject();
+            if (!CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.contains(extDefObj))
+            {
+                data[row][0] = extDefObj;
+                data[row][1] = ConflictPrinter.joinWarResourceDefiningObjs(conflict.getWarResourceInConflict().getId(), conflictSet);
+                CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED.add(extDefObj);
+                row++;
+            }
         }
+
+
+
+        printTable(data);
     }
 }
