@@ -45,6 +45,7 @@ public class ConfigService
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
     private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
     public String getExtensionPath()
@@ -70,6 +71,11 @@ public class ConfigService
     public Set<String> getBeanClassWhitelist()
     {
         return beanClassWhitelist;
+    }
+
+    public Set<String> getThirdPartyAllowedList()
+    {
+        return thirdPartyAllowedList;
     }
 
     public boolean isVerboseOutput()
@@ -99,5 +105,10 @@ public class ConfigService
     public void registerBeanClassWhitelist(final String path)
     {
         beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
+    }
+
+    public void registerThirdPartyAllowedList()
+    {
+        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
 }
