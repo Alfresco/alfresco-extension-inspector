@@ -17,6 +17,7 @@ import java.io.Serializable;
 public class AlfrescoPublicApiResource extends AbstractResource implements Serializable
 {
     private boolean deprecated;
+    private boolean implicit = false;
 
     public AlfrescoPublicApiResource()
     {
@@ -26,6 +27,12 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
     {
         super(ALFRESCO_PUBLIC_API, id, null);
         this.deprecated = deprecated;
+    }
+
+    public AlfrescoPublicApiResource(String id, boolean deprecated, boolean implicit)
+    {
+        this(id, deprecated);
+        this.implicit = implicit;
     }
 
     public boolean isDeprecated()
@@ -38,11 +45,22 @@ public class AlfrescoPublicApiResource extends AbstractResource implements Seria
         this.deprecated = deprecated;
     }
 
+    public boolean isImplicit()
+    {
+        return implicit;
+    }
+
+    public void setImplicit(boolean implicit)
+    {
+        this.implicit = implicit;
+    }
+
     @Override
     public String toString()
     {
         return "AlfrescoPublicApiResource{" +
                "deprecated=" + deprecated +
+               ", implicit=" + implicit +
                ", id='" + id + '\'' +
                ", definingObject='" + definingObject + '\'' +
                '}';

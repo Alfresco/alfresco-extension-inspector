@@ -7,7 +7,6 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
@@ -15,7 +14,6 @@ import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import javax.annotation.PostConstruct;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +40,7 @@ public class ConfigService
     private WhitelistService whitelistService;
 
     private String extensionPath;
-    private Map<Resource.Type, List<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
+    private Map<Resource.Type, Set<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
     private Set<String> beanClassWhitelist = emptySet();
@@ -60,9 +58,9 @@ public class ConfigService
         return extensionPath;
     }
 
-    public List<Resource> getExtensionResources(final Resource.Type type)
+    public Set<Resource> getExtensionResources(final Resource.Type type)
     {
-        return extensionResources.getOrDefault(type, emptyList());
+        return extensionResources.getOrDefault(type, emptySet());
     }
 
     public Map<String, String> getFileMappings()
@@ -96,6 +94,6 @@ public class ConfigService
         final InventoryReport inventory = inventoryService.extractInventoryReport(extensionPath);
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
-            extensionPath, extensionResources.getOrDefault(FILE, emptyList()));
+            extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
     }
 }

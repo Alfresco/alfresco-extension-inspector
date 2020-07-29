@@ -8,9 +8,9 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.Resource;
@@ -21,16 +21,16 @@ import org.alfresco.ampalyser.model.Resource;
  */
 public interface InventoryWorker
 {
-    default List<Resource> processZipEntry(ZipEntry entry, byte[] data, String definingObject)
+    default Set<Resource> processZipEntry(ZipEntry entry, byte[] data, String definingObject)
     {
         if (this.canProcessEntry(entry, definingObject))
         {
             return processInternal(entry, data, definingObject);
         }
-        return emptyList();
+        return emptySet();
     }
 
-    List<Resource> processInternal(ZipEntry entry, byte[] data, String definingObject);
+    Set<Resource> processInternal(ZipEntry entry, byte[] data, String definingObject);
 
     Resource.Type getType();
 
