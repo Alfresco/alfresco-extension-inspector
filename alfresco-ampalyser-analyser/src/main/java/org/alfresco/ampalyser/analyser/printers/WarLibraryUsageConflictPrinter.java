@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -27,7 +28,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
         "Found 3rd party library usage. Although this isn't an immediate problem, all 3rd party "
             + "libraries that are delivered with the repository are considered as our internal "
             + "implementation detail. These libraries will change or may be removed in future "
-            + "service packs without notice." + System.lineSeparator()
+            + "service packs without notice." + lineSeparator()
             + "The following classes use 3rd party libraries:";
 
     @Autowired

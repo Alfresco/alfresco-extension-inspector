@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -25,7 +26,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     private static final String HEADER =
         "Found bean overwrites. Spring beans defined by Alfresco are a "
             + "fundamental building block of the repository, and must not be "
-            + "overwritten unless explicitly allowed." + System.lineSeparator()
+            + "overwritten unless explicitly allowed." + lineSeparator()
             + "The following beans overwrite default functionality:";
 
     @Autowired

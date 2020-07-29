@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found resource conflicts." + System.lineSeparator() + "The following resources will "
+        "Found resource conflicts." + lineSeparator() + "The following resources will "
             + "conflict with resources used in various Alfresco versions, so you won't be able "
             + "to install this extension on these versions. Try using the "
             + "--target option to limit this scan to specific Alfresco versions.";

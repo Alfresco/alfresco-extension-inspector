@@ -125,27 +125,96 @@ The conflict types that can be detected by **Amp-a-lyser** are the following:
 
 Example of output:
 ```text
-Found bean overwrites! Spring beans defined by Alfresco constitute a fundamental building block of the repository and must not be overwritten unless explicitly allowed. Found the following beans overwriting default Alfresco functionality:
+Across the provided target versions, the following number of conflicts have been found:
+╔═════════════════════╤═════╗
+║REPORT SUMMARY       │     ║
+╠═════════════════════╪═════╣
+║Type                 │Total║
+╟─────────────────────┼─────╢
+║BEAN_OVERWRITE       │1    ║
+╟─────────────────────┼─────╢
+║BEAN_RESTRICTED_CLASS│2    ║
+╟─────────────────────┼─────╢
+║CUSTOM_CODE          │6    ║
+╟─────────────────────┼─────╢
+║WAR_LIBRARY_USAGE    │4    ║
+╟─────────────────────┼─────╢
+║                     │     ║
+╚═════════════════════╧═════╝
 
-aService_security defined in alfresco/extension-services-context.xml@lib/extension-lib.jar in conflict with bean defined in alfresco/services-context.xml@WEB-INF/lib/war-lib.jar
 
-aService_transaction defined in alfresco/extension-services-context.xml@lib/extension-lib.jar in conflict with bean defined in alfresco/services-context.xml@WEB-INF/lib/war-lib.jar
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║BEAN_OVERWRITE CONFLICTS                                                                                                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Found bean overwrites. Spring beans defined by Alfresco are a fundamental building block of the repository, and must not be overwritten unless explicitly allowed.║
+║The following beans overwrite default functionality:                                                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-[...]
 
--------------------------------------------------------------------
 
-Found classpath conflicts! Although it might be possible to install this extension, its behaviour is undefined. The following resources in your extension are in conflict with resources on the classpath in the Alfresco repository:
+╔══════════════════════════════════╤═════════════════════════════════════════════════════════════════════════════╤═════════════════════════════════════════════════════════════════════╗
+║Extension Bean Resource ID        │Extension Defining Objects                                                   │WAR Defining object                                                  ║
+╠══════════════════════════════════╪═════════════════════════════════════════════════════════════════════════════╪═════════════════════════════════════════════════════════════════════╣
+║extension_bean                    │config/alfresco/module/org.alfresco.module.x/module-context.xml              │alfresco/war-context.xml@WEB-INF/lib/some-war-lib.jar                ║
+╚══════════════════════════════════╧═════════════════════════════════════════════════════════════════════════════╧═════════════════════════════════════════════════════════════════════╝
 
-Multiple resources in /lib/extension-lib.jar conflicting with /WEB-INF/lib/war-lib.jar
 
-[...]
 
--------------------------------------------------------------------
+╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║BEAN_RESTRICTED_CLASS CONFLICTS                                                                                             ║
+╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Found beans that instantiate internal classes.                                                                              ║
+║The following beans instantiate classes from Alfresco or 3rd party libraries which must not be instantiated by custom beans:║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-[...]
 
--------------------------------------------------------------------
+╔═══════════════════════════════════════════════════╤══════════════════════════════════════════════════════════════════════════╗
+║Extension Bean Resource ID                         │Restricted Class                                                          ║
+╠═══════════════════════════════════════════════════╪══════════════════════════════════════════════════════════════════════════╣
+║org_alfresco_module_x_SomeClass                    │org.alfresco.web.config.WebClientConfigBootstrap                          ║
+╟───────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────╢
+║org_alfresco_module_x_AnotherClass                 │org.alfresco.web.config.WebClientConfigBootstrap                          ║
+╚═══════════════════════════════════════════════════╧══════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║CUSTOM_CODE CONFLICTS                                                                                                                                                                                                                                        ║
+╠═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Found usage of internal classes. Alfresco provides a Java API that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in the repository are considered our internal implementation detail and might change or even disappear in service║
+║packs and new versions without prior notice.                                                                                                                                                                                                                 ║
+║The following classes use internal Alfresco classes:                                                                                                                                                                                                         ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║Extension Resource ID using Custom Code                                                                       ║
+╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║/org/alfresco/module/blogIntegration/ui/AnExtensionClass.class@/lib/extension-lib.jar                         ║
+╟──────────────────────────────────────────────────────────────────────────────────────────────────────────────╢
+║[...]                                                                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║WAR_LIBRARY_USAGE CONFLICTS                                                                                                                                                                                                                                  ║
+╠═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Found 3rd party library usage. Although this isn't an immediate problem, all 3rd party libraries that are delivered with the repository are considered as our internal implementation detail. These libraries will change or may be removed in future service║
+║packs without notice.                                                                                                                                                                                                                                        ║
+║The following classes use 3rd party libraries:                                                                                                                                                                                                               ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║Extension Resource ID using 3rd Party library code                                                            ║
+╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║/org/alfresco/module/blogIntegration/ui/AnExtensionClass.class@/lib/extension-lib.jar                         ║
+╟──────────────────────────────────────────────────────────────────────────────────────────────────────────────╢
+║[...]                                                                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
 
 (use option --verbose for version details)
 ```

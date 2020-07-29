@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
@@ -26,7 +27,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found classpath conflicts. Although it may be possible to install this "
-            + "extension, its behaviour is undefined." + System.lineSeparator()
+            + "extension, its behaviour is undefined." + lineSeparator()
             + "The following resources in your extension are in conflict with resources "
             + "on the classpath in the repository:";
 

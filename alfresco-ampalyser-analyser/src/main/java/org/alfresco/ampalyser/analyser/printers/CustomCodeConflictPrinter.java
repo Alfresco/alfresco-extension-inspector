@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -29,7 +30,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             + "that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in "
             + "the repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
-            + System.lineSeparator() + "The following classes use internal Alfresco classes:";
+            + lineSeparator() + "The following classes use internal Alfresco classes:";
 
     @Autowired
     private WarInventoryReportStore store;

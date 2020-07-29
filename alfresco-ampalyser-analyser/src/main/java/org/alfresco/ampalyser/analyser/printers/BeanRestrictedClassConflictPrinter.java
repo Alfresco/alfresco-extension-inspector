@@ -8,6 +8,7 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found beans that instantiate internal classes." + System.lineSeparator() + "The "
+        "Found beans that instantiate internal classes." + lineSeparator() + "The "
             + "following beans instantiate classes from Alfresco or 3rd party libraries which must "
             + "not be instantiated by custom beans:";
 
