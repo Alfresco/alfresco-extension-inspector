@@ -8,13 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.runner;
 
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_CLASS_WHITELIST;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_OVERRIDE_WHITELIST;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.HELP;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractExtensionPath;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWhitelistPath;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.isVerboseOutput;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateAnalyserOptions;
 import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateOptionsForCommand;
@@ -91,12 +88,6 @@ public class CommandRunner
         final String extensionPath = extractExtensionPath(args.getNonOptionArgs());
 
         validateAnalyserOptions(args.getOptionNames());
-
-        extractWhitelistPath(BEAN_OVERRIDE_WHITELIST, args)
-            .ifPresent(configService::registerBeanOverrideWhitelistPath);
-
-        extractWhitelistPath(BEAN_CLASS_WHITELIST, args)
-            .ifPresent(configService::registerBeanClassWhitelist);
 
         configService.setVerboseOutput(isVerboseOutput(args));
 

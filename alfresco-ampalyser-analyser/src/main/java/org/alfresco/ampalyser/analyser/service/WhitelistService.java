@@ -7,9 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -28,8 +26,8 @@ public class WhitelistService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
 
-    private static final String DEFAULT_BEAN_OVERRIDE_WHITELIST = "/sanctionedBeanOverwriteList.default.json";
-    private static final String DEFAULT_BEAN_CLASS_WHITELIST = "/sanctionedBeanClassesList.default.json";
+    private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
+    private static final String ALLOWED_BEAN_CLASS_LIST = "/allowedBeanClassList.json";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -37,89 +35,46 @@ public class WhitelistService
     /**
      * Reads and loads whitelist for the beans in a war that can be overridden when an .amp is applied
      *
-     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     * @return a {@link Set} of the whitelisted beans
      */
-    public Set<String> loadBeanOverrideWhitelist(final String path)
+    public Set<String> loadBeanOverrideWhitelist()
     {
-        final Set<String> whitelist = new HashSet<>();
-
         try
         {
-            whitelist.addAll(objectMapper.readValue(
-                getClass().getResourceAsStream(DEFAULT_BEAN_OVERRIDE_WHITELIST),
-                new TypeReference<>() {}));
+            return objectMapper.readValue(
+                getClass().getResourceAsStream(ALLOWED_BEAN_OVERRIDE_LIST),
+                new TypeReference<>() {});
         }
         catch (IOException ioe)
         {
-            LOGGER.error("Failed to read DEFAULT Bean Overriding Sanctioned List file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST,
+            LOGGER.error("Failed to read Allowed Bean Overriding List file: " + ALLOWED_BEAN_OVERRIDE_LIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT Bean Overriding Sanctioned List file: " + DEFAULT_BEAN_OVERRIDE_WHITELIST, ioe);
+                "Failed to read Allowed Bean Overriding List file: " + ALLOWED_BEAN_OVERRIDE_LIST, ioe);
         }
-
-        if (path == null)
-        {
-            return whitelist;
-        }
-
-        try
-        {
-            whitelist.addAll(objectMapper.readValue(
-                new FileInputStream(path),
-                new TypeReference<>() {}));
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Failed to read Bean Overriding Sanctioned List file: " + path, e);
-            throw new RuntimeException("Failed to read Bean Overriding Sanctioned List file: " + path, e);
-        }
-
-        return whitelist;
     }
 
     /**
      * Reads and loads a class whitelist for the .amp beans from a .json file
      *
-     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     * @return a {@link Set} of the whitelisted beans
      */
-    public Set<String> loadBeanClassWhitelist(final String path)
+    public Set<String> loadBeanClassWhitelist()
     {
-        final Set<String> whitelist = new HashSet<>();
-
         try
         {
-            whitelist.addAll(objectMapper.readValue(
-                getClass().getResourceAsStream(DEFAULT_BEAN_CLASS_WHITELIST),
-                new TypeReference<>() {}));
+            return objectMapper.readValue(
+                getClass().getResourceAsStream(ALLOWED_BEAN_CLASS_LIST),
+                new TypeReference<>() {});
         }
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT Bean Restricted Classes Sanctioned List file: " + DEFAULT_BEAN_CLASS_WHITELIST,
+                "Failed to read Allowed Bean Restricted Class List file: " + ALLOWED_BEAN_CLASS_LIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT Bean Restricted Sanctioned List file: " + DEFAULT_BEAN_CLASS_WHITELIST,
+                "Failed to read Allowed Bean Restricted List file: " + ALLOWED_BEAN_CLASS_LIST,
                 ioe);
         }
-
-        if (path == null)
-        {
-            return whitelist;
-        }
-
-        try
-        {
-            whitelist.addAll(objectMapper.readValue(
-                new FileInputStream(path),
-                new TypeReference<>() {}));
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Failed to read Bean Restricted Classes Sanctioned List file: " + path, e);
-            throw new RuntimeException(
-                "Failed to read Bean Restricted Classes Sanctioned List file: " + path, e);
-        }
-
-        return whitelist;
     }
 }

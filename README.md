@@ -94,7 +94,7 @@ This creates an executable jar, `alfresco-ampalyser-analyser-<version>-applicati
 ### Usage:
 ```shell script
 # Analyse a given Alfresco extension
-java -jar alfresco-ampalyser-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--beanOverrideWhitelist=/path/to/bean_overriding_whitelist.json ] [--beanClassWhitelist=/path/to/bean_restricted_classes_whitelist.json] [--verbose=[true | false]]
+java -jar alfresco-ampalyser-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--verbose=[true | false]]
 
 # Help command
 java -jar alfresco-ampalyser-analyser-<version>-application.jar --help
@@ -106,8 +106,6 @@ Options:
 ```bash
    --target-version                     An Alfresco version or a range of Alfresco versions.
    --target-inventory                   A file path of an existing WAR inventory.
-   --beanOverrideWhitelist              A file path of a JSON containing a list of beans that can be overridden.
-   --beanClassWhitelist                 A file path of a JSON containing a list of classes that can be instantiated.
    --verbose                            Verbose output.
    
    --help                               Shows this screen.

@@ -30,8 +30,6 @@ public class CommandOptionsResolver
 {
     public static final String TARGET_VERSION = "target-version";
     public static final String TARGET_INVENTORY = "target-inventory";
-    public static final String BEAN_OVERRIDE_WHITELIST = "beanOverrideSanctionedList";
-    public static final String BEAN_CLASS_WHITELIST = "beanClassSanctionedList";
     public static final String VERBOSE = "verbose";
     public static final String HELP = "help";
     public static final String LIST_KNOWN_VERSIONS = "list-known-alfresco-versions";
@@ -57,35 +55,7 @@ public class CommandOptionsResolver
 
         return extensionPath;
     }
-
-    public static Optional<String> extractWhitelistPath(String whitelistOption, ApplicationArguments args)
-    {
-        final List<String> whitelistPaths = args.getOptionValues(whitelistOption);
-        if (whitelistPaths == null)
-        {
-            return Optional.empty();
-        }
-        if (whitelistPaths.isEmpty())
-        {
-            printAnalyserUsage("Invalid sanctioned list path provided (missing value).");
-            throw new IllegalArgumentException();
-        }
-        if (whitelistPaths.size() > 1)
-        {
-            printAnalyserUsage(
-                "Multiple sanctioned lists provided.(command option '" + whitelistOption + "')");
-            throw new IllegalArgumentException();
-        }
-        final String path = whitelistPaths.get(0);
-        if (!new File(path).exists() || !FilenameUtils.getExtension(path).equalsIgnoreCase("json"))
-        {
-            printAnalyserUsage("The sanctioned list file is not valid or does not exist.(command option '"
-                + whitelistOption + "') Supported file format is JSON.");
-            throw new IllegalArgumentException();
-        }
-        return Optional.of(path);
-    }
-
+    
     public SortedSet<String> extractTargetVersions(ApplicationArguments args)
     {
         final SortedSet<String> versions = alfrescoTargetVersionParser
@@ -134,9 +104,7 @@ public class CommandOptionsResolver
             return;
         }
 
-        Set<String> knownCommandOptions = Set
-            .of(TARGET_VERSION, TARGET_INVENTORY, BEAN_OVERRIDE_WHITELIST,
-                BEAN_CLASS_WHITELIST, VERBOSE);
+        Set<String> knownCommandOptions = Set.of(TARGET_VERSION, TARGET_INVENTORY, VERBOSE);
         if (!knownCommandOptions.containsAll(options))
         {
             printAnalyserUsage("Unknown options provided.");
