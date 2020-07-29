@@ -8,10 +8,11 @@
 package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CUSTOM_CODE;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.MISSING_DEPENDENCY;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
 
 import org.alfresco.ampalyser.model.Resource;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                   @JsonSubTypes.Type(value = ClasspathConflict.class, name = CLASSPATH_CONFLICT),
                   @JsonSubTypes.Type(value = CustomCodeConflict.class, name = CUSTOM_CODE),
                   @JsonSubTypes.Type(value = WarLibraryUsageConflict.class, name = WAR_LIBRARY_USAGE),
+                  @JsonSubTypes.Type(value = WarLibraryUsageConflict.class, name = MISSING_DEPENDENCY),
               })
 public interface Conflict
 {
@@ -46,6 +48,7 @@ public interface Conflict
         CLASSPATH_CONFLICT,
         CUSTOM_CODE,
         WAR_LIBRARY_USAGE,
+        MISSING_DEPENDENCY,
         ;
 
         static class Constants
@@ -56,6 +59,7 @@ public interface Conflict
             static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
             static final String CUSTOM_CODE = "CUSTOM_CODE";
             static final String WAR_LIBRARY_USAGE = "WAR_LIBRARY_USAGE";
+            static final String MISSING_DEPENDENCY = "MISSING_DEPENDENCY";
         }
     }
 

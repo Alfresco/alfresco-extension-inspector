@@ -5,28 +5,24 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-
 package org.alfresco.ampalyser.analyser.printers;
 
 import static java.util.stream.Collectors.joining;
 import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.MISSING_DEPENDENCY;
 
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.result.MissingDependencyConflict;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomCodeConflictPrinter implements ConflictPrinter
+public class MissingDependencyConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found usage of internal Alfresco classes! Alfresco provides a Java API "
-            + "that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in "
-            + "the Alfresco repository are considered our internal implementation detail and might "
-            + "change or even disappear in service packs and new versions without prior notice. "
-            + "\nThe following classes are making use of internal Alfresco classes:";
+        "Found missing dependencies!\n" +
+        "The following classes have dependencies not provided by the WAR:";
 
     @Override
     public String getHeader()
@@ -37,30 +33,30 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return CUSTOM_CODE;
+        return MISSING_DEPENDENCY;
     }
 
     @Override
-    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
+    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
         final String invalidDependencies = conflictSet
             .stream()
-            .map(c -> (CustomCodeConflict) c)
-            .flatMap(c -> c.getInvalidAlfrescoDependencies().stream())
+            .map(c -> (MissingDependencyConflict) c)
+            .flatMap(c -> c.getUnsatisfiedDependencies().stream())
             .distinct()
             .sorted()
             .collect(joining(", "));
 
         System.out.println(
             "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (non PublicAPI) dependencies: " + invalidDependencies);
+            + " has unsatisfied dependencies: " + invalidDependencies);
         System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
         System.out.println();
     }
 
     @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
+    public void print(String id, Set<Conflict> conflictSet)
     {
         final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
 

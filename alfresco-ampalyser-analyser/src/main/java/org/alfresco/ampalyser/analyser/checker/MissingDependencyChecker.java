@@ -18,40 +18,36 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
+import org.alfresco.ampalyser.analyser.result.MissingDependencyConflict;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WarLibraryUsageChecker implements Checker
+public class MissingDependencyChecker implements Checker
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WarLibraryUsageChecker.class);
-
     @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
     @Autowired
     private ExtensionCodeAnalysisService extensionCodeAnalysisService;
 
     @Override
-    public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
+    public Stream<Conflict> processInternal(InventoryReport warInventory, String alfrescoVersion)
     {
         final Set<String> allExtensionDependencies = extensionCodeAnalysisService.retrieveAllDependencies();
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
         final Set<String> classesInWar = warInventory
-            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
             .stream()
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
-            .filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
+            //.filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
             .filter(allExtensionDependencies::contains) // keep if the WAR entry could be a dependency of the extension
             .collect(toUnmodifiableSet());
 
@@ -69,14 +65,14 @@ public class WarLibraryUsageChecker implements Checker
                 e.getValue()
                  .stream()
                  .filter(d -> !extensionClassesById.containsKey(d)) // dependencies not provided in the extension
-                 .filter(classesInWar::contains) // dependencies provided by the WAR
+                 .filter(d -> !classesInWar.contains(d)) // dependencies not provided by the WAR
                  .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById
                 .getOrDefault(e.getKey(), emptySet()) // a class can be provided by multiple jars
                 .stream()
-                .map(r -> new WarLibraryUsageConflict(
+                .map(r -> new MissingDependencyConflict(
                     r,
                     e.getValue(),
                     alfrescoVersion
@@ -84,7 +80,7 @@ public class WarLibraryUsageChecker implements Checker
     }
 
     @Override
-    public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
+    public boolean canProcess(InventoryReport warInventory, String alfrescoVersion)
     {
         return !extensionCodeAnalysisService.retrieveDependenciesPerClass().isEmpty();
     }

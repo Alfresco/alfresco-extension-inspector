@@ -8,15 +8,13 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarVersions;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.alfresco.ampalyser.model.BeanResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,15 +24,6 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
         + "instantiate classes from Alfresco or 3rd party libraries which are "
         + "not meant to be instantiated by custom beans:";
 
-    @Autowired
-    private WarInventoryReportStore store;
-
-    @Override
-    public SortedSet<String> retrieveAllKnownVersions()
-    {
-        return store.allKnownVersions();
-    }
-    
     @Override
     public String getHeader()
     {
