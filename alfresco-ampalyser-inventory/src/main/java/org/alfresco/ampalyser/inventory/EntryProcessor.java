@@ -13,7 +13,7 @@ import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +44,7 @@ public class EntryProcessor
         // add modifiable sets for each inventoryWorker type
         // to be able to merge results later
         inventoryWorkers.forEach(inventoryWorker -> extractedResources
-            .put(inventoryWorker.getType(), new HashSet<>()));
+            .put(inventoryWorker.getType(), new LinkedHashSet<>()));
 
         byte[] data = InventoryUtils.extract(zis);
 

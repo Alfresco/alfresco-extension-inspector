@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,7 +70,7 @@ public class InventoryServiceImplTest
     @Test
     public void testExtractInventoryReportFromValidWar() throws IOException
     {
-        Set<Resource> resourceList = new HashSet<>();
+        Set<Resource> resourceList = new LinkedHashSet<>();
         resourceList.add(new FileResource("file.txt", "file.txt"));
         Map<Resource.Type, Set<Resource>> resources = Map.of(Resource.Type.FILE, resourceList);
         when(entryProcessor.processWarEntry(any(), any())).thenReturn(resources);

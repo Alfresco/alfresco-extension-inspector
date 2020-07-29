@@ -10,14 +10,14 @@ package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
@@ -69,7 +69,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             }
             if (isAlfrescoPublicApi)
             {
-                Set<Resource> resources = new HashSet<>();
+                Set<Resource> resources = new LinkedHashSet<>();
                 resources.add(new AlfrescoPublicApiResource(jc.getClassName(), isDeprecated));
                 resources.addAll(findImplicitAlfrescoPublicApis(jc));
 
@@ -100,9 +100,8 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
                     .map(t -> ((ObjectType) t).getClassName())
                     .filter(classname -> classname.startsWith("org.alfresco.") || classname
                         .startsWith("com.alfresco."))
-                    .distinct()
                     .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(toUnmodifiableSet());
 
         // Add to the AlfrescoPublicApi resources all Alfresco Exceptions thrown by the given javaClass's methods
         Set<AlfrescoPublicApiResource> exceptions = stream(javaClass.getMethods())
@@ -111,13 +110,12 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
             .flatMap(exceptionTable ->  stream(exceptionTable.getExceptionNames())
                 .filter(classname -> classname.startsWith("org.alfresco.") || 
                     classname.startsWith("com.alfresco."))
-                .distinct()
                 .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(toUnmodifiableSet());
 
         return Stream.of(methodArgs, exceptions)
             .flatMap(Collection::stream)
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(toUnmodifiableSet());
     }
 
     public Resource.Type getType()

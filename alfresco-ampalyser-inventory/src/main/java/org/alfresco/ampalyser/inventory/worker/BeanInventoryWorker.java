@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
@@ -107,7 +107,7 @@ public class BeanInventoryWorker implements InventoryWorker
      */
     private Set<Resource> findBeans(Element docElem, String filename, String definingObject)
     {
-        final Set<Resource> foundBeans = new HashSet<>();
+        final Set<Resource> foundBeans = new LinkedHashSet<>();
 
         NodeList nodeList = docElem.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++)

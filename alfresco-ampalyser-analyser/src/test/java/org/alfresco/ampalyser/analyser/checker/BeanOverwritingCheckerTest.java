@@ -15,6 +15,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,7 @@ public class BeanOverwritingCheckerTest
         BeanResource warBR21 = new BeanResource("bean2", "war_context1.xml", "org.alfresco.Dummy");
         BeanResource warBR22 = new BeanResource("bean2", "war_context2.xml", "org.alfresco.Dummy");
         BeanResource warBR3 = new BeanResource("bean4", "war_main_context.xml", "org.alfresco.Dummy");
-        warResources.put(BEAN, Set.of(warBR1, warBR21, warBR22, warBR3));
+        warResources.put(BEAN, new LinkedHashSet<>(List.of(warBR1, warBR21, warBR22, warBR3)));
 
         warReport.addResources(warResources);
 
