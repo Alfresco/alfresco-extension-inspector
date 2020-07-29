@@ -34,7 +34,7 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
                 // The list contains also the "header" comment for this section
-                assertEquals(cmdOut.getFileOverwriteConflicts().size(), 2);
+                assertEquals(cmdOut.getFileOverwriteConflicts().size(), 3);
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/mp4.gif"));
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/pdf.png"));
                 assertFalse(cmdOut.isInFileOverwrite("/images/filetype/testfile.bmp"));
@@ -119,5 +119,25 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
+        }
+
+        @Test public void testAnalyseClassPathOverwrite()
+        {
+                // Run against Alfresco version 6.1.1
+                String ampResourcePath = TestResource.getTestResourcePath("analyserTest.amp");
+                String version = "6.1.1";
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+                assertEquals(cmdOut.getClassPathConflicts().size(), 1);
+                assertTrue(cmdOut.isClassPathConflicts("ContextLoaderListener.class"));
+
+                //Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+
+                assertEquals(cmdOut.getClassPathConflicts().size(), 1);
+
         }
 }

@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class CommandReceiver
@@ -43,7 +41,8 @@ public class CommandReceiver
                 {
                         e.printStackTrace();
                 }
-                catch (InterruptedException e) {
+                catch (InterruptedException e)
+                {
                         e.printStackTrace();
                 }
 
@@ -63,7 +62,7 @@ public class CommandReceiver
                 {
                         cmdOut.getOutput().add(line);
                         // Check if public api and is not header
-                        if (line.contains("PublicAPI")  && !line.contains("Found usage of internal Alfresco classes!"))
+                        if (line.contains("PublicAPI") && !line.contains("Found usage of internal Alfresco classes!"))
                         {
                                 cmdOut.getPublicAPIConflicts().add(line);
                                 lastPublicApiIndex = cmdOut.getPublicAPIConflicts().size() - 1;
@@ -81,26 +80,42 @@ public class CommandReceiver
                                 cmdOut.getFileOverwriteConflicts().add(line);
                                 lastLinePublicApi = false;
                                 lastLineBean = false;
-                        }else if (line.contains("in conflict with bean defined"))
+                        }
+                        else if (line.contains("in conflict with bean defined"))
                         {
                                 cmdOut.getBeanOverwriteConflicts().add(line);
                                 lastBeanIndex = cmdOut.getBeanOverwriteConflicts().size() - 1;
                                 lastLineBean = true;
                                 lastLinePublicApi = false;
-                        }else if(line.contains("Conflicting with")){
-                                if(lastLinePublicApi){
-                                        cmdOut.getPublicAPIConflicts().set(lastPublicApiIndex, cmdOut.getPublicAPIConflicts().get(lastPublicApiIndex) + " "+ line);
+                        }
+                        else if (line.contains("Conflicting with"))
+                        {
+                                if (lastLinePublicApi)
+                                {
+                                        cmdOut.getPublicAPIConflicts()
+                                                .set(lastPublicApiIndex, cmdOut.getPublicAPIConflicts().get(lastPublicApiIndex) + " " + line);
                                 }
                                 lastLinePublicApi = false;
                                 lastLineBean = false;
-                        }else if(line.contains("Overwriting bean")) {
+                        }
+                        else if (line.contains("Overwriting bean"))
+                        {
                                 if (lastLineBean)
                                 {
-                                        cmdOut.getBeanOverwriteConflicts().set(lastBeanIndex, cmdOut.getBeanOverwriteConflicts().get(lastBeanIndex) + " " + line);
+                                        cmdOut.getBeanOverwriteConflicts()
+                                                .set(lastBeanIndex, cmdOut.getBeanOverwriteConflicts().get(lastBeanIndex) + " " + line);
                                 }
                                 lastLinePublicApi = false;
                                 lastLineBean = false;
-                        }else{
+                        }
+                        else if (line.contains(".class conflicts with"))
+                        {
+                                cmdOut.getClassPathConflicts().add(line);
+                                lastLinePublicApi = false;
+                                lastLineBean = false;
+                        }
+                        else
+                        {
                                 lastLinePublicApi = false;
                                 lastLineBean = false;
                         }

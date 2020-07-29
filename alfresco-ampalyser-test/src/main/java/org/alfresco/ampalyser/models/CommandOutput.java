@@ -19,6 +19,17 @@ public class CommandOutput
         private List<String> thirdPartyLibConflicts = new ArrayList<>();
         private List<String> fileOverwriteConflicts = new ArrayList<>();
         private List<String> beanOverwriteConflicts = new ArrayList<>();
+        private List<String> classPathConflicts = new ArrayList<>();
+
+        public List<String> getClassPathConflicts()
+        {
+                return classPathConflicts;
+        }
+
+        public void setClassPathConflicts(List<String> classPathConflicts)
+        {
+                this.classPathConflicts = classPathConflicts;
+        }
 
         public List<String> getPublicAPIConflicts()
         {
@@ -93,6 +104,11 @@ public class CommandOutput
         public boolean isInPublicAPIConflicts(String str)
         {
                 return contains(publicAPIConflicts, str);
+        }
+
+        public boolean isClassPathConflicts(String str)
+        {
+                return contains(classPathConflicts, str);
         }
 
         public boolean isInFileOverwrite(String str)
