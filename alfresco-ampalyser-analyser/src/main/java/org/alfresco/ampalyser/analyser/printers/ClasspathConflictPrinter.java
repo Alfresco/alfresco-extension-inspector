@@ -27,9 +27,9 @@ public class ClasspathConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found classpath conflicts. Although it may be possible to install this "
-            + "extension, its behaviour is undefined.\nThe following resources in your "
-            + "extension are in conflict with resources on the classpath in the "
-            + "repository:";
+            + "extension, its behaviour is undefined." + System.lineSeparator()
+            + "The following resources in your extension are in conflict with resources "
+            + "on the classpath in the repository:";
 
     private static final Set<String> CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED = new HashSet<>();
 

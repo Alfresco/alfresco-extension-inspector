@@ -26,8 +26,8 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     private static final String HEADER =
         "Found bean overwrites. Spring beans defined by Alfresco are a "
             + "fundamental building block of the repository, and must not be "
-            + "overwritten unless explicitly allowed.\nThe following beans "
-            + "overwrite default functionality:";
+            + "overwritten unless explicitly allowed." + System.lineSeparator()
+            + "The following beans overwrite default functionality:";
 
     @Autowired
     private WarInventoryReportStore store;
