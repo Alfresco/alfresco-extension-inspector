@@ -234,14 +234,6 @@ public class CommandRunnerTest
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner
             .execute(new DefaultApplicationArguments(extensionFileName, "--verbose=random-value")));
-
-        assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
-            new DefaultApplicationArguments(extensionFileName,
-                "--beanOverrideWhitelist=" + "whitelist-does-not-exist")));
-
-        assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
-            new DefaultApplicationArguments(extensionFileName,
-                "--beanClassWhitelist=" + "whitelist-does-not-exist")));
     }
 
     @Test
