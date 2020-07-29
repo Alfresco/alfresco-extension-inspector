@@ -12,7 +12,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -55,7 +54,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
         String[][] data = new String[conflictSet.size() + 1][3];
         data[0][0] = "Extension Bean Resource ID";

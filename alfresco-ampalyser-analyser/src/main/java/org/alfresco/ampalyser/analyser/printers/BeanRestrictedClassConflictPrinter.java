@@ -11,7 +11,6 @@ package org.alfresco.ampalyser.analyser.printers;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -52,7 +51,7 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(Set<Conflict> conflictSet) throws IOException
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
         String[][] data = new String[conflictSet.size() + 1][4];
         data[0][0] = "Extension Bean Resource ID";
