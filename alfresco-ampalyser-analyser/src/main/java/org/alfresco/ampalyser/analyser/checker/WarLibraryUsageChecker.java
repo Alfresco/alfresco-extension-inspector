@@ -72,7 +72,7 @@ public class WarLibraryUsageChecker implements Checker
                 e.getKey(),
                 e.getValue()
                  .stream()
-                 .filter(c -> isInAllowedList(c, thirdPartyAllowedList))
+                 .filter(c -> !isInAllowedList(c, thirdPartyAllowedList))
                  .filter(d -> !extensionClassesById.containsKey(d)) // dependencies not provided in the extension
                  .filter(classesInWar::contains) // dependencies provided by the WAR
                  .collect(toUnmodifiableSet())
