@@ -25,9 +25,9 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
         "Found resource conflicts.\nThe following resources will conflict with "
-            + "resources present in various Alfresco versions. It will not be "
-            + "possible to install this extension on these versions. (You can use the "
-            + "option --target to limit this scan to specific Alfresco versions)";
+            + "resources used in various Alfresco versions, so you won't be able "
+            + "to install this extension on these versions. Try using the "
+            + "--target option to limit this scan to specific Alfresco versions.";
 
     @Autowired
     private WarInventoryReportStore store;

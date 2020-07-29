@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
 public class CustomCodeConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found usage of internal Alfresco classes. Alfresco provides a Java API "
+        "Found usage of internal classes. Alfresco provides a Java API "
             + "that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in "
-            + "the Alfresco repository are considered our internal implementation detail and might "
+            + "the repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
-            + "\nThe following classes are making use of internal Alfresco classes:";
+            + "\nThe following classes use internal Alfresco classes:";
 
     @Autowired
     private WarInventoryReportStore store;

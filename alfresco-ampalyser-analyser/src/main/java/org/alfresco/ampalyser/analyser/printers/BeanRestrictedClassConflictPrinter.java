@@ -25,9 +25,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER = "Found beans instantiating internal classes.\nThe "
-        + "following beans instantiate classes from Alfresco or 3rd party libraries which are "
-        + "not meant to be instantiated by custom beans:";
+    private static final String HEADER = "Found beans that instantiate internal classes.\nThe "
+        + "following beans instantiate classes from Alfresco or 3rd party libraries which must "
+        + "not be instantiated by custom beans:";
 
     @Autowired
     private WarInventoryReportStore store;
