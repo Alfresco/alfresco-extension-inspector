@@ -8,13 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.text.MessageFormat.format;
-import static java.util.stream.Collectors.flatMapping;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -28,11 +25,11 @@ import org.springframework.stereotype.Component;
 public class WarLibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found 3rd party library usage! Although this is not an "
-        + "immediate problem, all 3rd party libraries that come with the Alfresco "
-        + "repository are considered our internal implementation detail. These "
-        + "libraries will change or might even disappear in service packs without "
-        + "notice.\nThe following classes are making use of 3rd party libraries:";
+        "Found 3rd party library usage. Although this isn't an immediate problem, all 3rd party "
+            + "libraries that are delivered with the repository are considered as our internal "
+            + "implementation detail. These libraries will change or may be removed in future "
+            + "service packs without notice." + lineSeparator()
+            + "The following classes use 3rd party libraries:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -56,30 +53,44 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
+    public void printVerboseOutput(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final String invalidDependencies = conflictSet
-            .stream()
-            .map(c -> (WarLibraryUsageConflict) c)
-            .flatMap(c -> c.getClassDependencies().stream())
-            .distinct()
-            .sorted()
-            .collect(joining(", "));
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
+        data[0][3] = "Invalid 3rd Party Dependencies";
 
-        System.out.println(
-            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (3rd party) dependencies: " + invalidDependencies);
-        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 0;
+        for (Conflict conflict : conflictSet)
+        {
+            row++;
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            data[row][3] = String.join(";",((WarLibraryUsageConflict) conflict).getClassDependencies());
+        }
+
+        // TODO: Enable when we eliminate the false positives (https://issues.alfresco.com/jira/browse/ACS-80). Output is larger than console buffer.
+        // printTable(data);
     }
 
     @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
+    public void print(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID using 3rd Party library code";
 
-        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            final String id = conflict.getAmpResourceInConflict().getId();;
+            final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+            data[row][0] = id.equals(definingObject) ? id : id + "@" + definingObject;
+
+            row++;
+        }
+
+        printTable(data);
     }
 }

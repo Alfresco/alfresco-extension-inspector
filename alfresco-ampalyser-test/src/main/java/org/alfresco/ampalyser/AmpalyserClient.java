@@ -11,6 +11,7 @@ package org.alfresco.ampalyser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.alfresco.ampalyser.command.CommandExecutor;
 import org.alfresco.ampalyser.command.CommandImpl;
@@ -69,7 +70,7 @@ public class AmpalyserClient
                     .orElse(null);
         }
 
-        public List<Resource> retrieveInventoryResources(Resource.Type resourceType, File jsonReport)
+        public Set<Resource> retrieveInventoryResources(Resource.Type resourceType, File jsonReport)
         {
                 final InventoryReport inventoryReport = jsonInventory.getInventoryReportFromJson(jsonReport);
 

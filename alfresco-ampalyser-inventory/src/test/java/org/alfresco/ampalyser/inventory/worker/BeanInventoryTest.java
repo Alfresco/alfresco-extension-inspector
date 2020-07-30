@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.BeanResource;
@@ -59,7 +59,7 @@ public class BeanInventoryTest
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
-        List<Resource> resources = beanInventoryWorker
+        Set<Resource> resources = beanInventoryWorker
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
@@ -80,7 +80,7 @@ public class BeanInventoryTest
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
-        List<Resource> resources = beanInventoryWorker
+        Set<Resource> resources = beanInventoryWorker
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
@@ -101,7 +101,7 @@ public class BeanInventoryTest
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
-        List<Resource> resources = beanInventoryWorker
+        Set<Resource> resources = beanInventoryWorker
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());
@@ -123,7 +123,7 @@ public class BeanInventoryTest
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
-        List<Resource> resources = beanInventoryWorker
+        Set<Resource> resources = beanInventoryWorker
             .processZipEntry(zipEntry, data, definingObject);
 
         assertEquals(1, resources.size());

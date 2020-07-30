@@ -12,10 +12,11 @@ import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -31,7 +32,7 @@ public class EntryProcessor
     @Autowired
     private List<InventoryWorker> inventoryWorkers;
 
-    public Map<Resource.Type, List<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
+    public Map<Resource.Type, Set<Resource>> processWarEntry(ZipEntry warEntry, ZipInputStream zis)
         throws IOException
     {
         if (warEntry == null || zis == null)
@@ -39,11 +40,11 @@ public class EntryProcessor
             throw new IllegalArgumentException("Arguments should not be null.");
         }
 
-        final Map<Resource.Type, List<Resource>> extractedResources = new EnumMap<>(Resource.Type.class);
-        // add modifiable lists for each inventoryWorker type
+        final Map<Resource.Type, Set<Resource>> extractedResources = new EnumMap<>(Resource.Type.class);
+        // add modifiable sets for each inventoryWorker type
         // to be able to merge results later
         inventoryWorkers.forEach(inventoryWorker -> extractedResources
-            .put(inventoryWorker.getType(), new ArrayList<>()));
+            .put(inventoryWorker.getType(), new LinkedHashSet<>()));
 
         byte[] data = InventoryUtils.extract(zis);
 
@@ -86,7 +87,7 @@ public class EntryProcessor
     }
 
     private void processEntry(ZipEntry entry, byte[] data, String definingObject,
-        Map<Resource.Type, List<Resource>> resources)
+        Map<Resource.Type, Set<Resource>> resources)
     {
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),

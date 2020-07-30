@@ -8,7 +8,9 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -22,10 +24,10 @@ import org.springframework.stereotype.Component;
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found resource conflicts!\nThe following resources will conflict with "
-            + "resources present in various Alfresco versions. It will not be "
-            + "possible to install this extension on these versions. (You can use the "
-            + "option --target to limit this scan to specific Alfresco versions)";
+        "Found resource conflicts." + lineSeparator() + "The following resources will "
+            + "conflict with resources used in various Alfresco versions, so you won't be able "
+            + "to install this extension on these versions. Try using the "
+            + "--target option to limit this scan to specific Alfresco versions.";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -49,19 +51,38 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        String warResourceId = conflictSet.iterator().next().getWarResourceInConflict().getId();
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
 
-        System.out.println(id + " (resource conflicting with " + warResourceId + ")");
-        System.out.println("Conflicting with " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getWarResourceInConflict().getDefiningObject();
+            data[row][3] = conflict.getAlfrescoVersion();
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        System.out.println(id);
-        System.out.println();
+        String[][] data = new String[conflictSet.size() + 1][1];
+        data[0][0] = "Extension Resource ID overwriting WAR resources";
+
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row++][0] = conflict.getAmpResourceInConflict().getId();
+        }
+
+        printTable(data);
     }
 }

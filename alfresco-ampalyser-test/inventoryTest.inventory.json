@@ -41,12 +41,12 @@
     "BEAN" : [ {
       "type" : "BEAN",
       "id" : "webscripts.configsource",
-      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "definingObject" : "WEB-INF/web-application-context.xml",
       "beanClass" : "org.springframework.extensions.config.source.UrlConfigSource"
     }, {
       "type" : "BEAN",
       "id" : "web.config",
-      "definingObject" : "WEB-INF/web-application-context.xml@WEB-INF/web-application-context.xml",
+      "definingObject" : "WEB-INF/web-application-context.xml",
       "beanClass" : "org.springframework.extensions.config.xml.XMLConfigService"
     }, {
       "type" : "BEAN",
@@ -87,11 +87,23 @@
     "ALFRESCO_PUBLIC_API" : [ {
       "type" : "ALFRESCO_PUBLIC_API",
       "id" : "org.alfresco.repo.node.NodeServicePolicies",
-      "deprecated" : false
+      "deprecated" : false,
+      "implicit" : false
     }, {
       "type" : "ALFRESCO_PUBLIC_API",
       "id" : "org.alfresco.repo.content.transform.TransformerConfig",
-      "deprecated" : true
+      "deprecated" : true,
+      "implicit" : false
+    }, {
+      "type" : "ALFRESCO_PUBLIC_API",
+      "id" : "org.alfresco.service.cmr.repository.TransformationOptions",
+      "deprecated" : false,
+      "implicit" : true
+    }, {
+      "type" : "ALFRESCO_PUBLIC_API",
+      "id" : "org.alfresco.repo.content.transform.ContentTransformer",
+      "deprecated" : false,
+      "implicit" : true
     } ],
     "CLASSPATH_ELEMENT" : [ {
       "type" : "CLASSPATH_ELEMENT",

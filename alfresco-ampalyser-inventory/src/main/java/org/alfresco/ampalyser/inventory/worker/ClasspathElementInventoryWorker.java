@@ -8,11 +8,11 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.alfresco.ampalyser.commons.InventoryUtils.isFromExtension;
 import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
 
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -25,7 +25,7 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
+    public Set<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         return processInternal(zipEntry, definingObject);
     }
@@ -46,13 +46,13 @@ public class ClasspathElementInventoryWorker implements InventoryWorker
                 || isFromJar(entry, definingObject));
     }
 
-    private List<Resource> processInternal(ZipEntry zipEntry, String definingObject)
+    private Set<Resource> processInternal(ZipEntry zipEntry, String definingObject)
     {
         String resourceName = zipEntry.getName();
         if (resourceName.startsWith(WEB_INF_CLASSES))
         {
             resourceName = resourceName.substring(WEB_INF_CLASSES.length());
         }
-        return singletonList(new ClasspathElementResource("/" + resourceName, "/" + definingObject));
+        return singleton(new ClasspathElementResource("/" + resourceName, "/" + definingObject));
     }
 }

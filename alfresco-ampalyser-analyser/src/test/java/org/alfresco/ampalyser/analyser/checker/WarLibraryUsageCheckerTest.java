@@ -45,7 +45,7 @@ class WarLibraryUsageCheckerTest
     {
         // AMP Classpath elements
         {
-            doReturn(List.of(
+            doReturn(Set.of(
                 res("/com/example/test/A1.nope", "white"),
                 res("/com/example/test/A1.class", "white"),
                 res("/com/example/test/A2.class", "white"),
@@ -89,7 +89,7 @@ class WarLibraryUsageCheckerTest
 
         final InventoryReport warInventory = new InventoryReport();
         {
-            warInventory.setResources(Map.of(CLASSPATH_ELEMENT, List.of(
+            warInventory.setResources(Map.of(CLASSPATH_ELEMENT, Set.of(
                 res("/com/example/test/W10.class", "red"),
                 res("/com/example/test/W11.class", "red"),
                 res("/com/example/test/W12.class", "red"),
