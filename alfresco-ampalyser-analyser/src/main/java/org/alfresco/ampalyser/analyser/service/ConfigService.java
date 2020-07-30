@@ -43,7 +43,7 @@ public class ConfigService
     private Map<Resource.Type, Set<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
-    private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> internalClassWhitelist = emptySet();
     private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
@@ -51,7 +51,7 @@ public class ConfigService
     public void init()
     {
         beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
-        beanClassWhitelist = whitelistService.loadBeanClassWhitelist();
+        internalClassWhitelist = whitelistService.loadInternalClassWhitelist();
     }
     
     public String getExtensionPath()
@@ -74,9 +74,9 @@ public class ConfigService
         return beanOverrideWhitelist;
     }
 
-    public Set<String> getBeanClassWhitelist()
+    public Set<String> getInternalClassWhitelist()
     {
-        return beanClassWhitelist;
+        return internalClassWhitelist;
     }
 
     public Set<String> getThirdPartyAllowedList()

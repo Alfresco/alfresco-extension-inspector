@@ -29,7 +29,7 @@ public class WhitelistService
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
 
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
-    private static final String ALLOWED_BEAN_CLASS_LIST = "/allowedBeanClassList.json";
+    private static final String ALLOWED_INTERNAL_CLASS_LIST = "/allowedInternalClassList.json";
     private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted-3rd-party-classes-allowedlist.default.json";
 
     @Autowired
@@ -58,25 +58,25 @@ public class WhitelistService
     }
 
     /**
-     * Reads and loads a class whitelist for the .amp beans from a .json file
+     * Reads and loads a list of allowed Alfresco internal classes
      *
-     * @return a {@link Set} of the whitelisted beans
+     * @return a {@link Set} of the whitelisted internal classes
      */
-    public Set<String> loadBeanClassWhitelist()
+    public Set<String> loadInternalClassWhitelist()
     {
         try
         {
             return objectMapper.readValue(
-                getClass().getResourceAsStream(ALLOWED_BEAN_CLASS_LIST),
+                getClass().getResourceAsStream(ALLOWED_INTERNAL_CLASS_LIST),
                 new TypeReference<>() {});
         }
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read Allowed Bean Restricted Class List file: " + ALLOWED_BEAN_CLASS_LIST,
+                "Failed to read Allowed Internal Class List file: " + ALLOWED_INTERNAL_CLASS_LIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read Allowed Bean Restricted List file: " + ALLOWED_BEAN_CLASS_LIST,
+                "Failed to read Allowed Internal Class List file: " + ALLOWED_INTERNAL_CLASS_LIST,
                 ioe);
         }
     }

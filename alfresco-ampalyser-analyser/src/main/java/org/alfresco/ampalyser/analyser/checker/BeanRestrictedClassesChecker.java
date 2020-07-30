@@ -46,8 +46,7 @@ public class BeanRestrictedClassesChecker implements Checker
         
         final Set<String> whitelist = Stream
             .concat(
-                // The list coming from the file the user provided
-                configService.getBeanClassWhitelist().stream(),
+                configService.getInternalClassWhitelist().stream(),
 
                 // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
                 warInventory
