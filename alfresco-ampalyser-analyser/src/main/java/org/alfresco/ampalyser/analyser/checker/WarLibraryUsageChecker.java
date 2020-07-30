@@ -7,7 +7,6 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -105,25 +104,19 @@ public class WarLibraryUsageChecker implements Checker
      */
     private boolean isInAllowedList(String className, Set<String> thirdPartyAllowedList)
     {
-        final String[] packs = className.split("/");
-        if (packs.length < 2)
+        final String[] packs = className.split("[./]");
+        if (packs.length < 3)
         {
             return false;
         }
-        StringBuilder pack = new StringBuilder();
-        for (int i = 1; i < packs.length; i++)
+        StringBuilder pack = new StringBuilder(packs[1]).append('/').append(packs[2]);
+        for (int i = 3; i < packs.length - 1; i++)
         {
-            // If it's the first bit, don't add the first "/"
-            // If it's the last bit, remove the .class.
-            // Helps towards a more friendly approach in the allowed list
-            pack
-                .append(i == 1 ? "" : "/")
-                .append(i != packs.length - 1 ? packs[i] : packs[i].replaceAll("\\.class", ""));
-
             if (thirdPartyAllowedList.contains(pack.toString()))
             {
                 return true;
             }
+            pack.append("/").append(packs[i]);
         }
 
         return false;
