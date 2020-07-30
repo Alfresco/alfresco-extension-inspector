@@ -9,8 +9,6 @@
 package org.alfresco.ampalyser.analyser.usage;
 
 import static java.lang.String.join;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_CLASS_WHITELIST;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.BEAN_OVERRIDE_WHITELIST;
 
 import java.util.Arrays;
 
@@ -22,8 +20,6 @@ public class UsagePrinter
     private static final String TARGET_OPTION =
         "[" + TARGET_VERSION + "=6.1.0[-7.0.0] | " 
             + TARGET_INVENTORY + "=/path/to/war_inventory.json]";
-    private static final String BEAN_OVERRIDE_WHITELIST_PATH = "--" + BEAN_OVERRIDE_WHITELIST;
-    private static final String BEAN_CLASS_WHITELIST_PATH = "--" + BEAN_CLASS_WHITELIST;
     private static final String VERBOSE = "--verbose";
     private static final String VERBOSE_OPTION = "[" + VERBOSE + "=[true | false]]";
     private static final String HELP = "--help";
@@ -37,8 +33,6 @@ public class UsagePrinter
             join(" ",
                 EXTENSION_FILENAME,
                 TARGET_OPTION,
-                "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_whitelist.json]",
-                "[" + BEAN_CLASS_WHITELIST_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
                 VERBOSE_OPTION),
             HELP, 
             LIST_KNOWN_VERSIONS);
@@ -49,10 +43,6 @@ public class UsagePrinter
             "An Alfresco version or a range of Alfresco versions.\n");
         System.out.printf(format, TARGET_INVENTORY,
             "A file path of an existing WAR inventory.\n");
-        System.out.printf(format, BEAN_OVERRIDE_WHITELIST_PATH,
-            "A file path of a JSON containing a list of beans that can be overridden.\n");
-        System.out.printf(format, BEAN_CLASS_WHITELIST_PATH,
-            "A file path of a JSON containing a list of classes that can be instantiated.\n");
         System.out.printf(format, VERBOSE, "Verbose output.\n");
         System.out.printf(format, HELP, "Shows this screen.\n");
         System.out.printf(format, LIST_KNOWN_VERSIONS,
@@ -65,8 +55,6 @@ public class UsagePrinter
         printUsage(join(" ", 
             EXTENSION_FILENAME, 
             TARGET_OPTION,
-            "[" + BEAN_OVERRIDE_WHITELIST_PATH + "=/path/to/bean_overriding_whitelist.json]",
-            "[" + BEAN_CLASS_WHITELIST_PATH + "=/path/to/bean_restricted_classes_whitelist.json]",
             VERBOSE_OPTION));
     }
     

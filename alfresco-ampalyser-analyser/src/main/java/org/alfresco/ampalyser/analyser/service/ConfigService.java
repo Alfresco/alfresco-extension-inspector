@@ -12,6 +12,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import javax.annotation.PostConstruct;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,13 @@ public class ConfigService
     private Set<String> beanClassWhitelist = emptySet();
     private boolean verboseOutput = false;
 
+    @PostConstruct
+    public void init()
+    {
+        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
+        beanClassWhitelist = whitelistService.loadBeanClassWhitelist();
+    }
+    
     public String getExtensionPath()
     {
         return extensionPath;
@@ -87,15 +95,5 @@ public class ConfigService
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
             extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
-    }
-
-    public void registerBeanOverrideWhitelistPath(final String path)
-    {
-        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist(path);
-    }
-
-    public void registerBeanClassWhitelist(final String path)
-    {
-        beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
     }
 }

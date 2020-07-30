@@ -12,8 +12,11 @@ import static java.lang.String.join;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,9 +28,13 @@ import java.util.TreeSet;
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface ConflictPrinter
 {
+    Logger LOGGER = LoggerFactory.getLogger(ConflictPrinter.class);
+
     default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
         if (isEmpty(conflicts))
@@ -35,19 +42,33 @@ public interface ConflictPrinter
             return;
         }
 
-        System.out.println(getHeader());
-        System.out.println();
+        // TODO: We can even sort the conflicts based on the war version for a prettier output?
+        final Set<Conflict> allConflicts = conflicts.values()
+            .stream()
+            .flatMap(Set::stream)
+            .collect(toSet());
 
-        if (verbose)
+        String[][] data = new String[2][1];
+        data[0][0] = getConflictType() + " CONFLICTS";
+        data[1][0] = getHeader();
+        printTable(data);
+
+        try
         {
-            conflicts.forEach(this::printVerboseOutput);
+            if (verbose)
+            {
+                printVerboseOutput(allConflicts);
+            }
+            else
+            {
+                print(allConflicts);
+            }
         }
-        else
+        catch (Exception e)
         {
-            conflicts.forEach(this::print);
+            LOGGER.warn("Failed to print " + getConflictType() + " conflicts!", e);
         }
 
-        System.out.println("-------------------------------------------------------------------");
         System.out.println();
     }
     
@@ -57,9 +78,9 @@ public interface ConflictPrinter
 
     Conflict.Type getConflictType();
 
-    void printVerboseOutput(String id, Set<Conflict> conflictSet);
+    void printVerboseOutput(Set<Conflict> conflictSet) throws IOException;
     
-    void print(String id, Set<Conflict> conflictSet);
+    void print(Set<Conflict> conflictSet);
     
     default String joinWarVersions(Set<Conflict> conflictSet)
     {
@@ -132,20 +153,22 @@ public interface ConflictPrinter
         return groups;
     }
 
-    static String joinWarResourceDefiningObjs(Set<Conflict> conflictSet)
+    static String joinWarResourceDefiningObjs(String resourceId, Set<Conflict> conflictSet)
     {
         return conflictSet
             .stream()
+            .filter(c -> c.getWarResourceInConflict().getId().equals(resourceId))
             .map(conflict -> conflict.getWarResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
             .collect(joining(", "));
     }
 
-    static String joinExtensionDefiningObjs(Set<Conflict> conflictSet)
+    static String joinExtensionDefiningObjs(String resourceId, Set<Conflict> conflictSet)
     {
         return conflictSet
             .stream()
+            .filter(c -> c.getAmpResourceInConflict().getId().equals(resourceId))
             .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
