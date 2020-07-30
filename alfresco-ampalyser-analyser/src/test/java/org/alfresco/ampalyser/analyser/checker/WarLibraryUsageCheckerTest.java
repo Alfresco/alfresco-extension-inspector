@@ -175,6 +175,53 @@ class WarLibraryUsageCheckerTest
         expected.forEach(c -> assertTrue(expected.contains(c)));
     }
 
+
+    @Test
+    void processInternalWithAllowedList()
+    {
+        // AMP Classpath elements
+        {
+            doReturn(List.of(
+                res("/com/example/amp/A1.class", "white"),
+                res("/com/example/amp/A2.class", "white"),
+                res("/com/example/amp/A3.class", "white"),
+                res("/com/example/amp/A4.class", "white")
+            )).when(configService).getExtensionResources(any());
+        }
+
+        final InventoryReport warInventory = new InventoryReport();
+        {
+            warInventory.setResources(Map.of(CLASSPATH_ELEMENT, List.of(
+                res("/com/example/abc/X1.class", "red"),
+                res("/com/example/abc/X2.class", "red"),
+                res("/com/example/def/X3.class", "red"),
+                res("/com/example/def/X33.class", "red"),
+                res("/com/example/def/X4.class", "red")
+            )));
+        }
+
+        // AMP bytecode dependencies
+        {
+            doReturn(Map.ofEntries(
+                entry("/com/example/amp/A1.class", Set.of("/com/example/abc/X1.class")),
+                entry("/com/example/amp/A2.class", Set.of("/com/example/abc/X2.class", "/nope/Nope.class")),
+                entry("/com/example/amp/A3.class", Set.of("/com/example/def/X3.class", "/com/example/abc/X2.class")),
+                entry("/com/example/amp/A4.class", Set.of("/com/example/def/X4.class", "/com/example/test/A7.class"))
+            )).when(extensionCodeAnalysisService).retrieveDependenciesPerClass();
+        }
+
+        doReturn(Set.of("com/example/def")).when(configService).getThirdPartyAllowedList();
+        final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());
+
+        final Set<Conflict> expected = Set.of(
+            conflict(res("/com/example/amp/A3.class", "color"), Set.of("/com/example/abc/X2.class")),
+            conflict(res("/com/example/amp/A2.class", "color"), Set.of("/com/example/abc/X2.class")),
+            conflict(res("/com/example/amp/A1.class", "color"), Set.of("/com/example/abc/X1.class"))
+        );
+        assertEquals(expected.size(), result.size());
+        expected.forEach(c -> assertTrue(expected.contains(c)));
+    }
+
     private static ClasspathElementResource res(String id, String definingObject)
     {
         return new ClasspathElementResource(id, definingObject);
