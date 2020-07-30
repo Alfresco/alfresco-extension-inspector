@@ -10,7 +10,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -181,7 +180,7 @@ class WarLibraryUsageCheckerTest
     {
         // AMP Classpath elements
         {
-            doReturn(List.of(
+            doReturn(Set.of(
                 res("/com/example/amp/A1.class", "white"),
                 res("/com/example/amp/A2.class", "white"),
                 res("/com/example/amp/A3.class", "white"),
@@ -191,7 +190,7 @@ class WarLibraryUsageCheckerTest
 
         final InventoryReport warInventory = new InventoryReport();
         {
-            warInventory.setResources(Map.of(CLASSPATH_ELEMENT, List.of(
+            warInventory.setResources(Map.of(CLASSPATH_ELEMENT, Set.of(
                 res("/com/example/abc/X1.class", "red"),
                 res("/com/example/abc/X2.class", "red"),
                 res("/com/example/def/X3.class", "red"),
