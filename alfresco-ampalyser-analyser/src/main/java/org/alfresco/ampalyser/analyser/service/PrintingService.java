@@ -23,7 +23,7 @@ public class PrintingService
         TableBuilder tableBuilder = new TableBuilder(tableModel);
         tableBuilder.addInnerBorder(BorderStyle.fancy_light);
         tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
-        System.out.println(tableBuilder.build().render(255));
+        System.out.println(tableBuilder.build().render(150));
         System.out.println();
     }
 }
