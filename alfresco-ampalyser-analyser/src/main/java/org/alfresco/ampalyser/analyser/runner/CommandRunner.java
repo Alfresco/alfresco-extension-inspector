@@ -93,6 +93,8 @@ public class CommandRunner
 
         configService.registerExtensionPath(extensionPath);
 
+        configService.registerThirdPartyAllowedList();
+
         // retrieve provided war inventories, if any
         final Set<String> warInventories = extractWarInventoryPaths(args);
         if (warInventories != null)

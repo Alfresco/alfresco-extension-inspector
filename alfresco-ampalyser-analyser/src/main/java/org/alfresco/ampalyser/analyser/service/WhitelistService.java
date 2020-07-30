@@ -8,7 +8,9 @@
 package org.alfresco.ampalyser.analyser.service;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ public class WhitelistService
 
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
     private static final String ALLOWED_BEAN_CLASS_LIST = "/allowedBeanClassList.json";
+    private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted-3rd-party-classes-allowedlist.default.json";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -76,5 +79,33 @@ public class WhitelistService
                 "Failed to read Allowed Bean Restricted List file: " + ALLOWED_BEAN_CLASS_LIST,
                 ioe);
         }
+    }
+
+    /**
+     * Reads and loads a 3rd party allowed list for the .amp classes to use from a .json file
+     *
+     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     */
+    public Set<String> load3rdPartyAllowedList()
+    {
+        final Set<String> allowedList;
+
+        try
+        {
+            // Allow the user to input a friendly format, e.g. 'org.alfresco.repo.*' and convert it internally the '/' delimited structure
+            allowedList = new HashSet<String>(objectMapper.readValue(getClass().getResourceAsStream(DEFAULT_3RD_PARTY_ALLOWEDLIST),
+                new TypeReference<>() {})).stream()
+                .map(s -> s.replaceAll("\\.\\*", "").replaceAll("\\.", "/"))
+                .collect(Collectors.toSet());
+        }
+        catch (IOException ioe)
+        {
+            LOGGER.error(
+                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+            throw new RuntimeException(
+                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+        }
+
+        return allowedList;
     }
 }

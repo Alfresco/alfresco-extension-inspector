@@ -44,6 +44,7 @@ public class ConfigService
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
     private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
     @PostConstruct
@@ -78,6 +79,11 @@ public class ConfigService
         return beanClassWhitelist;
     }
 
+    public Set<String> getThirdPartyAllowedList()
+    {
+        return thirdPartyAllowedList;
+    }
+
     public boolean isVerboseOutput()
     {
         return verboseOutput;
@@ -95,5 +101,10 @@ public class ConfigService
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
             extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
+    }
+
+    public void registerThirdPartyAllowedList()
+    {
+        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
 }
