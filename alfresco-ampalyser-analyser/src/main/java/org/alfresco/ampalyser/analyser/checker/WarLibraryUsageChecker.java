@@ -119,6 +119,6 @@ public class WarLibraryUsageChecker implements Checker
             pack.append("/").append(packs[i]);
         }
 
-        return false;
+        return thirdPartyAllowedList.contains(pack.toString());
     }
 }
