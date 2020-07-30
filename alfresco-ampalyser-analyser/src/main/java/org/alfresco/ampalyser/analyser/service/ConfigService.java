@@ -52,6 +52,7 @@ public class ConfigService
     {
         beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
         internalClassWhitelist = whitelistService.loadInternalClassWhitelist();
+        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
     
     public String getExtensionPath()
@@ -101,10 +102,5 @@ public class ConfigService
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
             extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
-    }
-
-    public void registerThirdPartyAllowedList()
-    {
-        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
 }
