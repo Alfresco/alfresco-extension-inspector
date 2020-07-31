@@ -12,11 +12,13 @@ import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,19 +75,18 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-        String[][] data = new String[conflictSet.size() + 1][3];
-        data[0][0] = "Extension Bean Resource ID";
-        data[0][1] = "Extension Defining Objects";
-        data[0][2] = "WAR Defining object";
+        String[][] data = conflictSet.stream()
+            .map(conflict -> List.of(
+                conflict.getAmpResourceInConflict().getId(),
+                ConflictPrinter.joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet),
+                conflict.getWarResourceInConflict().getDefiningObject())
+            )
+            .distinct()
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        int row = 1;
-        for (Conflict conflict : conflictSet)
-        {
-            data[row][0] = conflict.getAmpResourceInConflict().getId();
-            data[row][1] = ConflictPrinter.joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet);
-            data[row][2] = conflict.getWarResourceInConflict().getDefiningObject();
-            row++;
-        }
+        data = ArrayUtils.insert(0, data,
+            new String[][]{new String[]{"Extension Bean Resource ID", "Extension Defining Objects", "WAR Defining Object"}});
         printTable(data);
     }
 }
