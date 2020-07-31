@@ -140,7 +140,7 @@ class CustomCodeCheckerTest
 
     private static Resource apar(String id, boolean deprecated)
     {
-        return new AlfrescoPublicApiResource(OAW.substring(1) + id, deprecated);
+        return new AlfrescoPublicApiResource("org.alfresco.war." + id, deprecated);
     }
 
     private static Conflict conflict(ClasspathElementResource resource, Set<String> classes)

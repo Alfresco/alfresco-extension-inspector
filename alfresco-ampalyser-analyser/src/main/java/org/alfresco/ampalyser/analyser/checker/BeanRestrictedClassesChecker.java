@@ -60,7 +60,8 @@ public class BeanRestrictedClassesChecker implements Checker
             .stream()
             .filter(r -> !extensionClassesById
                 .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
-            .filter(r -> !allowedList.contains(r.getBeanClass()))
+            .filter(r -> !allowedList.contains(r.getBeanClass()) && !isInAllowedPackages(
+                r.getBeanClass()))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 
@@ -68,5 +69,18 @@ public class BeanRestrictedClassesChecker implements Checker
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
         return true;
+    }
+
+    private boolean isInAllowedPackages(final String currentClass)
+    {
+        final Set<String> allowedInternalPackages = configService.getInternalPackageAllowedList();
+        boolean allowed = false;
+        String packageName = currentClass;
+        while (packageName.compareTo("org.alfresco") > 0 && !allowed)
+        {
+            packageName = packageName.replaceAll("(\\.\\w*)$", "");
+            allowed = allowedInternalPackages.contains(packageName);
+        }
+        return allowed;
     }
 }

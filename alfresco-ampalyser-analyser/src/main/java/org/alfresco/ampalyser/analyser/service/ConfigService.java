@@ -62,6 +62,7 @@ public class ConfigService
         internalPackageAllowedList = internalCodeAllowedList
             .stream()
             .filter(s -> s.endsWith(".*"))
+            .map(s -> s.replace(".*", ""))
             .collect(Collectors.toUnmodifiableSet());
     }
     
@@ -88,6 +89,11 @@ public class ConfigService
     public Set<String> getInternalClassAllowedList()
     {
         return internalClassAllowedList;
+    }
+
+    public Set<String> getInternalPackageAllowedList()
+    {
+        return internalPackageAllowedList;
     }
 
     public Set<String> getThirdPartyAllowedList()
