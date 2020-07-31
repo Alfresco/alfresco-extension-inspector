@@ -88,7 +88,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             .toArray(String[][]::new);
 
         data = ArrayUtils.insert(0, data,
-            new String[][]{new String[]{"Extension Bean Resource ID using Custom Code"}});
+            new String[][]{new String[]{"Extension Resource ID using Custom Code"}});
         printTable(data);
     }
 }
