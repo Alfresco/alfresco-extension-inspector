@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.alfresco.ampalyser.inventory.service.InventoryService;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -44,6 +45,7 @@ public class ConfigService
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideAllowedList = emptySet();
     private Set<String> internalClassAllowedList = emptySet();
+    private Set<String> internalPackageAllowedList = emptySet();
     private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
@@ -51,8 +53,16 @@ public class ConfigService
     public void init()
     {
         beanOverrideAllowedList = allowedListService.loadBeanOverrideAllowedList();
-        internalClassAllowedList = allowedListService.loadInternalClassAllowedList();
         thirdPartyAllowedList = allowedListService.load3rdPartyAllowedList();
+        Set<String> internalCodeAllowedList = allowedListService.loadInternalCodeAllowedList();
+        internalClassAllowedList = internalCodeAllowedList
+            .stream()
+            .filter(s -> !s.endsWith(".*"))
+            .collect(Collectors.toUnmodifiableSet());
+        internalPackageAllowedList = internalCodeAllowedList
+            .stream()
+            .filter(s -> s.endsWith(".*"))
+            .collect(Collectors.toUnmodifiableSet());
     }
     
     public String getExtensionPath()

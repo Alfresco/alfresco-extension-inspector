@@ -58,11 +58,11 @@ public class AllowedListService
     }
 
     /**
-     * Reads and loads a list of allowed Alfresco internal classes
+     * Reads and loads a list of allowed Alfresco internal classes and packages
      *
-     * @return a {@link Set} of the allowedListed internal classes
+     * @return a {@link Set} of the allowed internal classes and packages
      */
-    public Set<String> loadInternalClassAllowedList()
+    public Set<String> loadInternalCodeAllowedList()
     {
         try
         {

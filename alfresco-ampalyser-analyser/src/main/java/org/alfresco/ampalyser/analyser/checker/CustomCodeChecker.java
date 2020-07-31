@@ -23,6 +23,7 @@ import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.AbstractResource;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -61,14 +62,11 @@ public class CustomCodeChecker implements Checker
             .stream()
             .map(r -> (AlfrescoPublicApiResource) r)
             .collect(toUnmodifiableMap(
-                r -> "/" + r.getId().replace(".", "/") + ".class",
+                AbstractResource::getId,
                 AlfrescoPublicApiResource::isDeprecated
             ));
 
-        final Set<String> allowedInternalClasses = configService.getInternalClassAllowedList()
-            .stream()
-            .map(internalClass -> "/" + internalClass.replace(".", "/") + ".class")
-            .collect(toSet());
+        final Set<String> allowedInternalClasses = configService.getInternalClassAllowedList();
         
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
@@ -85,6 +83,7 @@ public class CustomCodeChecker implements Checker
                     .stream()
                     .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
                     .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
+                    .map(d -> d.substring(1).replace("/", ".").replace(".class", ""))
                     .filter(d -> !allowedInternalClasses.contains(d) && (!publicApis.containsKey(d)
                         || publicApis.get(d))) // Not PublicAPI or Deprecated_PublicAPI
                     .collect(toUnmodifiableSet())
