@@ -57,6 +57,5 @@
   "org.alfresco.util.PropertyCheck",
   "org.alfresco.util.exec.RuntimeExec",
   "org.alfresco.util.schemacomp.validator.NameValidator",
-  "org.alfresco.web.site.ClusterTopicService",
-  "org.springframework.scheduling.quartz.JobDetailBean"
+  "org.alfresco.web.site.ClusterTopicService"
 ]
