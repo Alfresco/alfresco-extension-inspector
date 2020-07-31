@@ -58,8 +58,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
         String[][] data = new String[conflictSet.size() + 1][4];
         data[0][0] = "Extension Bean Resource ID";
         data[0][1] = "Extension Defining Object";
-        data[0][2] = "WAR Version";
-        data[0][3] = "Invalid 3rd Party Dependencies";
+        data[0][2] = "Invalid 3rd Party Dependencies";
+        data[0][3] = "WAR Version";
 
         int row = 0;
         for (Conflict conflict : conflictSet)
@@ -67,8 +67,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             row++;
             data[row][0] = conflict.getAmpResourceInConflict().getId();
             data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
-            data[row][2] = conflict.getAlfrescoVersion();
-            data[row][3] = String.join(";",((WarLibraryUsageConflict) conflict).getClassDependencies());
+            data[row][2] = String.join(",\n",((WarLibraryUsageConflict) conflict).getClassDependencies());
+            data[row][3] = conflict.getAlfrescoVersion();
         }
 
          printTable(data);

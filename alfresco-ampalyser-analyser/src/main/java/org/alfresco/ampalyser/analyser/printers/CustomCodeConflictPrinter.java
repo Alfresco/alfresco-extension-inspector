@@ -59,16 +59,16 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
         String[][] data = new String[conflictSet.size() + 1][4];
         data[0][0] = "Extension Resource ID";
         data[0][1] = "Extension Defining Object";
-        data[0][2] = "WAR Version";
-        data[0][3] = "Invalid Dependencies";
+        data[0][2] = "Invalid Dependencies";
+        data[0][3] = "WAR Version";
 
         int row = 1;
         for (Conflict conflict : conflictSet)
         {
             data[row][0] = conflict.getAmpResourceInConflict().getId();
             data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
-            data[row][2] = conflict.getAlfrescoVersion();
-            data[row][2] = String.join(";", ((CustomCodeConflict)conflict).getInvalidAlfrescoDependencies());
+            data[row][2] = String.join(",\n", ((CustomCodeConflict)conflict).getInvalidAlfrescoDependencies());
+            data[row][3] = conflict.getAlfrescoVersion();
             row++;
         }
 
