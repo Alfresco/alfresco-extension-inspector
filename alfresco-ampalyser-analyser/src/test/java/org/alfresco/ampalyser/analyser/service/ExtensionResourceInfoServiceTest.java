@@ -42,7 +42,7 @@ class ExtensionResourceInfoServiceTest
             "bean4",
             "bean5",
             "bean6"
-        )).when(configService).getBeanOverrideWhitelist();
+        )).when(configService).getBeanOverrideAllowedList();
 
         doReturn(Set.of(
             new BeanResource("bean1", "context1.xml", "java.lang.String.class"),

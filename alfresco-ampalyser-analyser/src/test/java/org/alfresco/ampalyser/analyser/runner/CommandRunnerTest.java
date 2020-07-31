@@ -174,7 +174,6 @@ public class CommandRunnerTest
             .getFile();
         String warInventory = getClass().getClassLoader().getResource("test.inventory.json")
             .getFile();
-        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
 
         commandRunner
             .execute(new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1"));
@@ -193,7 +192,6 @@ public class CommandRunnerTest
     {
         String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
             .getFile();
-        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
 
         commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
@@ -207,7 +205,6 @@ public class CommandRunnerTest
     {
         String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
             .getFile();
-        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
         String warInventory = getClass().getClassLoader().getResource("test.inventory.json")
             .getFile();
 
@@ -221,7 +218,6 @@ public class CommandRunnerTest
     {
         String extensionFileName = getClass().getClassLoader().getResource("test-extension.amp")
             .getFile();
-        String whitelist = getClass().getClassLoader().getResource("test-whitelist.json").getFile();
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName,

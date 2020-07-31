@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Lucian Tuca
  */
 @Component
-public class WhitelistService
+public class AllowedListService
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllowedListService.class);
 
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
     private static final String ALLOWED_INTERNAL_CLASS_LIST = "/allowedInternalClassList.json";
@@ -36,11 +36,11 @@ public class WhitelistService
     private ObjectMapper objectMapper;
 
     /**
-     * Reads and loads whitelist for the beans in a war that can be overridden when an .amp is applied
+     * Reads and loads the allowed list for the beans in a war that can be overridden when an .amp is applied
      *
-     * @return a {@link Set} of the whitelisted beans
+     * @return a {@link Set} of allowed beans
      */
-    public Set<String> loadBeanOverrideWhitelist()
+    public Set<String> loadBeanOverrideAllowedList()
     {
         try
         {
@@ -60,9 +60,9 @@ public class WhitelistService
     /**
      * Reads and loads a list of allowed Alfresco internal classes
      *
-     * @return a {@link Set} of the whitelisted internal classes
+     * @return a {@link Set} of the allowedListed internal classes
      */
-    public Set<String> loadInternalClassWhitelist()
+    public Set<String> loadInternalClassAllowedList()
     {
         try
         {
@@ -84,7 +84,7 @@ public class WhitelistService
     /**
      * Reads and loads a 3rd party allowed list for the .amp classes to use from a .json file
      *
-     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     * @return a {@link Set} of the allowedListed beans (that can be overridden).
      */
     public Set<String> load3rdPartyAllowedList()
     {
@@ -101,9 +101,9 @@ public class WhitelistService
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read DEFAULT 3rd Party Restricted Classes allowedList file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read DEFAULT 3rd Party Restricted Classes allowedList file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
         }
 
         return allowedList;

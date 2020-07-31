@@ -44,11 +44,11 @@ public class BeanRestrictedClassesChecker implements Checker
         final Set<String> extensionClassesById = extensionResourceInfoService
             .retrieveClasspathElementsById().keySet();
         
-        final Set<String> whitelist = Stream
+        final Set<String> allowedList = Stream
             .concat(
-                configService.getInternalClassWhitelist().stream(),
+                configService.getInternalClassAllowedList().stream(),
 
-                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
+                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the allowedList.
                 warInventory
                     .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptySet())
                     .stream()
@@ -60,7 +60,7 @@ public class BeanRestrictedClassesChecker implements Checker
             .stream()
             .filter(r -> !extensionClassesById
                 .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
-            .filter(r -> !whitelist.contains(r.getBeanClass()))
+            .filter(r -> !allowedList.contains(r.getBeanClass()))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 

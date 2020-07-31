@@ -65,7 +65,7 @@ public class CustomCodeChecker implements Checker
                 AlfrescoPublicApiResource::isDeprecated
             ));
 
-        final Set<String> allowedInternalClasses = configService.getInternalClassWhitelist()
+        final Set<String> allowedInternalClasses = configService.getInternalClassAllowedList()
             .stream()
             .map(internalClass -> "/" + internalClass.replace(".", "/") + ".class")
             .collect(toSet());

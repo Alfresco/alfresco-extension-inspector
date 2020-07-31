@@ -37,22 +37,22 @@ public class ConfigService
     @Autowired
     private FileMappingService fileMappingService;
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowedListService allowedListService;
 
     private String extensionPath;
     private Map<Resource.Type, Set<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
-    private Set<String> beanOverrideWhitelist = emptySet();
-    private Set<String> internalClassWhitelist = emptySet();
+    private Set<String> beanOverrideAllowedList = emptySet();
+    private Set<String> internalClassAllowedList = emptySet();
     private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
     @PostConstruct
     public void init()
     {
-        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
-        internalClassWhitelist = whitelistService.loadInternalClassWhitelist();
-        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
+        beanOverrideAllowedList = allowedListService.loadBeanOverrideAllowedList();
+        internalClassAllowedList = allowedListService.loadInternalClassAllowedList();
+        thirdPartyAllowedList = allowedListService.load3rdPartyAllowedList();
     }
     
     public String getExtensionPath()
@@ -70,14 +70,14 @@ public class ConfigService
         return fileMappings;
     }
 
-    public Set<String> getBeanOverrideWhitelist()
+    public Set<String> getBeanOverrideAllowedList()
     {
-        return beanOverrideWhitelist;
+        return beanOverrideAllowedList;
     }
 
-    public Set<String> getInternalClassWhitelist()
+    public Set<String> getInternalClassAllowedList()
     {
-        return internalClassWhitelist;
+        return internalClassAllowedList;
     }
 
     public Set<String> getThirdPartyAllowedList()
