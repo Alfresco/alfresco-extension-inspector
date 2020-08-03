@@ -12,6 +12,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import javax.annotation.PostConstruct;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
@@ -43,8 +44,16 @@ public class ConfigService
     private Map<String, String> fileMappings = emptyMap();
     private Set<String> beanOverrideWhitelist = emptySet();
     private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
+    @PostConstruct
+    public void init()
+    {
+        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
+        beanClassWhitelist = whitelistService.loadBeanClassWhitelist();
+    }
+    
     public String getExtensionPath()
     {
         return extensionPath;
@@ -70,6 +79,11 @@ public class ConfigService
         return beanClassWhitelist;
     }
 
+    public Set<String> getThirdPartyAllowedList()
+    {
+        return thirdPartyAllowedList;
+    }
+
     public boolean isVerboseOutput()
     {
         return verboseOutput;
@@ -89,13 +103,8 @@ public class ConfigService
             extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
     }
 
-    public void registerBeanOverrideWhitelistPath(final String path)
+    public void registerThirdPartyAllowedList()
     {
-        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist(path);
-    }
-
-    public void registerBeanClassWhitelist(final String path)
-    {
-        beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
+        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
 }

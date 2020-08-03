@@ -184,14 +184,8 @@ public class CommandRunnerTest
 
         commandRunner.execute(new DefaultApplicationArguments(extensionFileName, "--verbose"));
 
-        commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--beanOverrideWhitelist=" + whitelist));
-
-        commandRunner.execute(new DefaultApplicationArguments(extensionFileName,
-            "--beanClassWhitelist=" + whitelist));
-
         verify(analyserService, times(1)).analyseAgainstWarInventories(any());
-        verify(analyserService, times(4)).analyseAgainstKnownVersions(any());
+        verify(analyserService, times(2)).analyseAgainstKnownVersions(any());
     }
 
     @Test
@@ -203,8 +197,7 @@ public class CommandRunnerTest
 
         commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
-                "--verbose=false", "--beanOverrideWhitelist=" + whitelist,
-                "--beanClassWhitelist=" + whitelist));
+                "--verbose=false"));
 
         verify(analyserService).analyseAgainstKnownVersions(any());
     }
@@ -220,9 +213,7 @@ public class CommandRunnerTest
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
             new DefaultApplicationArguments(extensionFileName, "--target-version=6.2.1",
-                "--target-inventory=" + warInventory, "--verbose=false",
-                "--beanOverrideWhitelist=" + whitelist,
-                "--beanClassWhitelist=" + whitelist)));
+                "--target-inventory=" + warInventory, "--verbose=false")));
     }
 
     @Test
@@ -243,14 +234,6 @@ public class CommandRunnerTest
 
         assertThrows(IllegalArgumentException.class, () -> commandRunner
             .execute(new DefaultApplicationArguments(extensionFileName, "--verbose=random-value")));
-
-        assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
-            new DefaultApplicationArguments(extensionFileName,
-                "--beanOverrideWhitelist=" + "whitelist-does-not-exist")));
-
-        assertThrows(IllegalArgumentException.class, () -> commandRunner.execute(
-            new DefaultApplicationArguments(extensionFileName,
-                "--beanClassWhitelist=" + "whitelist-does-not-exist")));
     }
 
     @Test

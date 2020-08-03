@@ -8,7 +8,9 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -19,12 +21,14 @@ import org.alfresco.ampalyser.model.BeanResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER = "Found beans for restricted classes!\nThe following beans "
-        + "instantiate classes from Alfresco or 3rd party libraries which are "
-        + "not meant to be instantiated by custom beans:";
+    private static final String HEADER =
+        "Found beans that instantiate internal classes." + lineSeparator() + "The "
+            + "following beans instantiate classes from Alfresco or 3rd party libraries which must "
+            + "not be instantiated by custom beans:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -34,7 +38,7 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
@@ -48,23 +52,41 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        Conflict conflict = conflictSet.iterator().next();
-        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "Restricted Class";
+        data[0][3] = "WAR Version";
 
-        System.out.println(id + " instantiates " + resource.getBeanClass()  + " in " + resource.getDefiningObject());
-        System.out.println("Instantiating restricted class from " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = ((BeanResource)conflict.getAmpResourceInConflict()).getBeanClass();
+            data[row][3] = conflict.getAlfrescoVersion();
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        Conflict conflict = conflictSet.iterator().next();
-        BeanResource resource = (BeanResource) conflict.getAmpResourceInConflict();
+        String[][]data = new String[conflictSet.size() + 1][2];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Restricted Class";
 
-        System.out.println(id + " instantiates " + resource.getBeanClass());
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = ((BeanResource)conflict.getAmpResourceInConflict()).getBeanClass();
+            row++;
+        }
+        printTable(data);
     }
 }

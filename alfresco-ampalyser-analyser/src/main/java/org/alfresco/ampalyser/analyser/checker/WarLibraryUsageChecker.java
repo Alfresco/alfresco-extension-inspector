@@ -7,7 +7,6 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -19,6 +18,7 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -38,11 +38,14 @@ public class WarLibraryUsageChecker implements Checker
     private ExtensionResourceInfoService extensionResourceInfoService;
     @Autowired
     private ExtensionCodeAnalysisService extensionCodeAnalysisService;
+    @Autowired
+    private ConfigService configService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
         final Set<String> allExtensionDependencies = extensionCodeAnalysisService.retrieveAllDependencies();
+        final Set<String> thirdPartyAllowedList = configService.getThirdPartyAllowedList();
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
@@ -68,6 +71,7 @@ public class WarLibraryUsageChecker implements Checker
                 e.getKey(),
                 e.getValue()
                  .stream()
+                 .filter(c -> !isInAllowedList(c, thirdPartyAllowedList))
                  .filter(d -> !extensionClassesById.containsKey(d)) // dependencies not provided in the extension
                  .filter(classesInWar::contains) // dependencies provided by the WAR
                  .collect(toUnmodifiableSet())
@@ -89,5 +93,32 @@ public class WarLibraryUsageChecker implements Checker
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
         return !extensionCodeAnalysisService.retrieveDependenciesPerClass().isEmpty();
+    }
+
+    /**
+     * This method checks whether or not the provided className is matched in the provided
+     * 'allowedList' by the * patterns or by the class itself
+     *
+     * @param className
+     * @return
+     */
+    private boolean isInAllowedList(String className, Set<String> thirdPartyAllowedList)
+    {
+        final String[] packs = className.split("[./]");
+        if (packs.length < 3)
+        {
+            return false;
+        }
+        StringBuilder pack = new StringBuilder(packs[1]).append('/').append(packs[2]);
+        for (int i = 3; i < packs.length - 1; i++)
+        {
+            if (thirdPartyAllowedList.contains(pack.toString()))
+            {
+                return true;
+            }
+            pack.append("/").append(packs[i]);
+        }
+
+        return thirdPartyAllowedList.contains(pack.toString());
     }
 }
