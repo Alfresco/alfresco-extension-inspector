@@ -55,10 +55,11 @@ public class BeanRestrictedClassesChecker implements Checker
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
+            .filter(r -> !publicApis.contains(r.getBeanClass()))
             .filter(r -> !extensionClassesById
                 .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
-            .filter(r -> !publicApis.contains(r.getBeanClass()) && 
-                !isInAllowedList("/" + r.getBeanClass().replace(".", "/") + ".class", allowedList))
+            .filter(r -> !isInAllowedList(
+                "/" + r.getBeanClass().replace(".", "/") + ".class", allowedList))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 

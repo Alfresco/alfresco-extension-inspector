@@ -83,7 +83,8 @@ public class CustomCodeChecker implements Checker
                     .stream()
                     .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
                     .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
-                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d)) && !isInAllowedList(d, allowedInternalClasses)) // Not PublicAPI or Deprecated_PublicAPI and not Allowed Internal Class
+                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d))) // Not PublicAPI or Deprecated_PublicAPI
+                    .filter(d -> !isInAllowedList(d, allowedInternalClasses)) // Not Allowed Internal Class
                     .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
