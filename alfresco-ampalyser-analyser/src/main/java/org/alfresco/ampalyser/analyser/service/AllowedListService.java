@@ -87,7 +87,7 @@ public class AllowedListService
     /**
      * Reads and loads a 3rd party allowed list for the .amp classes to use from a .json file
      *
-     * @return a {@link Set} of the allowedListed beans (that can be overridden).
+     * @return a {@link Set} of the allowed 3rd party classes
      */
     public Set<String> load3rdPartyAllowedList()
     {
@@ -104,9 +104,9 @@ public class AllowedListService
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT 3rd Party Restricted Classes allowedList file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read Allowed 3rd Party Restricted Classes List file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT 3rd Party Restricted Classes allowedList file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read Allowed 3rd Party Restricted Classes List file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
         }
 
         return allowedList;
