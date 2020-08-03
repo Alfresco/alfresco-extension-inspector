@@ -24,23 +24,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Lucian Tuca
  */
 @Component
-public class WhitelistService
+public class AllowedListService
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllowedListService.class);
 
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
-    private static final String ALLOWED_BEAN_CLASS_LIST = "/allowedBeanClassList.json";
+    private static final String ALLOWED_INTERNAL_CLASS_LIST = "/allowedInternalClassList.json";
     private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted-3rd-party-classes-allowedlist.default.json";
 
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
-     * Reads and loads whitelist for the beans in a war that can be overridden when an .amp is applied
+     * Reads and loads the allowed list for the beans in a war that can be overridden when an .amp is applied
      *
-     * @return a {@link Set} of the whitelisted beans
+     * @return a {@link Set} of allowed beans
      */
-    public Set<String> loadBeanOverrideWhitelist()
+    public Set<String> loadBeanOverrideAllowedList()
     {
         try
         {
@@ -58,25 +58,28 @@ public class WhitelistService
     }
 
     /**
-     * Reads and loads a class whitelist for the .amp beans from a .json file
+     * Reads and loads a list of allowed Alfresco internal classes and packages
      *
-     * @return a {@link Set} of the whitelisted beans
+     * @return a {@link Set} of the allowed internal classes and packages
      */
-    public Set<String> loadBeanClassWhitelist()
+    public Set<String> loadInternalClassAllowedList()
     {
         try
         {
-            return objectMapper.readValue(
-                getClass().getResourceAsStream(ALLOWED_BEAN_CLASS_LIST),
-                new TypeReference<>() {});
+            return new HashSet<String>(objectMapper
+                .readValue(getClass().getResourceAsStream(ALLOWED_INTERNAL_CLASS_LIST),
+                    new TypeReference<>() {}))
+                .stream()
+                .map(s -> s.replaceAll("\\.\\*", "").replaceAll("\\.", "/"))
+                .collect(Collectors.toSet());
         }
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read Allowed Bean Restricted Class List file: " + ALLOWED_BEAN_CLASS_LIST,
+                "Failed to read Allowed Internal Class List file: " + ALLOWED_INTERNAL_CLASS_LIST,
                 ioe);
             throw new RuntimeException(
-                "Failed to read Allowed Bean Restricted List file: " + ALLOWED_BEAN_CLASS_LIST,
+                "Failed to read Allowed Internal Class List file: " + ALLOWED_INTERNAL_CLASS_LIST,
                 ioe);
         }
     }
@@ -84,7 +87,7 @@ public class WhitelistService
     /**
      * Reads and loads a 3rd party allowed list for the .amp classes to use from a .json file
      *
-     * @return a {@link Set} of the whitelisted beans (that can be overridden).
+     * @return a {@link Set} of the allowed 3rd party classes
      */
     public Set<String> load3rdPartyAllowedList()
     {
@@ -101,9 +104,9 @@ public class WhitelistService
         catch (IOException ioe)
         {
             LOGGER.error(
-                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read Allowed 3rd Party Restricted Classes List file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
             throw new RuntimeException(
-                "Failed to read DEFAULT 3rd Party Restricted Classes Whitelist file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
+                "Failed to read Allowed 3rd Party Restricted Classes List file: " + DEFAULT_3RD_PARTY_ALLOWEDLIST, ioe);
         }
 
         return allowedList;

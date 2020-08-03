@@ -58,6 +58,6 @@ public class BeanOverwritingChecker implements Checker
     @Override
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return configService.getBeanOverrideWhitelist() != null;
+        return configService.getBeanOverrideAllowedList() != null;
     }
 }

@@ -161,7 +161,7 @@ public interface ConflictPrinter
             .map(conflict -> conflict.getWarResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
-            .collect(joining(", "));
+            .collect(joining(",\n"));
     }
 
     static String joinExtensionDefiningObjs(String resourceId, Set<Conflict> conflictSet)
@@ -172,6 +172,6 @@ public interface ConflictPrinter
             .map(conflict -> conflict.getAmpResourceInConflict().getDefiningObject())
             .distinct()
             .sorted()
-            .collect(joining(", "));
+            .collect(joining(",\n"));
     }
 }

@@ -10,6 +10,7 @@ package org.alfresco.ampalyser.analyser.checker;
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 
 import java.util.Map;
@@ -93,32 +94,5 @@ public class WarLibraryUsageChecker implements Checker
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
         return !extensionCodeAnalysisService.retrieveDependenciesPerClass().isEmpty();
-    }
-
-    /**
-     * This method checks whether or not the provided className is matched in the provided
-     * 'allowedList' by the * patterns or by the class itself
-     *
-     * @param className
-     * @return
-     */
-    private boolean isInAllowedList(String className, Set<String> thirdPartyAllowedList)
-    {
-        final String[] packs = className.split("[./]");
-        if (packs.length < 3)
-        {
-            return false;
-        }
-        StringBuilder pack = new StringBuilder(packs[1]).append('/').append(packs[2]);
-        for (int i = 3; i < packs.length - 1; i++)
-        {
-            if (thirdPartyAllowedList.contains(pack.toString()))
-            {
-                return true;
-            }
-            pack.append("/").append(packs[i]);
-        }
-
-        return thirdPartyAllowedList.contains(pack.toString());
     }
 }

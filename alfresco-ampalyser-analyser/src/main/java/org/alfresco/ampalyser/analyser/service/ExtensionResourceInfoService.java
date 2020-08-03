@@ -68,12 +68,12 @@ public class ExtensionResourceInfoService
     {
         if (beanOverridesById == null)
         {
-            final Set<String> whitelist = configService.getBeanOverrideWhitelist();
+            final Set<String> allowedList = configService.getBeanOverrideAllowedList();
 
             beanOverridesById = configService
                 .getExtensionResources(BEAN)
                 .stream()
-                .filter(r -> !whitelist.contains(r.getId()))
+                .filter(r -> !allowedList.contains(r.getId()))
                 .map(r -> (BeanResource) r)
                 .collect(groupingBy(Resource::getId, toUnmodifiableSet()));
         }
