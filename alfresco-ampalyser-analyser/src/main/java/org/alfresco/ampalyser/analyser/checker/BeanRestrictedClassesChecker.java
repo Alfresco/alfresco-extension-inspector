@@ -9,6 +9,7 @@ package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.util.Set;
@@ -43,25 +44,21 @@ public class BeanRestrictedClassesChecker implements Checker
     {
         final Set<String> extensionClassesById = extensionResourceInfoService
             .retrieveClasspathElementsById().keySet();
-        
-        final Set<String> allowedList = Stream
-            .concat(
-                configService.getInternalClassAllowedList().stream(),
 
-                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the allowedList.
-                warInventory
-                    .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptySet())
-                    .stream()
-                    .map(Resource::getId))
-            .collect(toUnmodifiableSet());
+        final Set<String> allowedList = configService.getInternalClassAllowedList();
+        final Set<String> publicApis = // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the publicApis.
+            warInventory.getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptySet())
+                .stream()
+                .map(Resource::getId)
+                .collect(toUnmodifiableSet());
 
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
             .filter(r -> !extensionClassesById
                 .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
-            .filter(r -> !allowedList.contains(r.getBeanClass()) && !isInAllowedPackages(
-                r.getBeanClass()))
+            .filter(r -> !publicApis.contains(r.getBeanClass()) && 
+                !isInAllowedList("/" + r.getBeanClass().replace(".", "/") + ".class", allowedList))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 
@@ -69,18 +66,5 @@ public class BeanRestrictedClassesChecker implements Checker
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
         return true;
-    }
-
-    private boolean isInAllowedPackages(final String currentClass)
-    {
-        final Set<String> allowedInternalPackages = configService.getInternalPackageAllowedList();
-        boolean allowed = false;
-        String packageName = currentClass;
-        while (packageName.compareTo("org.alfresco") > 0 && !allowed)
-        {
-            packageName = packageName.replaceAll("(\\.\\w*)$", "");
-            allowed = allowedInternalPackages.contains(packageName);
-        }
-        return allowed;
     }
 }

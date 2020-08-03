@@ -11,6 +11,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.util.Map;
@@ -55,6 +56,18 @@ public class CustomCodeChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
+        Set<String> allowedInternalClasses = configService.getInternalClassAllowedList();
+        
+        // Create a Map of the AlfrescoPublicApi with the class_id as the key and whether or not it is deprecated as the value
+        final Map<String, Boolean> publicApis = warInventory
+            .getResources().get(ALFRESCO_PUBLIC_API)
+            .stream()
+            .map(r -> (AlfrescoPublicApiResource) r)
+            .collect(toUnmodifiableMap(
+                r -> "/" + r.getId().replace(".", "/") + ".class",
+                AlfrescoPublicApiResource::isDeprecated
+            ));
+
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
 
@@ -70,7 +83,7 @@ public class CustomCodeChecker implements Checker
                     .stream()
                     .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
                     .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
-                    .filter(d -> !isAllowed(d, warInventory)) // Not PublicAPI or Deprecated_PublicAPI and not Allowed Internal Class
+                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d)) && !isInAllowedList(d, allowedInternalClasses)) // Not PublicAPI or Deprecated_PublicAPI and not Allowed Internal Class
                     .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
@@ -88,43 +101,5 @@ public class CustomCodeChecker implements Checker
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
         return true;
-    }
-
-    private boolean isAllowed(final String currentClass, final InventoryReport warInventory)
-    {
-        // Create a Map of the AlfrescoPublicApi with the class_id as the key and whether or not it is deprecated as the value
-        final Map<String, Boolean> publicApis = warInventory
-            .getResources().get(ALFRESCO_PUBLIC_API)
-            .stream()
-            .map(r -> (AlfrescoPublicApiResource) r)
-            .collect(toUnmodifiableMap(
-                AbstractResource::getId,
-                AlfrescoPublicApiResource::isDeprecated
-            ));
-
-        String canonicalName = currentClass.substring(1).replace("/", ".").replace(".class", "");
-
-        return (publicApis.containsKey(canonicalName)
-            && !publicApis.get(canonicalName)) || isAllowedInternalClass(canonicalName);
-    }
-    
-    private boolean isAllowedInternalClass(final String currentClass)
-    {
-        final Set<String> allowedInternalClasses = configService.getInternalClassAllowedList();
-
-        return allowedInternalClasses.contains(currentClass) || isInAllowedPackages(currentClass);
-    }
-
-    private boolean isInAllowedPackages(final String currentClass)
-    {
-        final Set<String> allowedInternalPackages = configService.getInternalPackageAllowedList();
-        boolean allowed = false;
-        String packageName = currentClass;
-        while (packageName.compareTo("org.alfresco") > 0 && !allowed)
-        {
-            packageName = packageName.replaceAll("(\\.\\w*)$", "");
-            allowed = allowedInternalPackages.contains(packageName);
-        }
-        return allowed;
     }
 }

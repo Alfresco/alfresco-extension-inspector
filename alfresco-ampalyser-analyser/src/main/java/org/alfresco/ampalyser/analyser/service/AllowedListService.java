@@ -62,13 +62,16 @@ public class AllowedListService
      *
      * @return a {@link Set} of the allowed internal classes and packages
      */
-    public Set<String> loadInternalCodeAllowedList()
+    public Set<String> loadInternalClassAllowedList()
     {
         try
         {
-            return objectMapper.readValue(
-                getClass().getResourceAsStream(ALLOWED_INTERNAL_CLASS_LIST),
-                new TypeReference<>() {});
+            return new HashSet<String>(objectMapper
+                .readValue(getClass().getResourceAsStream(ALLOWED_INTERNAL_CLASS_LIST),
+                    new TypeReference<>() {}))
+                .stream()
+                .map(s -> s.replaceAll("\\.\\*", "").replaceAll("\\.", "/"))
+                .collect(Collectors.toSet());
         }
         catch (IOException ioe)
         {
