@@ -94,9 +94,6 @@ public class ClasspathConflictPrinter implements ConflictPrinter
                 row++;
             }
         }
-
-
-
         printTable(data);
     }
 }
