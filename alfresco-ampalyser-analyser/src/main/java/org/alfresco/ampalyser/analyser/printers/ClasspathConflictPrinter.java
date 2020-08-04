@@ -78,7 +78,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     public void print(Set<Conflict> conflictSet)
     {
 
-        String[][] data = new String[conflictSet.stream().map(el -> el.getAmpResourceInConflict().getDefiningObject()).collect(toSet()).size() + 1][3];
+        String[][] data = new String[conflictSet.stream().map(el -> el.getAmpResourceInConflict().getDefiningObject()).collect(toSet()).size() + 1][2];
         data[0][0] = "Extension Bean Resource Defining Object";
         data[0][1] = "WAR Defining Object";
 
