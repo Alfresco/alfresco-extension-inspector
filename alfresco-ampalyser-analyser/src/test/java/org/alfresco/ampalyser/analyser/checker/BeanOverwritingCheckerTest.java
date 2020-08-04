@@ -48,7 +48,7 @@ public class BeanOverwritingCheckerTest
     @Test
     public void happyFlowTest()
     {
-        // This one should be allowed by the whitelist
+        // This one should be allowed by the allowedList
         BeanResource ampBR1 = new BeanResource("bean1", "context.xml", "org.alfresco.Dummy");
         // This one should generate multiple conflicts
         BeanResource ampBR2 = new BeanResource("bean2", "amp_context.xml", "org.alfresco.Dummy");
@@ -67,7 +67,7 @@ public class BeanOverwritingCheckerTest
 
         warReport.addResources(warResources);
 
-        when(configService.getBeanOverrideWhitelist()).thenReturn(Set.of("bean1"));
+        when(configService.getBeanOverrideAllowedList()).thenReturn(Set.of("bean1"));
 
         List<Conflict> conflicts = boChecker.process(warReport, "6.66").collect(toList());
         assertEquals(2, conflicts.size());

@@ -12,12 +12,14 @@ import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,8 +60,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
         String[][] data = new String[conflictSet.size() + 1][4];
         data[0][0] = "Extension Bean Resource ID";
         data[0][1] = "Extension Defining Object";
-        data[0][2] = "WAR Version";
-        data[0][3] = "Invalid 3rd Party Dependencies";
+        data[0][2] = "Invalid 3rd Party Dependencies";
+        data[0][3] = "WAR Version";
 
         int row = 0;
         for (Conflict conflict : conflictSet)
@@ -67,8 +69,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             row++;
             data[row][0] = conflict.getAmpResourceInConflict().getId();
             data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
-            data[row][2] = conflict.getAlfrescoVersion();
-            data[row][3] = String.join(";",((WarLibraryUsageConflict) conflict).getClassDependencies());
+            data[row][2] = String.join(",\n",((WarLibraryUsageConflict) conflict).getClassDependencies());
+            data[row][3] = conflict.getAlfrescoVersion();
         }
 
          printTable(data);
@@ -77,19 +79,15 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public void print(final Set<Conflict> conflictSet)
     {
-        String[][] data = new String[conflictSet.size() + 1][1];
-        data[0][0] = "Extension Resource ID using 3rd Party library code";
+        String[][] data = conflictSet.stream()
+            .map(conflict -> List.of(
+                conflict.getAmpResourceInConflict().getId()))
+            .distinct()
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        int row = 1;
-        for (Conflict conflict : conflictSet)
-        {
-            final String id = conflict.getAmpResourceInConflict().getId();;
-            final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-            data[row][0] = id.equals(definingObject) ? id : id + "@" + definingObject;
-
-            row++;
-        }
-
+        data = ArrayUtils.insert(0, data,
+            new String[][]{new String[]{"Extension Resource ID using 3rd Party library code"}});
         printTable(data);
     }
 }

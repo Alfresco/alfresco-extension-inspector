@@ -11,6 +11,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.util.Map;
@@ -19,8 +20,10 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.AbstractResource;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -44,6 +47,8 @@ public class CustomCodeChecker implements Checker
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCodeChecker.class);
 
     @Autowired
+    private ConfigService configService;
+    @Autowired
     private ExtensionResourceInfoService extensionResourceInfoService;
     @Autowired
     private ExtensionCodeAnalysisService extensionCodeAnalysisService;
@@ -51,6 +56,8 @@ public class CustomCodeChecker implements Checker
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
+        Set<String> allowedInternalClasses = configService.getInternalClassAllowedList();
+        
         // Create a Map of the AlfrescoPublicApi with the class_id as the key and whether or not it is deprecated as the value
         final Map<String, Boolean> publicApis = warInventory
             .getResources().get(ALFRESCO_PUBLIC_API)
@@ -73,11 +80,12 @@ public class CustomCodeChecker implements Checker
             .map(e -> entry(
                 e.getKey(),
                 e.getValue()
-                 .stream()
-                 .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
-                 .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
-                 .filter(d -> !publicApis.containsKey(d) || publicApis.get(d)) // Not PublicAPI or Deprecated_PublicAPI
-                 .collect(toUnmodifiableSet())
+                    .stream()
+                    .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
+                    .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
+                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d))) // Not PublicAPI or Deprecated_PublicAPI
+                    .filter(d -> !isInAllowedList(d, allowedInternalClasses)) // Not Allowed Internal Class
+                    .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies
             .flatMap(e -> extensionClassesById

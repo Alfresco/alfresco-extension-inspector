@@ -52,7 +52,7 @@ public class AnalyserOutputService
 
     private void printSummary(Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
-        String[][] data = new String[7][2];
+        String[][] data = new String[2 + conflictPerTypeAndResourceId.size()][2];
         data[0][0] = "REPORT SUMMARY";
         data[1][0] = "Type";
         data[1][1] = "Total";

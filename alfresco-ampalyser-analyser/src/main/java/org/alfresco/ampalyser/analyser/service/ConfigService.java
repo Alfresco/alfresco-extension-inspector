@@ -37,21 +37,22 @@ public class ConfigService
     @Autowired
     private FileMappingService fileMappingService;
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowedListService allowedListService;
 
     private String extensionPath;
     private Map<Resource.Type, Set<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
-    private Set<String> beanOverrideWhitelist = emptySet();
-    private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> beanOverrideAllowedList = emptySet();
+    private Set<String> internalClassAllowedList = emptySet();
     private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
     @PostConstruct
     public void init()
     {
-        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist();
-        beanClassWhitelist = whitelistService.loadBeanClassWhitelist();
+        beanOverrideAllowedList = allowedListService.loadBeanOverrideAllowedList();
+        thirdPartyAllowedList = allowedListService.load3rdPartyAllowedList();
+        internalClassAllowedList = allowedListService.loadInternalClassAllowedList();
     }
     
     public String getExtensionPath()
@@ -69,14 +70,14 @@ public class ConfigService
         return fileMappings;
     }
 
-    public Set<String> getBeanOverrideWhitelist()
+    public Set<String> getBeanOverrideAllowedList()
     {
-        return beanOverrideWhitelist;
+        return beanOverrideAllowedList;
     }
 
-    public Set<String> getBeanClassWhitelist()
+    public Set<String> getInternalClassAllowedList()
     {
-        return beanClassWhitelist;
+        return internalClassAllowedList;
     }
 
     public Set<String> getThirdPartyAllowedList()
@@ -101,10 +102,5 @@ public class ConfigService
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
             extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
-    }
-
-    public void registerThirdPartyAllowedList()
-    {
-        thirdPartyAllowedList = whitelistService.load3rdPartyAllowedList();
     }
 }
