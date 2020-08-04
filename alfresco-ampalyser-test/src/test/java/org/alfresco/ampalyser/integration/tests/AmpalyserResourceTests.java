@@ -137,4 +137,22 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
 //                assertEquals(cmdOut.getClassPathConflictsTotal(), 1);
 
         }
+
+        @Test
+        public void testAnalyseThirdPartyLibs()
+        {
+                String ampResourcePath = TestResource.getTestResourcePath("analyserTest.amp");
+                String version = "6.2.2";
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+
+                assertEquals(cmdOut.getThirdPartyLibConflicts().size(), 3);
+                assertTrue(cmdOut.isInThirdPartyLibConflicts("Normalizer"));
+                assertTrue(cmdOut.isInThirdPartyLibConflicts("EventUtils"));
+                assertTrue(cmdOut.isInThirdPartyLibConflicts("ResultContext"));
+                assertTrue(cmdOut.isInThirdPartyLibConflicts("ThirdPartyLibs"));
+                assertFalse(cmdOut.isInThirdPartyLibConflicts("AccessControlList"));
+                assertFalse(cmdOut.isInThirdPartyLibConflicts("OtherThirdPartyLibs"));
+        }
 }

@@ -48,7 +48,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
         }
 
         @Test
-        public void testAnalyseAmpInvalidVersion()
+        public void testAnalyseAmpOldVersion()
         {
                 // Run against old uncached Alfresco version
                 String ampResourcePath = TestResource.getTestResourcePath("analyserTest.amp");
