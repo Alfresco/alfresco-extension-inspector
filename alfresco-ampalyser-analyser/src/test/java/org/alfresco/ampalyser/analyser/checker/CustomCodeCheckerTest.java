@@ -51,7 +51,7 @@ class CustomCodeCheckerTest
     {
         // AMP Classpath elements
         {
-            doReturn(List.of(
+            doReturn(Set.of(
                 ampRes("to_be_or_not_to_be.nope"),
                 ampRes("no_deps.class"),
                 ampRes("deps_outside_alf.class"),
@@ -66,11 +66,11 @@ class CustomCodeCheckerTest
         final InventoryReport warInventory = new InventoryReport();
         {
             warInventory.setResources(Map.of(
-                CLASSPATH_ELEMENT, List.of(
+                CLASSPATH_ELEMENT, Set.of(
                     warRes("c1.class"),
                     warRes("c2.class")
                 ),
-                ALFRESCO_PUBLIC_API, List.of(
+                ALFRESCO_PUBLIC_API, Set.of(
                     apar("c_APA_1ok", false),
                     apar("c_APA_2ok", false),
                     apar("c_APA_3deprecated", true),
@@ -140,7 +140,7 @@ class CustomCodeCheckerTest
 
     private static Resource apar(String id, boolean deprecated)
     {
-        return new AlfrescoPublicApiResource(OAW.substring(1) + id, deprecated);
+        return new AlfrescoPublicApiResource("org.alfresco.war." + id, deprecated);
     }
 
     private static Conflict conflict(ClasspathElementResource resource, Set<String> classes)

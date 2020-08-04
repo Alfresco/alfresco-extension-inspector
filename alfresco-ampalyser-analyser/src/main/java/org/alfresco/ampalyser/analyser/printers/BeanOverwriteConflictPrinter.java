@@ -8,14 +8,17 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +26,10 @@ import org.springframework.stereotype.Component;
 public class BeanOverwriteConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found bean overwrites! Spring beans defined by Alfresco constitute "
-            + "a fundamental building block of the repository and must not be "
-            + "overwritten unless explicitly allowed.\nThe following beans "
-            + "are overwriting default Alfresco functionality:";
+        "Found bean overwrites. Spring beans defined by Alfresco are a "
+            + "fundamental building block of the repository, and must not be "
+            + "overwritten unless explicitly allowed." + lineSeparator()
+            + "The following beans overwrite default functionality:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -36,13 +39,13 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     {
         return store.allKnownVersions();
     }
-    
+
     @Override
     public String getHeader()
     {
         return HEADER;
     }
-    
+
     @Override
     public Conflict.Type getConflictType()
     {
@@ -50,25 +53,40 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(String id, Set<Conflict> conflictSet)
+    public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
+        String[][] data = new String[conflictSet.size() + 1][3];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "WAR Version";
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println("Overwriting bean in " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 1;
+        for (Conflict conflict : conflictSet)
+        {
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = conflict.getAlfrescoVersion();
+            row++;
+        }
+
+        printTable(data);
     }
 
     @Override
-    public void print(String id, Set<Conflict> conflictSet)
+    public void print(Set<Conflict> conflictSet)
     {
-        String warBeanDefiningObject = conflictSet.iterator().next().getWarResourceInConflict()
-            .getDefiningObject();
+        String[][] data = conflictSet.stream()
+            .map(conflict -> List.of(
+                conflict.getAmpResourceInConflict().getId(),
+                ConflictPrinter.joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet),
+                conflict.getWarResourceInConflict().getDefiningObject())
+            )
+            .distinct()
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        System.out.println(id + " defined in " + joinExtensionDefiningObjs(conflictSet)
-            + " in conflict with bean defined in " + warBeanDefiningObject);
-        System.out.println();
+        data = ArrayUtils.insert(0, data,
+            new String[][]{new String[]{"Extension Bean Resource ID", "Extension Defining Objects", "WAR Defining Object"}});
+        printTable(data);
     }
 }

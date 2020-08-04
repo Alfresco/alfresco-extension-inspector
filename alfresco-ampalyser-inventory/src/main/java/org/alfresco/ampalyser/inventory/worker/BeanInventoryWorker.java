@@ -8,16 +8,15 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipEntry;
+import static java.util.Collections.emptySet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.BeanResource;
 import org.alfresco.ampalyser.model.Resource;
@@ -35,7 +34,7 @@ public class BeanInventoryWorker implements InventoryWorker
     private static final Logger LOG = LoggerFactory.getLogger(BeanInventoryWorker.class);
 
     @Override
-    public List<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
+    public Set<Resource> processInternal(ZipEntry zipEntry, byte[] data, String definingObject)
     {
         String filename = zipEntry.getName();
 
@@ -46,12 +45,12 @@ public class BeanInventoryWorker implements InventoryWorker
         catch (IOException ioe)
         {
             LOG.warn("Failed to open and read from xml file: " + filename);
-            return emptyList();
+            return emptySet();
         }
         catch (Exception e)
         {
             LOG.warn("Failed to analyse beans in xml file: " + filename);
-            return emptyList();
+            return emptySet();
         }
     }
 
@@ -76,11 +75,11 @@ public class BeanInventoryWorker implements InventoryWorker
      * @param filename the name of the .xml file
      * @param definingObject the name of the parent of the .xml file (e.g. the .jar)
      *
-     * @return a list of {@link BeanResource} found in the .xml file
+     * @return a set of {@link BeanResource} found in the .xml file
      *
      * @throws Exception
      */
-    private List<Resource> analyseXmlFile(byte[] xmlData, String filename, String definingObject)
+    private Set<Resource> analyseXmlFile(byte[] xmlData, String filename, String definingObject)
         throws Exception
     {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -94,21 +93,21 @@ public class BeanInventoryWorker implements InventoryWorker
                 return findBeans(doc.getDocumentElement(), filename, definingObject);
             }
         }
-        return emptyList();
+        return emptySet();
     }
 
     /**
-     * Builds a list of Alfresco {@link BeanResource} objects that are present in the pr
+     * Builds a set of Alfresco {@link BeanResource} objects that are present in the pr
      *
      * @param docElem the 'beans' tag in the .xml file
      * @param filename the .xml filename
      * @param definingObject the name of the parent of the .xml file (e.g. the .jar)
      *
-     * @return a list of {@link BeanResource} found in the .xml file
+     * @return a set of {@link BeanResource} found in the .xml file
      */
-    private List<Resource> findBeans(Element docElem, String filename, String definingObject)
+    private Set<Resource> findBeans(Element docElem, String filename, String definingObject)
     {
-        final List<Resource> foundBeans = new ArrayList<>();
+        final Set<Resource> foundBeans = new LinkedHashSet<>();
 
         NodeList nodeList = docElem.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++)

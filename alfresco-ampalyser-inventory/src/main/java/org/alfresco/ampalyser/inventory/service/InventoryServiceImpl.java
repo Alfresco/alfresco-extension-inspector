@@ -11,8 +11,8 @@ package org.alfresco.ampalyser.inventory.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -55,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService
                         report.setAlfrescoVersion(versions.get(InventoryReport.IMPLEMENTATION_VERSION));
                     }
                 }
-                Map<Resource.Type, List<Resource>> resources = entryProcessor.processWarEntry(ze, zis);
+                Map<Resource.Type, Set<Resource>> resources = entryProcessor.processWarEntry(ze, zis);
                 report.addResources(resources);
 
                 zis.closeEntry();

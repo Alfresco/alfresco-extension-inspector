@@ -7,14 +7,13 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
 import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
+import javax.annotation.PostConstruct;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,23 +37,32 @@ public class ConfigService
     @Autowired
     private FileMappingService fileMappingService;
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowedListService allowedListService;
 
     private String extensionPath;
-    private Map<Resource.Type, List<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
+    private Map<Resource.Type, Set<Resource>> extensionResources = new EnumMap<>(Resource.Type.class);
     private Map<String, String> fileMappings = emptyMap();
-    private Set<String> beanOverrideWhitelist = emptySet();
-    private Set<String> beanClassWhitelist = emptySet();
+    private Set<String> beanOverrideAllowedList = emptySet();
+    private Set<String> internalClassAllowedList = emptySet();
+    private Set<String> thirdPartyAllowedList = emptySet();
     private boolean verboseOutput = false;
 
+    @PostConstruct
+    public void init()
+    {
+        beanOverrideAllowedList = allowedListService.loadBeanOverrideAllowedList();
+        thirdPartyAllowedList = allowedListService.load3rdPartyAllowedList();
+        internalClassAllowedList = allowedListService.loadInternalClassAllowedList();
+    }
+    
     public String getExtensionPath()
     {
         return extensionPath;
     }
 
-    public List<Resource> getExtensionResources(final Resource.Type type)
+    public Set<Resource> getExtensionResources(final Resource.Type type)
     {
-        return extensionResources.getOrDefault(type, emptyList());
+        return extensionResources.getOrDefault(type, emptySet());
     }
 
     public Map<String, String> getFileMappings()
@@ -62,14 +70,19 @@ public class ConfigService
         return fileMappings;
     }
 
-    public Set<String> getBeanOverrideWhitelist()
+    public Set<String> getBeanOverrideAllowedList()
     {
-        return beanOverrideWhitelist;
+        return beanOverrideAllowedList;
     }
 
-    public Set<String> getBeanClassWhitelist()
+    public Set<String> getInternalClassAllowedList()
     {
-        return beanClassWhitelist;
+        return internalClassAllowedList;
+    }
+
+    public Set<String> getThirdPartyAllowedList()
+    {
+        return thirdPartyAllowedList;
     }
 
     public boolean isVerboseOutput()
@@ -88,16 +101,6 @@ public class ConfigService
         final InventoryReport inventory = inventoryService.extractInventoryReport(extensionPath);
         extensionResources = unmodifiableMap(inventory.getResources());
         fileMappings = fileMappingService.compileFileMappings(
-            extensionPath, extensionResources.getOrDefault(FILE, emptyList()));
-    }
-
-    public void registerBeanOverrideWhitelistPath(final String path)
-    {
-        beanOverrideWhitelist = whitelistService.loadBeanOverrideWhitelist(path);
-    }
-
-    public void registerBeanClassWhitelist(final String path)
-    {
-        beanClassWhitelist = whitelistService.loadBeanClassWhitelist(path);
+            extensionPath, extensionResources.getOrDefault(FILE, emptySet()));
     }
 }

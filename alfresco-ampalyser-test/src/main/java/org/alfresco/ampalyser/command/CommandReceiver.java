@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CommandReceiver
@@ -43,7 +44,8 @@ public class CommandReceiver
                 {
                         e.printStackTrace();
                 }
-                catch (InterruptedException e) {
+                catch (InterruptedException e)
+                {
                         e.printStackTrace();
                 }
 
@@ -54,58 +56,101 @@ public class CommandReceiver
         {
                 BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
-                int lastPublicApiIndex = -1; // last index of the last added public api conflict
-                boolean lastLinePublicApi = false; // was the last line a public api conflict?
-                int lastBeanIndex = -1; // last index of the last added bean conflict
-                boolean lastLineBean = false; // was the last line a bean conflict?
-
+                boolean isInFileOverwriteConflicts = false;
+                boolean isInBeanOverwriteConflicts = false;
+                boolean isInPublicAPIConflicts = false;
+                boolean isInClassPathConflicts = false;
                 while ((line = in.readLine()) != null)
                 {
                         cmdOut.getOutput().add(line);
-                        // Check if public api and is not header
-                        if (line.contains("PublicAPI")  && !line.contains("Found usage of internal Alfresco classes!"))
+                        // Check file overwrite total line
+                        Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Matcher fileOverwriteTotalMatcher = fileOverwriteTotalPattern.matcher(line);
+                        Pattern fileOverwriteRowPattern = Pattern.compile("║(.+)║");
+                        Matcher fileOverwriteRowMatcher = fileOverwriteRowPattern.matcher(line);
+                        // Check bean overwrite total line
+                        Pattern beanOverwriteTotalPattern = Pattern.compile("║BEAN_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Matcher beanOverwriteTotalMatcher = beanOverwriteTotalPattern.matcher(line);
+                        Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)║");
+                        Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
+                        // Check publicAPI total line
+                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s+│(\\d+)\\s+║");
+                        Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
+                        Pattern publicAPIRowPattern = Pattern.compile("║(.+)║");
+                        Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
+                        // Check classPath overwrite total line
+                        Pattern classPathTotalPattern = Pattern.compile("║CLASSPATH_CONFLICT\\s+│(\\d+)\\s+║");
+                        Matcher classPathTotalMatcher = classPathTotalPattern.matcher(line);
+                        Pattern classPathRowPattern = Pattern.compile("║(.+)│(.+)║");
+                        Matcher classPathRowMatcher = classPathRowPattern.matcher(line);
+
+                        if (fileOverwriteTotalMatcher.find())
                         {
-                                cmdOut.getPublicAPIConflicts().add(line);
-                                lastPublicApiIndex = cmdOut.getPublicAPIConflicts().size() - 1;
-                                lastLinePublicApi = true;
-                                lastLineBean = false;
+                                int total = Integer.parseInt(fileOverwriteTotalMatcher.group(1));
+                                cmdOut.setFileOverwriteTotal(total);
                         }
-                        else if (line.contains("3rd party"))
+                        else if (beanOverwriteTotalMatcher.find())
                         {
-                                cmdOut.getThirdPartyLibConflicts().add(line);
-                                lastLinePublicApi = false;
-                                lastLineBean = false;
+                                int total = Integer.parseInt(beanOverwriteTotalMatcher.group(1));
+                                cmdOut.setBeanOverwriteTotal(total);
                         }
-                        else if (line.contains("conflicting with"))
+                        else if (publicAPITotalMatcher.find())
                         {
-                                cmdOut.getFileOverwriteConflicts().add(line);
-                                lastLinePublicApi = false;
-                                lastLineBean = false;
-                        }else if (line.contains("in conflict with bean defined"))
+                                int total = Integer.parseInt(publicAPITotalMatcher.group(1));
+                                cmdOut.setPublicAPITotal(total);
+                        }
+                        else if (classPathTotalMatcher.find())
                         {
-                                cmdOut.getBeanOverwriteConflicts().add(line);
-                                lastBeanIndex = cmdOut.getBeanOverwriteConflicts().size() - 1;
-                                lastLineBean = true;
-                                lastLinePublicApi = false;
-                        }else if(line.contains("Conflicting with")){
-                                if(lastLinePublicApi){
-                                        cmdOut.getPublicAPIConflicts().set(lastPublicApiIndex, cmdOut.getPublicAPIConflicts().get(lastPublicApiIndex) + " "+ line);
+                                int total = Integer.parseInt(classPathTotalMatcher.group(1));
+                                cmdOut.setClassPathConflictsTotal(total);
+                        }
+                        else if (line.contains("Extension Resource ID overwriting WAR resource"))
+                        {
+                                isInFileOverwriteConflicts = true;
+                        }
+                        else if (fileOverwriteRowMatcher.find() && isInFileOverwriteConflicts)
+                        {
+                                String filePath = fileOverwriteRowMatcher.group(1);
+                                cmdOut.getFileOverwriteConflicts().add(filePath.trim());
+                        }
+                        else if (line.contains("Extension Bean Resource") && !line.contains("Extension Bean Resource Defining Object"))
+                        {
+                                isInBeanOverwriteConflicts = true;
+                        }
+                        else if (beanOverwriteRowMatcher.find() && isInBeanOverwriteConflicts)
+                        {
+                                String beanPath = beanOverwriteRowMatcher.group(1);
+                                if(!beanPath.trim().equals("ID")){
+                                        cmdOut.getBeanOverwriteConflicts().add(beanPath.trim());
                                 }
-                                lastLinePublicApi = false;
-                                lastLineBean = false;
-                        }else if(line.contains("Overwriting bean")) {
-                                if (lastLineBean)
-                                {
-                                        cmdOut.getBeanOverwriteConflicts().set(lastBeanIndex, cmdOut.getBeanOverwriteConflicts().get(lastBeanIndex) + " " + line);
-                                }
-                                lastLinePublicApi = false;
-                                lastLineBean = false;
-                        }else{
-                                lastLinePublicApi = false;
-                                lastLineBean = false;
+                        }
+                        else if (line.contains("Extension Resource ID using Custom Code"))
+                        {
+                                isInPublicAPIConflicts = true;
+                        }
+                        else if (publicAPIRowMatcher.find() && isInPublicAPIConflicts)
+                        {
+                                String publicAPIPath = publicAPIRowMatcher.group(1);
+                                cmdOut.getPublicAPIConflicts().add(publicAPIPath.trim());
+                        }
+                        else if (line.contains("Extension Bean Resource Defining Object"))
+                        {
+                                isInClassPathConflicts = true;
+                        }
+                        else if (classPathRowMatcher.find() && isInClassPathConflicts)
+                        {
+                                String classPath = classPathRowMatcher.group(1);
+                                cmdOut.getClassPathConflicts().add(classPath.trim());
+                        }
+                        else if (line.length() == 0)
+                        {
+                                isInFileOverwriteConflicts = false;
+                                isInBeanOverwriteConflicts = false;
+                                isInPublicAPIConflicts = false;
+                                isInClassPathConflicts = false;
                         }
                         System.out.println(line);
                 }
-
         }
+
 }

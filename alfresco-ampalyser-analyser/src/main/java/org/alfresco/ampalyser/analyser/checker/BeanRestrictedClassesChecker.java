@@ -7,21 +7,16 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.StringUtils.stripEnd;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.BeanRestrictedClassConflict;
+import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -49,25 +44,22 @@ public class BeanRestrictedClassesChecker implements Checker
     {
         final Set<String> extensionClassesById = extensionResourceInfoService
             .retrieveClasspathElementsById().keySet();
-        
-        final Set<String> whitelist = Stream
-            .concat(
-                // The list coming from the file the user provided
-                configService.getBeanClassWhitelist().stream(),
 
-                // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the whitelist.
-                warInventory
-                    .getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptyList())
-                    .stream()
-                    .map(Resource::getId))
-            .collect(toUnmodifiableSet());
+        final Set<String> allowedList = configService.getInternalClassAllowedList();
+        final Set<String> publicApis = // By default, add the ALFRESCO_PUBLIC_API classes that we found in the war to the publicApis.
+            warInventory.getResources().getOrDefault(ALFRESCO_PUBLIC_API, emptySet())
+                .stream()
+                .map(Resource::getId)
+                .collect(toUnmodifiableSet());
 
         return extensionResourceInfoService
             .retrieveBeansOfAlfrescoTypes()
             .stream()
+            .filter(r -> !publicApis.contains(r.getBeanClass()))
             .filter(r -> !extensionClassesById
                 .contains("/" + r.getBeanClass().replace(".", "/") + ".class"))
-            .filter(r -> !whitelist.contains(r.getBeanClass()))
+            .filter(r -> !isInAllowedList(
+                "/" + r.getBeanClass().replace(".", "/") + ".class", allowedList))
             .map(r -> new BeanRestrictedClassConflict(r, alfrescoVersion));
     }
 

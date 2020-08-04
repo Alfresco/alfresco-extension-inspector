@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
 
 import java.util.Map;
@@ -45,7 +45,7 @@ public class BeanOverwritingChecker implements Checker
 
         // Find a list of possible conflicts (there's no way to know for sure) for each amp bean resource
         return warInventory
-            .getResources().getOrDefault(BEAN, emptyList())
+            .getResources().getOrDefault(BEAN, emptySet())
             .stream()
             .map(r -> (BeanResource) r)
             .filter(wr -> resourcesById.containsKey(wr.getId()))
@@ -58,6 +58,6 @@ public class BeanOverwritingChecker implements Checker
     @Override
     public boolean canProcess(final InventoryReport warInventory, final String alfrescoVersion)
     {
-        return configService.getBeanOverrideWhitelist() != null;
+        return configService.getBeanOverrideAllowedList() != null;
     }
 }

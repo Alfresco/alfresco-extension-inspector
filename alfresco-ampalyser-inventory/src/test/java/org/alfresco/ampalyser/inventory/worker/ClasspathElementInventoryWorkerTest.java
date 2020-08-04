@@ -8,12 +8,12 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -35,14 +35,14 @@ public class ClasspathElementInventoryWorkerTest
         ZipEntry entry = new ZipEntry("WEB-INF/classes/TestEntry.txt");
         assertTrue(worker.canProcessEntry(entry, entry.getName()));
 
-        List<Resource> resourceList = worker.processZipEntry(entry, null, entry.getName());
-        assertTrue(!resourceList.isEmpty());
-        assertEquals(1, resourceList.size());
-        assertTrue(resourceList.iterator().next() instanceof ClasspathElementResource);
+        Set<Resource> resourceSet = worker.processZipEntry(entry, null, entry.getName());
+        assertTrue(!resourceSet.isEmpty());
+        assertEquals(1, resourceSet.size());
+        assertTrue(resourceSet.iterator().next() instanceof ClasspathElementResource);
 
-        assertEquals(Resource.Type.CLASSPATH_ELEMENT, resourceList.iterator().next().getType());
-        assertEquals("/TestEntry.txt", resourceList.iterator().next().getId());
-        assertEquals("/" + entry.getName(), resourceList.iterator().next().getDefiningObject());
+        assertEquals(Resource.Type.CLASSPATH_ELEMENT, resourceSet.iterator().next().getType());
+        assertEquals("/TestEntry.txt", resourceSet.iterator().next().getId());
+        assertEquals("/" + entry.getName(), resourceSet.iterator().next().getDefiningObject());
     }
     
     @Test
@@ -64,7 +64,7 @@ public class ClasspathElementInventoryWorkerTest
         ZipEntry entry = new ZipEntry("TestEntry.txt");
         assertFalse(worker.canProcessEntry(entry, "TestEntry.txt"));
 
-        assertEquals(emptyList(), worker.processZipEntry(entry, null, entry.getName()));
+        assertEquals(emptySet(), worker.processZipEntry(entry, null, entry.getName()));
     }
 
     @Test

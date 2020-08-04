@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,9 +42,9 @@ class ExtensionResourceInfoServiceTest
             "bean4",
             "bean5",
             "bean6"
-        )).when(configService).getBeanOverrideWhitelist();
+        )).when(configService).getBeanOverrideAllowedList();
 
-        doReturn(List.of(
+        doReturn(Set.of(
             new BeanResource("bean1", "context1.xml", "java.lang.String.class"),
 
             new BeanResource("bean2", "context1.xml", "java.lang.String.class"),
@@ -79,7 +78,7 @@ class ExtensionResourceInfoServiceTest
     @Test
     void testRetrieveClasspathElementsById()
     {
-        doReturn(List.of(
+        doReturn(Set.of(
             new ClasspathElementResource("/package/Class1.class", "lib1.jar"),
 
             new ClasspathElementResource("/package/Class2", "lib1.jar"),
@@ -114,7 +113,7 @@ class ExtensionResourceInfoServiceTest
             "/web/foo/bar/white/black", "/web5"
         )).when(configService).getFileMappings();
 
-        doReturn(List.of(
+        doReturn(Set.of(
             new FileResource("/web/foo/file1", "a.jar"),
             new FileResource("/web/foo/file2", "a.jar"),
             new FileResource("/web/foo/file3", "b.jar"),
@@ -151,7 +150,7 @@ class ExtensionResourceInfoServiceTest
     @Test
     void testRetrieveBeansOfAlfrescoTypes()
     {
-        doReturn(List.of(
+        doReturn(Set.of(
             new BeanResource("bean1", "context1.xml", "java.lang.String.class"),
 
             new BeanResource("bean2", "context1.xml", "java.lang.String.class"),

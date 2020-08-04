@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doReturn;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.inventory.data.classes.ClassDeprecated;
@@ -74,7 +74,7 @@ public class PublicApiInventoryWorkerTest
         byte[] data = getClassData(testClass);
 
         doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
-        List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
+        Set<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
         assertTrue(resources.iterator().next() instanceof AlfrescoPublicApiResource);
@@ -94,7 +94,7 @@ public class PublicApiInventoryWorkerTest
         byte[] data = getClassData(testClass);
 
         doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
-        List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
+        Set<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(1, resources.size());
 
         assertTrue(resources.iterator().next() instanceof AlfrescoPublicApiResource);
@@ -113,7 +113,7 @@ public class PublicApiInventoryWorkerTest
         byte[] data = getClassData(testClass);
 
         doReturn(TEST_ALFRESCO_PUBLIC_API).when(worker).getPublicAnnotationType();
-        List<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
+        Set<Resource> resources = worker.processZipEntry(zipEntry, data, "source");
         assertEquals(0, resources.size());
     }
 

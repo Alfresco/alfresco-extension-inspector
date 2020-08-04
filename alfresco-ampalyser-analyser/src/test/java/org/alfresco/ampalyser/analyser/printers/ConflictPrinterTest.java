@@ -116,7 +116,7 @@ public class ConflictPrinterTest
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5);
 
-        assertEquals("file1.txt, file2.txt", joinWarResourceDefiningObjs(conflicts));
+        assertEquals("file1.txt", joinWarResourceDefiningObjs("file1.txt", conflicts));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ConflictPrinterTest
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4);
 
-        assertEquals("another_context.xml, default_context.xml",
-            joinExtensionDefiningObjs(conflicts));
+        assertEquals("another_context.xml,\ndefault_context.xml",
+            joinExtensionDefiningObjs("bean2", conflicts));
     }
 }

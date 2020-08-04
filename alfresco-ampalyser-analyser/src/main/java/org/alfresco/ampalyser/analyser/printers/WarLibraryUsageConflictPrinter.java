@@ -8,19 +8,18 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
-import static java.text.MessageFormat.format;
-import static java.util.stream.Collectors.flatMapping;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
+import static java.lang.System.lineSeparator;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
+import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +27,11 @@ import org.springframework.stereotype.Component;
 public class WarLibraryUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found 3rd party library usage! Although this is not an "
-        + "immediate problem, all 3rd party libraries that come with the Alfresco "
-        + "repository are considered our internal implementation detail. These "
-        + "libraries will change or might even disappear in service packs without "
-        + "notice.\nThe following classes are making use of 3rd party libraries:";
+        "Found 3rd party library usage. Although this isn't an immediate problem, all 3rd party "
+            + "libraries that are delivered with the repository are considered as our internal "
+            + "implementation detail. These libraries will change or may be removed in future "
+            + "service packs without notice." + lineSeparator()
+            + "The following classes use 3rd party libraries:";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -56,30 +55,39 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     }
 
     @Override
-    public void printVerboseOutput(final String id, final Set<Conflict> conflictSet)
+    public void printVerboseOutput(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
-        final String invalidDependencies = conflictSet
-            .stream()
-            .map(c -> (WarLibraryUsageConflict) c)
-            .flatMap(c -> c.getClassDependencies().stream())
-            .distinct()
-            .sorted()
-            .collect(joining(", "));
+        String[][] data = new String[conflictSet.size() + 1][4];
+        data[0][0] = "Extension Bean Resource ID";
+        data[0][1] = "Extension Defining Object";
+        data[0][2] = "Invalid 3rd Party Dependencies";
+        data[0][3] = "WAR Version";
 
-        System.out.println(
-            "Extension resource " + (id.equals(definingObject) ? id : id + "@" + definingObject)
-                + " has invalid (3rd party) dependencies: " + invalidDependencies);
-        System.out.println("Conflicting with: " + joinWarVersions(conflictSet));
-        System.out.println();
+        int row = 0;
+        for (Conflict conflict : conflictSet)
+        {
+            row++;
+            data[row][0] = conflict.getAmpResourceInConflict().getId();
+            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
+            data[row][2] = String.join(",\n",((WarLibraryUsageConflict) conflict).getClassDependencies());
+            data[row][3] = conflict.getAlfrescoVersion();
+        }
+
+         printTable(data);
     }
 
     @Override
-    public void print(final String id, final Set<Conflict> conflictSet)
+    public void print(final Set<Conflict> conflictSet)
     {
-        final String definingObject = conflictSet.iterator().next().getAmpResourceInConflict().getDefiningObject();
+        String[][] data = conflictSet.stream()
+            .map(conflict -> List.of(
+                conflict.getAmpResourceInConflict().getId()))
+            .distinct()
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        System.out.println((id.equals(definingObject) ? id : id + "@" + definingObject));
-        System.out.println();
+        data = ArrayUtils.insert(0, data,
+            new String[][]{new String[]{"Extension Resource ID using 3rd Party library code"}});
+        printTable(data);
     }
 }

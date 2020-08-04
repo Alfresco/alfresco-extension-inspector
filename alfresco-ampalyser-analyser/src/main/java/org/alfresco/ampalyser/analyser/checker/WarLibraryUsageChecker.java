@@ -7,10 +7,10 @@
  */
 package org.alfresco.ampalyser.analyser.checker;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 
 import java.util.Map;
@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
+import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
@@ -38,16 +39,19 @@ public class WarLibraryUsageChecker implements Checker
     private ExtensionResourceInfoService extensionResourceInfoService;
     @Autowired
     private ExtensionCodeAnalysisService extensionCodeAnalysisService;
+    @Autowired
+    private ConfigService configService;
 
     @Override
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
         final Set<String> allExtensionDependencies = extensionCodeAnalysisService.retrieveAllDependencies();
+        final Set<String> thirdPartyAllowedList = configService.getThirdPartyAllowedList();
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
         final Set<String> classesInWar = warInventory
-            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptyList())
+            .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())
             .stream()
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
@@ -68,6 +72,7 @@ public class WarLibraryUsageChecker implements Checker
                 e.getKey(),
                 e.getValue()
                  .stream()
+                 .filter(c -> !isInAllowedList(c, thirdPartyAllowedList))
                  .filter(d -> !extensionClassesById.containsKey(d)) // dependencies not provided in the extension
                  .filter(classesInWar::contains) // dependencies provided by the WAR
                  .collect(toUnmodifiableSet())

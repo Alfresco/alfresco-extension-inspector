@@ -8,12 +8,12 @@
 
 package org.alfresco.ampalyser.inventory.worker;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.alfresco.ampalyser.model.FileResource;
@@ -35,15 +35,15 @@ public class FileInventoryWorkerTest
         ZipEntry entry = new ZipEntry("TestEntry.txt");
         assertTrue(fileInventoryWorker.canProcessEntry(entry, entry.getName()));
 
-        List<Resource> resourceList = fileInventoryWorker
+        Set<Resource> resourceSet = fileInventoryWorker
             .processZipEntry(entry, null, entry.getName());
-        assertFalse(resourceList.isEmpty());
-        assertEquals(1, resourceList.size());
-        assertTrue(resourceList.iterator().next() instanceof FileResource);
+        assertFalse(resourceSet.isEmpty());
+        assertEquals(1, resourceSet.size());
+        assertTrue(resourceSet.iterator().next() instanceof FileResource);
 
-        assertEquals(Resource.Type.FILE, resourceList.iterator().next().getType());
-        assertEquals("/" + entry.getName(), resourceList.iterator().next().getId());
-        assertEquals("/" + entry.getName(), resourceList.iterator().next().getDefiningObject());
+        assertEquals(Resource.Type.FILE, resourceSet.iterator().next().getType());
+        assertEquals("/" + entry.getName(), resourceSet.iterator().next().getId());
+        assertEquals("/" + entry.getName(), resourceSet.iterator().next().getDefiningObject());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class FileInventoryWorkerTest
         String definingObject = "testEntry.jar";
         assertFalse(fileInventoryWorker.canProcessEntry(entry, definingObject));
 
-        assertEquals(emptyList(), fileInventoryWorker.processZipEntry(entry, null, definingObject));
+        assertEquals(emptySet(), fileInventoryWorker.processZipEntry(entry, null, definingObject));
     }
 
     @Test
