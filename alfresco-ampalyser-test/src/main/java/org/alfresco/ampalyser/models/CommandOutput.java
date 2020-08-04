@@ -15,11 +15,15 @@ public class CommandOutput
 {
         private int exitCode;
         private List<String> output = new ArrayList<>();
-        private List<String> publicAPIConflicts = new ArrayList<>();
-        private List<String> thirdPartyLibConflicts = new ArrayList<>();
         private List<String> fileOverwriteConflicts = new ArrayList<>();
+        private int fileOverwriteTotal;
         private List<String> beanOverwriteConflicts = new ArrayList<>();
+        private int beanOverwriteTotal;
+        private List<String> publicAPIConflicts = new ArrayList<>();
+        private int publicAPITotal;
         private List<String> classPathConflicts = new ArrayList<>();
+        private int classPathConflictsTotal;
+        private List<String> thirdPartyLibConflicts = new ArrayList<>();
 
         public List<String> getClassPathConflicts()
         {
@@ -139,4 +143,43 @@ public class CommandOutput
                 return null;
         }
 
+        public int getFileOverwriteTotal()
+        {
+                return fileOverwriteTotal;
+        }
+
+        public void setFileOverwriteTotal(int fileOverwriteTotal)
+        {
+                this.fileOverwriteTotal = fileOverwriteTotal;
+        }
+
+        public int getBeanOverwriteTotal()
+        {
+                return beanOverwriteTotal;
+        }
+
+        public void setBeanOverwriteTotal(int beanOverwriteTotal)
+        {
+                this.beanOverwriteTotal = beanOverwriteTotal;
+        }
+
+        public int getPublicAPITotal()
+        {
+                return publicAPITotal;
+        }
+
+        public void setPublicAPITotal(int publicAPITotal)
+        {
+                this.publicAPITotal = publicAPITotal;
+        }
+
+        public int getClassPathConflictsTotal()
+        {
+                return classPathConflictsTotal;
+        }
+
+        public void setClassPathConflictsTotal(int classPathConflictsTotal)
+        {
+                this.classPathConflictsTotal = classPathConflictsTotal;
+        }
 }
