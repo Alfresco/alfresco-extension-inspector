@@ -104,7 +104,7 @@ public class CommandReceiver
                                 int total = Integer.parseInt(classPathTotalMatcher.group(1));
                                 cmdOut.setClassPathConflictsTotal(total);
                         }
-                        else if (line.contains("Extension Resource ID overwriting WAR resources"))
+                        else if (line.contains("Extension Resource ID overwriting WAR resource"))
                         {
                                 isInFileOverwriteConflicts = true;
                         }

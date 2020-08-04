@@ -34,8 +34,8 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
 
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
                 assertEquals(cmdOut.getFileOverwriteTotal(), 3);
-                assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/mp4.gif"));
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/pdf.png"));
+                assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/mp4.gif"));
                 assertFalse(cmdOut.isInFileOverwrite("/images/filetype/testfile.bmp"));
         }
 

@@ -96,12 +96,12 @@
       "implicit" : false
     }, {
       "type" : "ALFRESCO_PUBLIC_API",
-      "id" : "org.alfresco.service.cmr.repository.TransformationOptions",
+      "id" : "org.alfresco.repo.content.transform.ContentTransformer",
       "deprecated" : false,
       "implicit" : true
     }, {
       "type" : "ALFRESCO_PUBLIC_API",
-      "id" : "org.alfresco.repo.content.transform.ContentTransformer",
+      "id" : "org.alfresco.service.cmr.repository.TransformationOptions",
       "deprecated" : false,
       "implicit" : true
     } ],
