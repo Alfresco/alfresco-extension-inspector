@@ -74,14 +74,13 @@ public class AnalyserOutputService
             conflictsTotal += conflictsPerType;
         }
 
+        System.out.println("REPORT SUMMARY");
         if (conflictsTotal > 0)
         {
-            System.out.println("REPORT SUMMARY");
             System.out.println("Across the provided target versions, the following number of conflicts have been found:");
             printTable(data);
         }
         else {
-            System.out.println("REPORT SUMMARY");
             System.out.println("Across the provided target versions, no conflicts have been found.");
         }
     }
