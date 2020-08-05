@@ -2,6 +2,7 @@ package org.alfresco.ampalyser.integration.tests;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import java.util.List;
 
@@ -53,16 +54,14 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getBeanOverwriteTotal(), 2);
                 assertTrue(cmdOut.isInBeanOverwrite("trashcanSchedulerAccessor"));
                 assertTrue(cmdOut.isInBeanOverwrite("trashcanCleaner"));
-//                //TO DO: Run against multiple Alfresco versions
-//                version = "6.0.0-6.2.2";
-//                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
-//                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
-//
-//                assertEquals(cmdOut.getBeanOverwriteConflicts().size(), 2);
-//                assertTrue(cmdOut.retrieveOutputLine("trashcanCleaner", "BEAN")
-//                        .contains("6.0.0 - 6.2.2"));
-//                assertTrue(cmdOut.retrieveOutputLine("trashcanSchedulerAccessor", "BEAN")
-//                        .contains("6.0.0 - 6.2.2"));
+                //TO DO: Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+
+                assertEquals(cmdOut.getBeanOverwriteTotal(), 14);
+                assertNotNull(cmdOut.retrieveOutputLine("trashcanCleaner,6.2.2", "BEAN"));
+                assertNotNull(cmdOut.retrieveOutputLine("trashcanSchedulerAccessor,6.0.0", "BEAN"));
         }
 
         @Test
