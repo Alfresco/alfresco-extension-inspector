@@ -34,8 +34,6 @@ public class AnalyserOutputService
 
     public void print(final Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
-        printSummary(conflictPerTypeAndResourceId);
-
         printers
             .stream()
             .sorted(comparing(ConflictPrinter::getConflictType))
@@ -43,6 +41,8 @@ public class AnalyserOutputService
                 conflictPerTypeAndResourceId.get(p.getConflictType()),
                 configService.isVerboseOutput()
             ));
+
+        printSummary(conflictPerTypeAndResourceId);
 
         if (!configService.isVerboseOutput())
         {
@@ -52,12 +52,11 @@ public class AnalyserOutputService
 
     private void printSummary(Map<Conflict.Type, Map<String, Set<Conflict>>> conflictPerTypeAndResourceId)
     {
-        String[][] data = new String[2 + conflictPerTypeAndResourceId.size()][2];
-        data[0][0] = "REPORT SUMMARY";
-        data[1][0] = "Type";
-        data[1][1] = "Total";
+        String[][] data = new String[1 + conflictPerTypeAndResourceId.size()][2];
+        data[0][0] = "Type";
+        data[0][1] = "Total";
 
-        int row = 2;
+        int row = 1;
 
         int conflictsTotal = 0;
         for (Map.Entry<Conflict.Type, Map<String, Set<Conflict>>> perType : conflictPerTypeAndResourceId.entrySet())
@@ -77,10 +76,12 @@ public class AnalyserOutputService
 
         if (conflictsTotal > 0)
         {
+            System.out.println("REPORT SUMMARY");
             System.out.println("Across the provided target versions, the following number of conflicts have been found:");
             printTable(data);
         }
         else {
+            System.out.println("REPORT SUMMARY");
             System.out.println("Across the provided target versions, no conflicts have been found.");
         }
     }
