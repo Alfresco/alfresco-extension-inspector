@@ -60,6 +60,7 @@ public class CommandReceiver
                 boolean isInBeanOverwriteConflicts = false;
                 boolean isInPublicAPIConflicts = false;
                 boolean isInClassPathConflicts = false;
+                boolean isThirdPartyLibraryConflicts = false;
                 while ((line = in.readLine()) != null)
                 {
                         cmdOut.getOutput().add(line);
@@ -83,6 +84,11 @@ public class CommandReceiver
                         Matcher classPathTotalMatcher = classPathTotalPattern.matcher(line);
                         Pattern classPathRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher classPathRowMatcher = classPathRowPattern.matcher(line);
+                        // Check thirdPartyLibrary total line
+                        Pattern thirdPartyLibraryTotalPattern = Pattern.compile("║WAR_LIBRARY_USAGE\\s+│(\\d+)\\s+║");
+                        Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
+                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("║(.+)");
+                        Matcher thirdPartyLibraryRowMatcher = thirdPartyLibraryRowPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
                         {
@@ -103,6 +109,11 @@ public class CommandReceiver
                         {
                                 int total = Integer.parseInt(classPathTotalMatcher.group(1));
                                 cmdOut.setClassPathConflictsTotal(total);
+                        }
+                        else if (thirdPartyLibraryTotalMatcher.find())
+                        {
+                                int total = Integer.parseInt(thirdPartyLibraryTotalMatcher.group(1));
+                                cmdOut.setThirdPartyLibTotal(total);
                         }
                         else if (line.contains("Extension Resource ID overwriting WAR resource"))
                         {
@@ -142,12 +153,22 @@ public class CommandReceiver
                                 String classPath = classPathRowMatcher.group(1);
                                 cmdOut.getClassPathConflicts().add(classPath.trim());
                         }
+                        else if (line.contains("Extension Resource ID using 3rd Party library code"))
+                        {
+                                isThirdPartyLibraryConflicts = true;
+                        }
+                        else if (thirdPartyLibraryRowMatcher.find() && isThirdPartyLibraryConflicts)
+                        {
+                                String thirdPartyLibs = thirdPartyLibraryRowMatcher.group(1);
+                                cmdOut.getThirdPartyLibConflicts().add(thirdPartyLibs.trim());
+                        }
                         else if (line.length() == 0)
                         {
                                 isInFileOverwriteConflicts = false;
                                 isInBeanOverwriteConflicts = false;
                                 isInPublicAPIConflicts = false;
                                 isInClassPathConflicts = false;
+                                isThirdPartyLibraryConflicts = false;
                         }
                         System.out.println(line);
                 }

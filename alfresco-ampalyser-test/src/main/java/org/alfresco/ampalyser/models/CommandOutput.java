@@ -25,6 +25,10 @@ public class CommandOutput
         private int classPathConflictsTotal;
         private List<String> thirdPartyLibConflicts = new ArrayList<>();
 
+
+
+        private int thirdPartyLibTotal;
+
         public List<String> getClassPathConflicts()
         {
                 return classPathConflicts;
@@ -181,5 +185,14 @@ public class CommandOutput
         public void setClassPathConflictsTotal(int classPathConflictsTotal)
         {
                 this.classPathConflictsTotal = classPathConflictsTotal;
+        }
+        public int getThirdPartyLibTotal()
+        {
+                return thirdPartyLibTotal;
+        }
+
+        public void setThirdPartyLibTotal(int thirdPartyLibTotal)
+        {
+                this.thirdPartyLibTotal = thirdPartyLibTotal;
         }
 }
