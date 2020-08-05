@@ -8,13 +8,17 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
@@ -30,6 +34,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
             + "conflict with resources used in various Alfresco versions, so you won't be able "
             + "to install this extension on these versions. Try using the "
             + "--target option to limit this scan to specific Alfresco versions.";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID overwriting WAR resource";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -55,21 +60,21 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(Set<Conflict> conflictSet)
     {
-        String[][] data = new String[conflictSet.size() + 1][4];
-        data[0][0] = "Extension Bean Resource ID";
-        data[0][1] = "Extension Defining Object";
-        data[0][2] = "WAR Version";
+        String[][] data =  conflictSet
+            .stream()
+            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+                TreeMap::new,
+                toUnmodifiableSet()))
+            .entrySet().stream()
+            .map(entry -> List.of(
+                entry.getKey(),
+                joinWarVersions(entry.getValue()),
+                valueOf(entry.getValue().size())))
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        int row = 1;
-        for (Conflict conflict : conflictSet)
-        {
-            data[row][0] = conflict.getAmpResourceInConflict().getId();
-            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
-            data[row][2] = conflict.getWarResourceInConflict().getDefiningObject();
-            data[row][3] = conflict.getAlfrescoVersion();
-            row++;
-        }
-
+        data = ArrayUtils.insert(0, data,
+            new String[][] { new String[] { EXTENSION_RESOURCE_ID, WAR_VERSION, TOTAL } });
         printTable(data);
     }
 
@@ -84,7 +89,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
             .toArray(String[][]::new);
 
         data = ArrayUtils.insert(0, data,
-            new String[][]{new String[]{"Extension Resource ID overwriting WAR resource"}});
+            new String[][] { new String[] { EXTENSION_RESOURCE_ID } });
         printTable(data);
     }
 }

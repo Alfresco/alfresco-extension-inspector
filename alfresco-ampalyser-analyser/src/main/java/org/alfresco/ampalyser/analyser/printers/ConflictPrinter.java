@@ -34,7 +34,15 @@ import org.slf4j.LoggerFactory;
 public interface ConflictPrinter
 {
     Logger LOGGER = LoggerFactory.getLogger(ConflictPrinter.class);
-
+    
+    String EXTENSION_DEFINING_OBJECT = "Extension Defining Object";
+    String INVALID_3_RD_PARTY_DEPENDENCIES = "Invalid 3rd Party Dependencies";
+    String INVALID_DEPENDENCIES = "Invalid Dependencies";
+    String RESTRICTED_CLASS = "Restricted Class";
+    String WAR_DEFINING_OBJECTS = "WAR Defining Objects";
+    String WAR_VERSION = "WAR Versions";
+    String TOTAL = "Total conflicts";
+    
     default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
         if (isEmpty(conflicts))
