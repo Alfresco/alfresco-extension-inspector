@@ -8,13 +8,18 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.join;
+import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.WAR_LIBRARY_USAGE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.WarLibraryUsageConflict;
@@ -32,6 +37,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             + "implementation detail. These libraries will change or may be removed in future "
             + "service packs without notice." + lineSeparator()
             + "The following classes use 3rd party libraries:";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID using 3rd Party library code";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -57,22 +63,25 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public void printVerboseOutput(final Set<Conflict> conflictSet)
     {
-        String[][] data = new String[conflictSet.size() + 1][4];
-        data[0][0] = "Extension Bean Resource ID";
-        data[0][1] = "Extension Defining Object";
-        data[0][2] = "Invalid 3rd Party Dependencies";
-        data[0][3] = "WAR Version";
+        String[][] data =  conflictSet
+            .stream()
+            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+                TreeMap::new,
+                toUnmodifiableSet()))
+            .entrySet().stream()
+            .map(entry -> List.of(
+                entry.getKey(),
+                entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
+                join(",\n",((WarLibraryUsageConflict) entry.getValue().iterator().next())
+                    .getClassDependencies()),
+                joinWarVersions(entry.getValue()),
+                valueOf(entry.getValue().size())))
+            .map(rowAsList -> rowAsList.toArray(new String[0]))
+            .toArray(String[][]::new);
 
-        int row = 0;
-        for (Conflict conflict : conflictSet)
-        {
-            row++;
-            data[row][0] = conflict.getAmpResourceInConflict().getId();
-            data[row][1] = conflict.getAmpResourceInConflict().getDefiningObject();
-            data[row][2] = String.join(",\n",((WarLibraryUsageConflict) conflict).getClassDependencies());
-            data[row][3] = conflict.getAlfrescoVersion();
-        }
-
+        data = ArrayUtils.insert(0, data, new String[][] {
+            new String[] { EXTENSION_RESOURCE_ID, EXTENSION_DEFINING_OBJECT,
+                INVALID_3_RD_PARTY_DEPENDENCIES, WAR_VERSION, TOTAL } });
          printTable(data);
     }
 
@@ -86,8 +95,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
-        data = ArrayUtils.insert(0, data,
-            new String[][]{new String[]{"Extension Resource ID using 3rd Party library code"}});
+        data = ArrayUtils
+            .insert(0, data, new String[][] { new String[] { EXTENSION_RESOURCE_ID } });
         printTable(data);
     }
 }
