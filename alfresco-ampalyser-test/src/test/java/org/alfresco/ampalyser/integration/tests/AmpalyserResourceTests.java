@@ -1,11 +1,5 @@
 package org.alfresco.ampalyser.integration.tests;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import java.util.List;
-
 import org.alfresco.ampalyser.AmpalyserClient;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.util.AppConfig;
@@ -15,6 +9,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration(classes = AppConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -150,7 +151,7 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getClassPathConflictsTotal(), 1);
                 assertTrue(cmdOut.isClassPathConflicts("ContextLoaderListener.class"));
 
-                //TO DO: Run against multiple Alfresco versions
+                // Run against multiple Alfresco versions
                 version = "6.0.0-6.2.2";
                 List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
@@ -172,7 +173,7 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertFalse(cmdOut.isInThirdPartyLibConflicts("AccessControlList.class"));
                 assertFalse(cmdOut.isInThirdPartyLibConflicts("OtherThirdPartyLibs.class"));
 
-                //TO DO: Run against multiple Alfresco versions
+                // Run against multiple Alfresco versions
                 version = "6.0.0-6.2.2";
                 List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
