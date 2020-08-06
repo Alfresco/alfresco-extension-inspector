@@ -44,7 +44,7 @@ public class AnalyserOutputService
 
         printSummary(conflictPerTypeAndResourceId);
 
-        if (!configService.isVerboseOutput())
+        if (!configService.isVerboseOutput() && !conflictPerTypeAndResourceId.isEmpty())
         {
             System.out.println("(use option --verbose for more details)");
         }
