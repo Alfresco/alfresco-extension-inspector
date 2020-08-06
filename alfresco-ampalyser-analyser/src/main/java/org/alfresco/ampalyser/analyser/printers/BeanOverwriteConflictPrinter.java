@@ -12,7 +12,6 @@ import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -84,18 +83,20 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-        String[][] data = conflictSet.stream()
-            .map(conflict -> List.of(
-                conflict.getAmpResourceInConflict().getId(),
-                joinExtensionDefiningObjs(conflict.getAmpResourceInConflict().getId(), conflictSet),
-                conflict.getWarResourceInConflict().getDefiningObject())
-            )
-            .distinct()
+        String[][] data =  conflictSet
+            .stream()
+            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+                TreeMap::new,
+                toUnmodifiableSet()))
+            .entrySet().stream()
+            .map(entry -> List.of(
+                entry.getKey(),
+                valueOf(entry.getValue().size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
         data = ArrayUtils.insert(0, data, new String[][] {
-            new String[] { EXTENSION_RESOURCE_ID, EXTENSION_DEFINING_OBJECT, WAR_DEFINING_OBJECTS } });
+            new String[] { EXTENSION_RESOURCE_ID, TOTAL } });
         printTable(data);
     }
 }
