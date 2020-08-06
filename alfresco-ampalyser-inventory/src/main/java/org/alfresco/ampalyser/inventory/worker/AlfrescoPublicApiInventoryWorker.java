@@ -10,7 +10,8 @@ package org.alfresco.ampalyser.inventory.worker;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptySet;
-import static java.util.stream.Collectors.toUnmodifiableSet;
+import static java.util.Collections.unmodifiableSet;
+import static java.util.stream.Collectors.toCollection;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -101,7 +102,7 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
                     .filter(classname -> classname.startsWith("org.alfresco.") || classname
                         .startsWith("com.alfresco."))
                     .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
-            .collect(toUnmodifiableSet());
+            .collect(toCollection(LinkedHashSet::new));
 
         // Add to the AlfrescoPublicApi resources all Alfresco Exceptions thrown by the given javaClass's methods
         Set<AlfrescoPublicApiResource> exceptions = stream(javaClass.getMethods())
@@ -111,11 +112,14 @@ public class AlfrescoPublicApiInventoryWorker implements InventoryWorker
                 .filter(classname -> classname.startsWith("org.alfresco.") || 
                     classname.startsWith("com.alfresco."))
                 .map(classname -> new AlfrescoPublicApiResource(classname, false, true)))
-            .collect(toUnmodifiableSet());
+            .collect(toCollection(LinkedHashSet::new));
 
-        return Stream.of(methodArgs, exceptions)
-            .flatMap(Collection::stream)
-            .collect(toUnmodifiableSet());
+        LinkedHashSet<AlfrescoPublicApiResource> alfrescoPublicApiResources = 
+            Stream.of(methodArgs, exceptions)
+                .flatMap(Collection::stream)
+                .collect(toCollection(LinkedHashSet::new));
+
+        return unmodifiableSet(alfrescoPublicApiResources);
     }
 
     public Resource.Type getType()
