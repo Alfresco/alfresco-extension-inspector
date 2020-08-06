@@ -85,7 +85,7 @@ public class CommandReceiver
                         Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s?│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s*│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
@@ -205,7 +205,7 @@ public class CommandReceiver
                         Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s?│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s*│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
