@@ -105,16 +105,16 @@ public interface ConflictPrinter
         }
         if (conflictVersions.size() <= 2)
         {
-            return join(", ", conflictVersions);
+            return join(";", conflictVersions);
         }
         if (conflictVersions.equals(allKnownVersions))
         {
-            return allKnownVersions.first() + " - " + allKnownVersions.last();
+            return allKnownVersions.first() + "-" + allKnownVersions.last();
         }
         return groupRanges(conflictVersions)
             .stream()
-            .map(s -> s.size() > 2 ? s.first() + " - " + s.last() : join(", ", s))
-            .collect(joining(", "));
+            .map(s -> s.size() > 2 ? s.first() + "-" + s.last() : join(";", s))
+            .collect(joining(";"));
     }
 
     /**

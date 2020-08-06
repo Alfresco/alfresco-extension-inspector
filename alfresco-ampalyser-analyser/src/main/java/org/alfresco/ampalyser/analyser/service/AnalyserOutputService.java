@@ -46,7 +46,7 @@ public class AnalyserOutputService
 
         if (!configService.isVerboseOutput())
         {
-            System.out.println("(use option --verbose for version details)");
+            System.out.println("(use option --verbose for more details)");
         }
     }
 
