@@ -77,19 +77,17 @@ public class CommandReceiver
                         // Check file overwrite total line
                         Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
                         Matcher fileOverwriteTotalMatcher = fileOverwriteTotalPattern.matcher(line);
-                        Pattern fileOverwriteRowPattern = Pattern.compile("║(.+)║");
+                        Pattern fileOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher fileOverwriteRowMatcher = fileOverwriteRowPattern.matcher(line);
                         // Check bean overwrite total line
                         Pattern beanOverwriteTotalPattern = Pattern.compile("║BEAN_OVERWRITE\\s+│(\\d+)\\s+║");
                         Matcher beanOverwriteTotalMatcher = beanOverwriteTotalPattern.matcher(line);
-                        Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)║");
-                        Pattern beanOverwriteRowPatternVerbose = Pattern.compile("║(.+)│(.+)│(.+)║");
+                        Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
-                        Matcher beanOverwriteRowMatcherVerbose = beanOverwriteRowPatternVerbose.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s+│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s?│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
-                        Pattern publicAPIRowPattern = Pattern.compile("║(.+)║");
+                        Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
                         // Check classPath overwrite total line
                         Pattern classPathTotalPattern = Pattern.compile("║CLASSPATH_CONFLICT\\s+│(\\d+)\\s+║");
@@ -99,7 +97,7 @@ public class CommandReceiver
                         // Check thirdPartyLibrary total line
                         Pattern thirdPartyLibraryTotalPattern = Pattern.compile("║WAR_LIBRARY_USAGE\\s+│(\\d+)\\s+║");
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
-                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("║(.+)");
+                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher thirdPartyLibraryRowMatcher = thirdPartyLibraryRowPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
@@ -143,12 +141,7 @@ public class CommandReceiver
                         else if (beanOverwriteRowMatcher.find() && isInBeanOverwriteConflicts)
                         {
                                 String beanPath = beanOverwriteRowMatcher.group(1).trim();
-                                String version = beanOverwriteRowMatcher.group(3).trim();
-                                if (!beanPath.equals("ID overriding WAR Bean"))
-                                {
-                                        String entry = String.format("%s,%s", beanPath, version);
-                                        cmdOut.getBeanOverwriteConflicts().add(entry);
-                                }
+                                cmdOut.getBeanOverwriteConflicts().add(beanPath.trim());
                         }
                         else if (line.contains("Extension Resource ID using Custom Code"))
                         {
@@ -156,10 +149,10 @@ public class CommandReceiver
                         }
                         else if (publicAPIRowMatcher.find() && isInPublicAPIConflicts)
                         {
-                                String publicAPIPath = publicAPIRowMatcher.group(1);
+                                String publicAPIPath = publicAPIRowMatcher.group(1).trim();
                                 cmdOut.getPublicAPIConflicts().add(publicAPIPath.trim());
                         }
-                        else if (line.contains("Extension Classpath Resource Defining Object"))
+                        else if (line.contains("Extension Classpath Resource ID"))
                         {
                                 isInClassPathConflicts = true;
                         }
@@ -212,7 +205,7 @@ public class CommandReceiver
                         Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s+│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s?│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
