@@ -88,15 +88,20 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
     @Override
     public void print(final Set<Conflict> conflictSet)
     {
-        String[][] data = conflictSet.stream()
-            .map(conflict -> List.of(
-                conflict.getAmpResourceInConflict().getId()))
-            .distinct()
+        String[][] data =  conflictSet
+            .stream()
+            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+                TreeMap::new,
+                toUnmodifiableSet()))
+            .entrySet().stream()
+            .map(entry -> List.of(
+                entry.getKey(),
+                valueOf(entry.getValue().size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
-        data = ArrayUtils
-            .insert(0, data, new String[][] { new String[] { EXTENSION_RESOURCE_ID } });
+        data = ArrayUtils.insert(0, data, new String[][] {
+            new String[] { EXTENSION_RESOURCE_ID, TOTAL } });
         printTable(data);
     }
 }
