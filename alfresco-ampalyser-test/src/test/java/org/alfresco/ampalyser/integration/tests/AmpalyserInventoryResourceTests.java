@@ -63,9 +63,9 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
         final List<String> cmdOptions = List.of(warResourcePath);
 
         // Generate new inventory report
-        cmdOut = client.runInventoryAnalyserCommand(cmdOptions);
+        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
         assertEquals(cmdOut.getExitCode(), 0);
-        assertTrue(cmdOut.containsMessage(SUCCESS_MESSAGE), "Inventory report has not been generated");
+        assertTrue(cmdOut.isInOutput(SUCCESS_MESSAGE), "Inventory report has not been generated");
 
         // Get the new inventory report
         inventoryReport = getTestInventoryReport();
@@ -122,7 +122,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     public void testInvalidBeans()
     {
         // Check that invalid xml file is not loaded and and error is displayed in command output
-        assertTrue(cmdOut.containsMessage(INVALID_XML_MESSAGE + INVALID_XML), "Invalid xml message not displayed in command output");
+        assertTrue(cmdOut.isInOutput(INVALID_XML_MESSAGE + INVALID_XML), "Invalid xml message not displayed in command output");
         Resource bean = client.retrieveInventoryResource(BEAN, "/invalidXML1", inventoryReport);
         assertNull(bean);
     }

@@ -44,24 +44,24 @@ public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextT
         List<String> cmdOptions = List.of(warResourcePath, "--o=" + inventoryReportPath);
 
         // Generate new inventory report
-        cmdOut = client.runInventoryAnalyserCommand(cmdOptions);
+        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
         final File inventoryReport = new File(
             inventoryReportPath + separator + TestResource.getTestInventoryReport().getName());
 
         assertEquals(cmdOut.getExitCode(), 0);
-        assertTrue(cmdOut.containsMessage(SUCCESS_MESSAGE), "Inventory report has not been generated");
+        assertTrue(cmdOut.isInOutput(SUCCESS_MESSAGE), "Inventory report has not been generated");
         assertTrue(inventoryReport.exists());
     }
 
     @Test
     public void runCommandWithExitCodeError()
     {
-        cmdOut = client.runInventoryAnalyserCommand(Collections.emptyList());
+        cmdOut = client.runAmpalyserInventoryCommand(Collections.emptyList());
         assertEquals(cmdOut.getExitCode(), 1);
-        assertTrue(cmdOut.containsMessage("Missing war file."));
+        assertTrue(cmdOut.isInOutput("Missing war file."));
 
-        cmdOut = client.runInventoryAnalyserCommand(List.of("nonExisting.war"));
+        cmdOut = client.runAmpalyserInventoryCommand(List.of("nonExisting.war"));
         assertEquals(cmdOut.getExitCode(), 1);
-        assertTrue(cmdOut.containsMessage("The war file is not valid"));
+        assertTrue(cmdOut.isInOutput("The war file is not valid"));
     }
 }

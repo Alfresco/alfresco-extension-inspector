@@ -9,22 +9,22 @@
 package org.alfresco.ampalyser.command;
 
 import org.alfresco.ampalyser.models.CommandOutput;
-import org.alfresco.ampalyser.models.InventoryCommand;
+import org.alfresco.ampalyser.models.CommandModel;
 
-public class CommandImpl implements Command
+public class CommandInventoryImpl implements Command
 {
         private CommandReceiver commReceiver;
-        private InventoryCommand inventoryCommand;
+        private CommandModel commandModel;
 
-        public CommandImpl(CommandReceiver commReceiver, InventoryCommand inventoryCommand)
+        public CommandInventoryImpl(CommandReceiver commReceiver, CommandModel commandModel)
         {
                 this.commReceiver = commReceiver;
-                this.inventoryCommand = inventoryCommand;
+                this.commandModel = commandModel;
         }
 
         @Override
         public CommandOutput execute()
         {
-                return commReceiver.runInventoryCmd(inventoryCommand);
+                return commReceiver.runAnalyserCmd(commandModel);
         }
 }

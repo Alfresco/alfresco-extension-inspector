@@ -10,11 +10,11 @@ package org.alfresco.ampalyser.models;
 
 import java.util.List;
 
-public class InventoryCommand
+public class CommandModel
 {
         private List<String> commandOptions;
 
-        public InventoryCommand(List<String> commandOptions)
+        public CommandModel(List<String> commandOptions)
         {
                 this.commandOptions = commandOptions;
         }

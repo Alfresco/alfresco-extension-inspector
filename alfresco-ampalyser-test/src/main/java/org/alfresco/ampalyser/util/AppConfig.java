@@ -9,7 +9,7 @@
 package org.alfresco.ampalyser.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.alfresco.ampalyser.models.InventoryCommand;
+import org.alfresco.ampalyser.models.CommandModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,18 +28,29 @@ public class AppConfig
         static final String JAVA_COM = "java -jar";
 
         @Bean
-        public InventoryCommand initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
+        public CommandModel initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
         {
-                List<String> comOptions = new ArrayList<>(Arrays.asList(JAVA_COM.split(" ")));
-                comOptions.add(pathToInventoryJar);
+                return addPathToCommandOptions(pathToInventoryJar);
+        }
 
-                InventoryCommand cmd = new InventoryCommand(comOptions);
-                return cmd;
+        @Bean
+        public CommandModel initAnalyserCommand(@Value("${ampalyser.analyser.path}") String pathToAnalyserAmp)
+        {
+                return addPathToCommandOptions(pathToAnalyserAmp);
         }
 
         @Bean
         public ObjectMapper mapper()
         {
                 return new ObjectMapper();
+        }
+
+        public CommandModel addPathToCommandOptions(String path)
+        {
+                List<String> comOptions = new ArrayList<>(Arrays.asList(JAVA_COM.split(" ")));
+                comOptions.add(path);
+
+                CommandModel cmd = new CommandModel(comOptions);
+                return cmd;
         }
 }
