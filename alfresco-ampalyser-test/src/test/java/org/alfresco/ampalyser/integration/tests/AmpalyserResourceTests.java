@@ -38,6 +38,16 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/pdf.png"));
                 assertTrue(cmdOut.isInFileOverwrite("/images/filetypes/mp4.gif"));
                 assertFalse(cmdOut.isInFileOverwrite("/images/filetype/testfile.bmp"));
+
+                // Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+
+                assertEquals(cmdOut.getFileOverwriteTotal(), 21);
+                assertNotNull(cmdOut.retrieveOutputLine("ContextLoaderListener.class,6.0.0-6.2.2", "FILE_OVERWRITE"));
+                assertNotNull(cmdOut.retrieveOutputLine("pdf.png,6.0.0-6.2.2", "FILE_OVERWRITE"));
+                assertNotNull(cmdOut.retrieveOutputLine("mp4.gif,6.0.0-6.2.2", "FILE_OVERWRITE"));
         }
 
         @Test
@@ -54,14 +64,15 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getBeanOverwriteTotal(), 2);
                 assertTrue(cmdOut.isInBeanOverwrite("trashcanSchedulerAccessor"));
                 assertTrue(cmdOut.isInBeanOverwrite("trashcanCleaner"));
-                //TO DO: Run against multiple Alfresco versions
+
+                // Run against multiple Alfresco versions
                 version = "6.0.0-6.2.2";
                 List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
                 cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
 
                 assertEquals(cmdOut.getBeanOverwriteTotal(), 14);
-                assertNotNull(cmdOut.retrieveOutputLine("trashcanCleaner,6.2.2", "BEAN"));
-                assertNotNull(cmdOut.retrieveOutputLine("trashcanSchedulerAccessor,6.0.0", "BEAN"));
+                assertNotNull(cmdOut.retrieveOutputLine("trashcanCleaner,6.0.0-6.2.2", "BEAN"));
+                assertNotNull(cmdOut.retrieveOutputLine("trashcanSchedulerAccessor,6.0.0-6.2.2", "BEAN"));
         }
 
         @Test
@@ -90,17 +101,16 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
 
-//                //TO DO: Run against multiple Alfresco versions
-//                version = "6.0.0-6.2.2";
-//                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
-//                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
-//
-//                assertEquals(cmdOut.getPublicAPIConflicts().size(), 2);
-//                assertTrue(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class", "PUBLIC_API")
-//                                        .contains("6.1.0 - 6.2.2"));
-//                assertTrue(cmdOut.retrieveOutputLine("UseInternalClass.class", "PUBLIC_API")
-//                                        .contains("6.0.0 - 6.2.2"));
-//                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
+                // Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+
+                assertEquals(cmdOut.getPublicAPITotal(), 12);
+                assertNotNull(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class,6.1.0-6.2.2", "PUBLIC_API"));
+                assertNotNull(cmdOut.retrieveOutputLine("UseInternalClass.class,6.0.0-6.2.2", "PUBLIC_API"));
+                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
         }
 
         @Test
@@ -116,6 +126,17 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseDeprecatedPublicAPI.class"));
                 assertTrue(cmdOut.isInPublicAPIConflicts("UseInternalClass.class"));
                 assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass"));
+
+                //Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+
+                assertEquals(cmdOut.getPublicAPITotal(), 12);
+                assertNotNull(cmdOut.retrieveOutputLine("UseDeprecatedPublicAPI.class,6.1.0-6.2.2", "PUBLIC_API"));
+                assertNotNull(cmdOut.retrieveOutputLine("UseInternalClass.class,6.0.0-6.2.2", "PUBLIC_API"));
+                assertFalse(cmdOut.isInPublicAPIConflicts("UsePublicAPIClass.class"));
         }
 
         @Test public void testAnalyseClassPathOverwrite()
@@ -129,12 +150,12 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getClassPathConflictsTotal(), 1);
                 assertTrue(cmdOut.isClassPathConflicts("ContextLoaderListener.class"));
 
-//                //TO DO: Run against multiple Alfresco versions
-//                version = "6.0.0-6.2.2";
-//                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version);
-//                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
-//                assertEquals(cmdOut.getClassPathConflictsTotal(), 1);
-
+                //TO DO: Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+                assertEquals(cmdOut.getClassPathConflictsTotal(), 7);
+                assertNotNull(cmdOut.retrieveOutputLine("ContextLoaderListener.class,6.0.0-6.2.2", "CLASS_PATH"));
         }
 
         @Test
@@ -150,5 +171,12 @@ public class AmpalyserResourceTests extends AbstractTestNGSpringContextTests
                 assertTrue(cmdOut.isInThirdPartyLibConflicts("ThirdPartyLibs.class"));
                 assertFalse(cmdOut.isInThirdPartyLibConflicts("AccessControlList.class"));
                 assertFalse(cmdOut.isInThirdPartyLibConflicts("OtherThirdPartyLibs.class"));
+
+                //TO DO: Run against multiple Alfresco versions
+                version = "6.0.0-6.2.2";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions2);
+                assertEquals(cmdOut.getClassPathConflictsTotal(), 7);
+                assertNotNull(cmdOut.retrieveOutputLine("ThirdPartyLibs.class,6.0.0-6.2.2", "3RD_PARTY_LIBS"));
         }
 }
