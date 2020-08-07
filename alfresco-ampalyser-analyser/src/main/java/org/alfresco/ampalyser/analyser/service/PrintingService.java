@@ -35,7 +35,7 @@ public class PrintingService
             for (int i = 0; i <= tableModel.getColumnCount() - 3; i++)
             {
                 tableBuilder.on(column(i))
-                    .addSizer((strings, i12, i1) -> new SizeConstraints.Extent(0, 60));
+                    .addSizer((strings, i12, i1) -> new SizeConstraints.Extent(0, 70));
             }
         }
 
