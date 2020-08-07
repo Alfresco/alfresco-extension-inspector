@@ -7,8 +7,11 @@
  */
 package org.alfresco.ampalyser.analyser.service;
 
+import static org.springframework.shell.table.CellMatchers.column;
+
 import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
+import org.springframework.shell.table.SizeConstraints;
 import org.springframework.shell.table.TableBuilder;
 import org.springframework.shell.table.TableModel;
 
@@ -23,7 +26,20 @@ public class PrintingService
         TableBuilder tableBuilder = new TableBuilder(tableModel);
         tableBuilder.addInnerBorder(BorderStyle.fancy_light);
         tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
-        System.out.println(tableBuilder.build().render(150));
+        // Limit the size of the columns
+        // On verbose output
+        // Last column (tableModel.getColumnCount()-1) is always "Total conflicts" or "Total" (for report summary) - we'll skip it
+        // Also skip "War Versions" column
+        if(tableModel.getColumnCount() > 2)
+        {
+            for (int i = 0; i <= tableModel.getColumnCount() - 3; i++)
+            {
+                tableBuilder.on(column(i))
+                    .addSizer((strings, i12, i1) -> new SizeConstraints.Extent(0, 70));
+            }
+        }
+
+        System.out.println(tableBuilder.build().render(180));
         System.out.println();
     }
 }
