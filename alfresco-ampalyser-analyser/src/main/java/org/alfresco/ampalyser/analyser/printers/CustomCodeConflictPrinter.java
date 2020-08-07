@@ -73,8 +73,8 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             .map(entry -> List.of(
                 entry.getKey(),
                 entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                join(",\n", ((CustomCodeConflict)entry.getValue().iterator().next())
-                    .getInvalidAlfrescoDependencies()),
+                join("\n\n", ((CustomCodeConflict)entry.getValue().iterator().next())
+                    .getInvalidAlfrescoDependencies()),// Empty line between dependencies for output readability
                 joinWarVersions(entry.getValue()),
                 valueOf(entry.getValue().size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))

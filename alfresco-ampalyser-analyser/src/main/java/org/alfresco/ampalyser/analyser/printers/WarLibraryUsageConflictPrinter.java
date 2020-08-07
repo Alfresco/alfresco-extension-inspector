@@ -72,8 +72,8 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             .map(entry -> List.of(
                 entry.getKey(),
                 entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                join(",\n",((WarLibraryUsageConflict) entry.getValue().iterator().next())
-                    .getClassDependencies()),
+                join("\n\n",((WarLibraryUsageConflict) entry.getValue().iterator().next())
+                    .getClassDependencies()),// Empty line between dependencies for output readability
                 joinWarVersions(entry.getValue()),
                 valueOf(entry.getValue().size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))
