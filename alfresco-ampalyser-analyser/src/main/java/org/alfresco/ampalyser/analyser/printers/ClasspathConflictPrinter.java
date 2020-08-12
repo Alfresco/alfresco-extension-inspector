@@ -64,16 +64,15 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     {
         String[][] data =  conflictSet
             .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getDefiningObject(),
+            .collect(groupingBy(c -> c.getAmpResourceInConflict().getId() + "@" + c.getAmpResourceInConflict().getDefiningObject(),
                 TreeMap::new,
                 toUnmodifiableSet()))
-            .entrySet().stream()
-            .map(entry -> List.of(
-                entry.getValue().iterator().next().getAmpResourceInConflict().getId(),
-                entry.getKey(),
-                entry.getValue().iterator().next().getWarResourceInConflict().getDefiningObject(),
-                joinWarVersions(entry.getValue()),
-                valueOf(entry.getValue().size())))
+            .values().stream()
+            .map(conflicts -> List.of(
+                    conflicts.iterator().next().getAmpResourceInConflict().getId(),
+                    conflicts.iterator().next().getAmpResourceInConflict().getDefiningObject(),
+                    conflicts.iterator().next().getWarResourceInConflict().getDefiningObject(),
+                    joinWarVersions(conflicts), valueOf(conflicts.size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
