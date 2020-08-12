@@ -18,12 +18,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
-import org.alfresco.ampalyser.model.AbstractResource;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -36,15 +35,15 @@ import org.springframework.stereotype.Component;
  * A checker/analyser designed to find all the class dependencies of a class within the .amp
  * and to report a list of conflicts for each of those classes.
  *
- * Each class that is found containing invalid dependencies (see {@link CustomCodeConflict}) is reported
+ * Each class that is found containing invalid dependencies (see {@link AlfrescoInternalUsageConflict}) is reported
  * as the original .amp resource
  *
  * @author Lucian Tuca
  */
 @Component
-public class CustomCodeChecker implements Checker
+public class AlfrescoInternalUsageChecker implements Checker
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomCodeChecker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoInternalUsageChecker.class);
 
     @Autowired
     private ConfigService configService;
@@ -91,7 +90,7 @@ public class CustomCodeChecker implements Checker
             .flatMap(e -> extensionClassesById
                 .getOrDefault(e.getKey(), emptySet()) // a class can be provided by multiple jars
                 .stream()
-                .map(r -> new CustomCodeConflict(
+                .map(r -> new AlfrescoInternalUsageConflict(
                     r,
                     e.getValue(),
                     alfrescoVersion

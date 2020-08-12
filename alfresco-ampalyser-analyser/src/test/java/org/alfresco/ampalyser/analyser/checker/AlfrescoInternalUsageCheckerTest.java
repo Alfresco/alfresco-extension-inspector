@@ -11,12 +11,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
@@ -32,7 +31,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class CustomCodeCheckerTest
+class AlfrescoInternalUsageCheckerTest
 {
     private static final String OAA = "/org/alfresco/amp/";
     private static final String OAW = "/org/alfresco/war/";
@@ -44,10 +43,10 @@ class CustomCodeCheckerTest
     @Spy
     private ExtensionCodeAnalysisService extensionCodeAnalysisService;
     @InjectMocks
-    private CustomCodeChecker checker;
+    private AlfrescoInternalUsageChecker checker;
 
     @Test
-    void customCodeCheckerCompleteHappyFlowTest()
+    void alfrescoInternalUsageCheckerCompleteHappyFlowTest()
     {
         // AMP Classpath elements
         {
@@ -145,6 +144,6 @@ class CustomCodeCheckerTest
 
     private static Conflict conflict(ClasspathElementResource resource, Set<String> classes)
     {
-        return new CustomCodeConflict(resource, classes, "6.0.0");
+        return new AlfrescoInternalUsageConflict(resource, classes, "6.0.0");
     }
 }

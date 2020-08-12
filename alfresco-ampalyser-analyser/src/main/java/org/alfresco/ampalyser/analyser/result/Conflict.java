@@ -9,7 +9,7 @@ package org.alfresco.ampalyser.analyser.result;
 
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CLASSPATH_CONFLICT;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.ALFRESCO_INTERNAL_USAGE;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                   @JsonSubTypes.Type(value = BeanRestrictedClassConflict.class, name = BEAN_RESTRICTED_CLASS),
                   @JsonSubTypes.Type(value = FileOverwriteConflict.class, name = FILE_OVERWRITE),
                   @JsonSubTypes.Type(value = ClasspathConflict.class, name = CLASSPATH_CONFLICT),
-                  @JsonSubTypes.Type(value = CustomCodeConflict.class, name = CUSTOM_CODE),
+                  @JsonSubTypes.Type(value = AlfrescoInternalUsageConflict.class, name = ALFRESCO_INTERNAL_USAGE),
                   @JsonSubTypes.Type(value = WarLibraryUsageConflict.class, name = WAR_LIBRARY_USAGE),
               })
 public interface Conflict
@@ -43,8 +43,7 @@ public interface Conflict
         FILE_OVERWRITE,
         BEAN_OVERWRITE,
         BEAN_RESTRICTED_CLASS,
-        CLASSPATH_CONFLICT,
-        CUSTOM_CODE,
+        CLASSPATH_CONFLICT, ALFRESCO_INTERNAL_USAGE,
         WAR_LIBRARY_USAGE,
         ;
 
@@ -54,7 +53,7 @@ public interface Conflict
             static final String BEAN_OVERWRITE = "BEAN_OVERWRITE";
             static final String BEAN_RESTRICTED_CLASS = "BEAN_RESTRICTED_CLASS";
             static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
-            static final String CUSTOM_CODE = "CUSTOM_CODE";
+            static final String ALFRESCO_INTERNAL_USAGE = "ALFRESCO_INTERNAL_USAGE";
             static final String WAR_LIBRARY_USAGE = "WAR_LIBRARY_USAGE";
         }
     }

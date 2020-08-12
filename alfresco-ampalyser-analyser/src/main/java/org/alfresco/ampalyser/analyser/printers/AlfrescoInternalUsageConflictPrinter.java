@@ -13,7 +13,7 @@ import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.ALFRESCO_INTERNAL_USAGE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.CustomCodeConflict;
+import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
 import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +30,15 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class CustomCodeConflictPrinter implements ConflictPrinter
+public class AlfrescoInternalUsageConflictPrinter implements ConflictPrinter
 {
     private static final String HEADER =
-        "Found usage of internal classes. Alfresco provides a Java API "
+        "Found usage of Alfresco internal classes. Alfresco provides a Java API "
             + "that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in "
             + "the repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
             + lineSeparator() + "The following classes use internal Alfresco classes:";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Resource using Custom Code";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource using Alfresco Internal code";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -58,7 +58,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
     @Override
     public Conflict.Type getConflictType()
     {
-        return CUSTOM_CODE;
+        return ALFRESCO_INTERNAL_USAGE;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             .map(entry -> List.of(
                 entry.getKey(),
                 entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                join("\n\n", ((CustomCodeConflict)entry.getValue().iterator().next())
+                join("\n\n", ((AlfrescoInternalUsageConflict)entry.getValue().iterator().next())
                     .getInvalidAlfrescoDependencies()),// Empty line between dependencies for output readability
                 joinWarVersions(entry.getValue()),
                 valueOf(entry.getValue().size())))

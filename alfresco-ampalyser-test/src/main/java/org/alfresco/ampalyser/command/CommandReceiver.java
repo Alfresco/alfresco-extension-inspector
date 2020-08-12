@@ -8,16 +8,15 @@
 
 package org.alfresco.ampalyser.command;
 
-import org.alfresco.ampalyser.models.CommandModel;
-import org.alfresco.ampalyser.models.CommandOutput;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.alfresco.ampalyser.models.CommandModel;
+import org.alfresco.ampalyser.models.CommandOutput;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CommandReceiver
@@ -85,7 +84,7 @@ public class CommandReceiver
                         Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s*│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║ALFRESCO_INTERNAL_USAGE\\s*│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
@@ -143,7 +142,7 @@ public class CommandReceiver
                                 String beanPath = beanOverwriteRowMatcher.group(1).trim();
                                 cmdOut.getBeanOverwriteConflicts().add(beanPath.trim());
                         }
-                        else if (line.contains("Extension Resource ID using Custom Code"))
+                        else if (line.contains("Extension Resource using Alfresco Internal Code"))
                         {
                                 isInPublicAPIConflicts = true;
                         }
@@ -205,7 +204,7 @@ public class CommandReceiver
                         Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)║");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║CUSTOM_CODE\\s*│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("║ALFRESCO_INTERNAL_USAGE\\s*│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
@@ -270,7 +269,7 @@ public class CommandReceiver
                                         cmdOut.getBeanOverwriteConflicts().add(entry);
                                 }
                         }
-                        else if (line.contains("Extension Resource ID using Custom Code"))
+                        else if (line.contains("Extension Resource using Alfresco Internal code"))
                         {
                                 isInPublicAPIConflicts = true;
                         }
