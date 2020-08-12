@@ -8,6 +8,7 @@
 package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toMap;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -36,7 +37,9 @@ public class ClasspathConflictsChecker implements Checker
     public Stream<Conflict> processInternal(final InventoryReport warInventory, final String alfrescoVersion)
     {
         final Map<String, Set<ClasspathElementResource>> elementsById =
-            extensionResourceInfoService.retrieveClasspathElementsById();
+            extensionResourceInfoService.retrieveClasspathElementsById().entrySet().stream()
+            .filter(e -> !e.getKey().toLowerCase().endsWith(".txt") && !e.getKey().toLowerCase().endsWith(".md"))
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return warInventory
             .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())

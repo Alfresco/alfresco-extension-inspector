@@ -12,7 +12,6 @@ import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
@@ -65,14 +64,14 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     {
         String[][] data =  conflictSet
             .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getDefiningObject(),
                 TreeMap::new,
                 toUnmodifiableSet()))
             .entrySet().stream()
             .map(entry -> List.of(
+                entry.getValue().iterator().next().getAmpResourceInConflict().getId(),
                 entry.getKey(),
-                entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                joinWarResourceDefiningObjs(entry.getKey(), entry.getValue()),
+                entry.getValue().iterator().next().getWarResourceInConflict().getDefiningObject(),
                 joinWarVersions(entry.getValue()),
                 valueOf(entry.getValue().size())))
             .map(rowAsList -> rowAsList.toArray(new String[0]))
