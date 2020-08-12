@@ -13,7 +13,6 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
-import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ public interface ConflictPrinter
     String RESTRICTED_CLASS = "Restricted Class";
     String WAR_DEFINING_OBJECTS = "WAR Defining Objects";
     String WAR_VERSION = "WAR Versions";
-    String TOTAL = "Total conflicts";
+    String TOTAL = "No. of WARs with this conflict";
     
     default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
@@ -56,10 +55,7 @@ public interface ConflictPrinter
             .flatMap(Set::stream)
             .collect(toSet());
 
-        String[][] data = new String[2][1];
-        data[0][0] = getConflictType() + " CONFLICTS";
-        data[1][0] = getHeader();
-        printTable(data);
+        System.out.println(getConflictType() + " CONFLICTS. " + getHeader());
 
         try
         {

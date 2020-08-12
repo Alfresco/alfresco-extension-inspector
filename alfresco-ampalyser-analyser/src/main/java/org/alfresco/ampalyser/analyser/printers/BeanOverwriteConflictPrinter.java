@@ -34,7 +34,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
             + "fundamental building block of the repository, and must not be "
             + "overwritten unless explicitly allowed." + lineSeparator()
             + "The following beans overwrite default functionality:";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Bean Resource ID overriding WAR Bean";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Bean ID overriding WAR Bean";
 
     @Autowired
     private WarInventoryReportStore store;

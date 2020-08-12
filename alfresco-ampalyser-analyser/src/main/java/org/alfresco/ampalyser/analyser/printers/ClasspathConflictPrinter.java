@@ -16,7 +16,6 @@ import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarRe
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -37,9 +36,8 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             + "The following resources in your extension are in conflict with resources "
             + "on the classpath in the repository:";
 
-    private static final Set<String> CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED = new HashSet<>();
     private static final String EXTENSION_DEFINING_OBJECT = "Extension Classpath Resource Defining Object";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Classpath Resource ID";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Classpath Resource";
 
     @Autowired
     private WarInventoryReportStore store;

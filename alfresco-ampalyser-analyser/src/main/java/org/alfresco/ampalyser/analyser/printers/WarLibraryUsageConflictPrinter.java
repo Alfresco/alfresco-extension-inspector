@@ -37,7 +37,7 @@ public class WarLibraryUsageConflictPrinter implements ConflictPrinter
             + "implementation detail. These libraries will change or may be removed in future "
             + "service packs without notice." + lineSeparator()
             + "The following classes use 3rd party libraries:";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID using 3rd Party library code";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource using 3rd Party library code";
 
     @Autowired
     private WarInventoryReportStore store;

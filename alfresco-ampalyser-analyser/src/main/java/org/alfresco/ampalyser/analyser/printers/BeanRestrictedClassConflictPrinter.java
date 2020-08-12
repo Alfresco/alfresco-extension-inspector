@@ -35,7 +35,7 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
         "Found beans that instantiate internal classes." + lineSeparator() + "The "
             + "following beans instantiate classes from Alfresco or 3rd party libraries which must "
             + "not be instantiated by custom beans:";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Bean Resource ID instantiating Restricted Class";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Bean ID instantiating Restricted Class";
 
     @Autowired
     private WarInventoryReportStore store;

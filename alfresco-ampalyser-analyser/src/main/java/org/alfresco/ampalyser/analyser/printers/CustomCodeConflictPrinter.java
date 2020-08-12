@@ -38,7 +38,7 @@ public class CustomCodeConflictPrinter implements ConflictPrinter
             + "the repository are considered our internal implementation detail and might "
             + "change or even disappear in service packs and new versions without prior notice. "
             + lineSeparator() + "The following classes use internal Alfresco classes:";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID using Custom Code";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource using Custom Code";
 
     @Autowired
     private WarInventoryReportStore store;

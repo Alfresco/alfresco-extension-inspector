@@ -34,7 +34,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
             + "conflict with resources used in various Alfresco versions, so you won't be able "
             + "to install this extension on these versions. Try using the "
             + "--target option to limit this scan to specific Alfresco versions.";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID overwriting WAR resource";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource overwriting WAR resource";
 
     @Autowired
     private WarInventoryReportStore store;
