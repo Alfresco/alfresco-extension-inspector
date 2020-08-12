@@ -30,7 +30,7 @@ public class AllowedListService
 
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
     private static final String ALLOWED_INTERNAL_CLASS_LIST = "/allowedInternalClassList.json";
-    private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted-3rd-party-classes-allowedlist.default.json";
+    private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted3rdPartyClassesAllowedlist.default.json";
 
     @Autowired
     private ObjectMapper objectMapper;

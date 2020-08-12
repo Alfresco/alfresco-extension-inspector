@@ -56,6 +56,7 @@ public class WarLibraryUsageChecker implements Checker
             .map(Resource::getId)
             .filter(s -> s.endsWith(".class"))
             .filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
+            .filter(s -> !s.startsWith("/javax/")) // strip JavaX Classes
             .filter(allExtensionDependencies::contains) // keep if the WAR entry could be a dependency of the extension
             .collect(toUnmodifiableSet());
 
