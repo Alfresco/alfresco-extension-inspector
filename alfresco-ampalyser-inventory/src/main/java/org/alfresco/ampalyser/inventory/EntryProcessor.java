@@ -63,7 +63,7 @@ public class EntryProcessor
                 if (!(libZe.isDirectory() || isFileToBeIgnored(libZe.getName())))
                 {
                     byte[] libData = InventoryUtils.extract(libZis);
-                    processEntry(libZe, libData, warEntry.getName(), extractedResources);
+                    processEntryWithinJar(libZe, libData, warEntry.getName(), extractedResources);
                 }
                 libZis.closeEntry();
                 libZe = libZis.getNextEntry();
@@ -92,5 +92,15 @@ public class EntryProcessor
         inventoryWorkers.forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
             inventoryWorker.processZipEntry(entry, data, definingObject),
             InventoryUtils::mergeCollections));
+    }
+
+    private void processEntryWithinJar(ZipEntry entry, byte[] data, String definingObject,
+        Map<Resource.Type, Set<Resource>> resources)
+    {
+        inventoryWorkers.stream()
+            .filter(iw -> iw.getType() != Resource.Type.FILE)
+            .forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
+                inventoryWorker.processZipEntry(entry, data, definingObject),
+                InventoryUtils::mergeCollections));
     }
 }
