@@ -141,7 +141,7 @@ public class ConflictPrinterTest
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4);
 
-        assertEquals("another_context.xml,\ndefault_context.xml",
+        assertEquals("another_context.xml\n\ndefault_context.xml",
             joinExtensionDefiningObjs("bean2", conflicts));
     }
 }
