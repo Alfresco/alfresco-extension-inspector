@@ -9,6 +9,7 @@
 package org.alfresco.ampalyser.inventory;
 
 import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
+import static org.alfresco.ampalyser.model.Resource.Type.FILE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class EntryProcessor
         Map<Resource.Type, Set<Resource>> resources)
     {
         inventoryWorkers.stream()
-            .filter(iw -> iw.getType() != Resource.Type.FILE)
+            .filter(iw -> iw.getType() != FILE)
             .forEach(inventoryWorker -> resources.merge(inventoryWorker.getType(),
                 inventoryWorker.processZipEntry(entry, data, definingObject),
                 InventoryUtils::mergeCollections));
