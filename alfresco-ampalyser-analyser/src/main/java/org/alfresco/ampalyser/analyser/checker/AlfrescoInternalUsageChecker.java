@@ -23,6 +23,7 @@ import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.ampalyser.model.AbstractResource;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
@@ -63,7 +64,7 @@ public class AlfrescoInternalUsageChecker implements Checker
             .stream()
             .map(r -> (AlfrescoPublicApiResource) r)
             .collect(toUnmodifiableMap(
-                r -> "/" + r.getId().replace(".", "/") + ".class",
+                AbstractResource::getId,
                 AlfrescoPublicApiResource::isDeprecated
             ));
 
@@ -82,8 +83,9 @@ public class AlfrescoInternalUsageChecker implements Checker
                     .stream()
                     .filter(d -> d.startsWith("/org/alfresco/")) // It is an Alfresco class
                     .filter(d -> !extensionClassesById.containsKey(d)) // Not defined inside the AMP
-                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d))) // Not PublicAPI or Deprecated_PublicAPI
                     .filter(d -> !isInAllowedList(d, allowedInternalClasses)) // Not Allowed Internal Class
+                    .map(d -> d.substring(1).replaceAll("/", ".").replace(".class", ""))
+                    .filter(d -> (!publicApis.containsKey(d) || publicApis.get(d))) // Not PublicAPI or Deprecated_PublicAPI
                     .collect(toUnmodifiableSet())
             ))
             .filter(e -> !e.getValue().isEmpty()) // strip entries without invalid dependencies

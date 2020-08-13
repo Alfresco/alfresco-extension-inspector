@@ -13,30 +13,31 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.ampalyser.model.Resource;
 
 public class WarLibraryUsageConflict extends AbstractConflict
 {
-    private Set<String> classDependencies;
+    private Set<Resource> dependencies;
 
     public WarLibraryUsageConflict()
     {
     }
 
-    public WarLibraryUsageConflict(ClasspathElementResource ampResourceInConflict, Set<String> classDependencies,
+    public WarLibraryUsageConflict(ClasspathElementResource ampResourceInConflict, Set<Resource> dependencies,
         String alfrescoVersion)
     {
         super(WAR_LIBRARY_USAGE, ampResourceInConflict, null, alfrescoVersion);
-        this.classDependencies = classDependencies;
+        this.dependencies = dependencies;
     }
 
-    public Set<String> getClassDependencies()
+    public Set<Resource> getDependencies()
     {
-        return classDependencies;
+        return dependencies;
     }
 
-    public void setClassDependencies(Set<String> classDependencies)
+    public void setDependencies(Set<Resource> dependencies)
     {
-        this.classDependencies = classDependencies;
+        this.dependencies = dependencies;
     }
 
     @Override
@@ -46,20 +47,20 @@ public class WarLibraryUsageConflict extends AbstractConflict
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         WarLibraryUsageConflict that = (WarLibraryUsageConflict) o;
-        return Objects.equals(classDependencies, that.classDependencies);
+        return Objects.equals(dependencies, that.dependencies);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(super.hashCode(), classDependencies);
+        return Objects.hash(super.hashCode(), dependencies);
     }
 
     @Override
     public String toString()
     {
         return "WarLibraryUsageConflict{" +
-               "classDependencies=" + classDependencies +
+               "classDependencies=" + dependencies +
                "} " + super.toString();
     }
 }
