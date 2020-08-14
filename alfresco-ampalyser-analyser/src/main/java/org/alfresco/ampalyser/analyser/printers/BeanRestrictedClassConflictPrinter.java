@@ -8,9 +8,10 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
@@ -31,10 +32,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER =
-        "Found beans that instantiate internal classes." + lineSeparator() + "The "
-            + "following beans instantiate classes from Alfresco or 3rd party libraries which must "
-            + "not be instantiated by custom beans:";
+    private static final String HEADER = "The following Spring beans defined in the extension module instantiate internal classes:";
+    private static final String DESCRIPTION = "These classes are considered an internal implementation detail of the ACS repository and do not constitute a supported extension point. They might change or completely disappear between ACS versions and even in service packs.";
     private static final String EXTENSION_RESOURCE_ID = "Extension Bean ID instantiating Restricted Class";
 
     @Autowired
@@ -50,6 +49,18 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     public String getHeader()
     {
         return HEADER;
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return DESCRIPTION;
+    }
+    
+    @Override
+    public String getSection()
+    {
+        return "Beans instantiating internal classes";
     }
 
     @Override
@@ -86,21 +97,13 @@ public class BeanRestrictedClassConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-        String[][] data =  conflictSet
-            .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
-                TreeMap::new,
-                toUnmodifiableSet()))
-            .entrySet().stream()
-            .map(entry -> List.of(
-                entry.getKey(),
-                valueOf(entry.getValue().size())))
-            .map(rowAsList -> rowAsList.toArray(new String[0]))
-            .toArray(String[][]::new);
-
-        data = ArrayUtils.insert(0, data, new String[][] {
-            new String[] { EXTENSION_RESOURCE_ID,  TOTAL } });
-
-        printTable(data);
+        System.out.println(
+            conflictSet
+                .stream()
+                .map(conflict -> format("\t%s",conflict.getAmpResourceInConflict().getId() + " (class=" 
+                    + ((BeanResource) conflict.getAmpResourceInConflict()).getBeanClass() + ")"))
+                .distinct()
+                .sorted()
+                .collect(joining("\n")));
     }
 }

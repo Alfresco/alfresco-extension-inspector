@@ -14,8 +14,8 @@ import static org.mockito.Mockito.spy;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
+import org.alfresco.ampalyser.analyser.result.Conflict;
 import org.alfresco.ampalyser.analyser.service.ConfigService;
 import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
@@ -35,6 +35,7 @@ class AlfrescoInternalUsageCheckerTest
 {
     private static final String OAA = "/org/alfresco/amp/";
     private static final String OAW = "/org/alfresco/war/";
+    private static final String OAW_PACKAGE = "org.alfresco.war.";
 
     @Mock
     private ConfigService configService;
@@ -113,15 +114,15 @@ class AlfrescoInternalUsageCheckerTest
 
         final Set<Conflict> expected = Set.of(
             conflict(ampRes("deps_to_core_alf_classes_which_is_baaad.class"),
-                Set.of(OAW + "c1.class", OAW + "c2.class")),
+                Set.of(OAW_PACKAGE + "c1", OAW_PACKAGE + "c2")),
 
             conflict(ampRes("deps_to_deprecated_alfresco_public_api_classes.class"),
-                Set.of(OAW + "c_APA_3deprecated.class", OAW + "c_APA_4deprecated.class")),
+                Set.of(OAW_PACKAGE + "c_APA_3deprecated", OAW_PACKAGE + "c_APA_4deprecated")),
 
             conflict(ampRes("deps_to_everything.class"),
                 Set.of(
-                    OAW + "c1.class", OAW + "c2.class",
-                    OAW + "c_APA_3deprecated.class", OAW + "c_APA_4deprecated.class"
+                    OAW_PACKAGE + "c1", OAW_PACKAGE + "c2",
+                    OAW_PACKAGE + "c_APA_3deprecated", OAW_PACKAGE + "c_APA_4deprecated"
                 )));
         assertEquals(expected.size(), result.size());
         expected.forEach(c -> assertTrue(result.contains(c)));
