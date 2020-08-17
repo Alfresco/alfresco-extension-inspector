@@ -37,7 +37,7 @@ public class ClasspathConflictPrinter implements ConflictPrinter
             + lineSeparator()
             + "Although it might be possible that the repository can still start-up, you can expect erroneous behavior in certain situations. Problems of this kind are typically very hard to detect and trace back to their root cause."
             + lineSeparator()
-            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these file has conflicts.";
+            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.";
 
     private static final String EXTENSION_DEFINING_OBJECT = "Extension Classpath Resource Defining Object";
     private static final String EXTENSION_RESOURCE_ID = "Extension Classpath Resource";

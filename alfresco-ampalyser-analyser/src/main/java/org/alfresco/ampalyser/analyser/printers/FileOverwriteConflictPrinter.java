@@ -35,7 +35,7 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     private static final String DESCRIPTION =
         "The module management tool will reject modules with file conflicts, making it impossible to install this module."
             + lineSeparator()
-            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these file has conflicts.";
+            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.";
     private static final String EXTENSION_RESOURCE_ID = "Extension Resource overwriting WAR resource";
 
     @Autowired

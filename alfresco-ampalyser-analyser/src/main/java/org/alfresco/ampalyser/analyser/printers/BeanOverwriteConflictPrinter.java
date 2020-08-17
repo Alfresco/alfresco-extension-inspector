@@ -39,7 +39,7 @@ public class BeanOverwriteConflictPrinter implements ConflictPrinter
             + lineSeparator()
             + "You should avoid redefining default beans of the ACS repository in your extensions to reduce the cost of upgrades."
             + lineSeparator()
-            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files have conflicts.";
+            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.";
     private static final String EXTENSION_RESOURCE_ID = "Extension Bean ID overriding WAR Bean";
 
     @Autowired
