@@ -90,7 +90,9 @@ public class WarLibraryUsageChecker implements Checker
                         .flatMap(s->resourcesInWar.get(s).stream())
                         .collect(toUnmodifiableSet()),
                     alfrescoVersion
-                )));
+                ))
+                .filter(c -> !c.getDependencies().isEmpty())
+            );
 
         // TODO: create conflicts for extension dependencies not satisfied by either the AMP or the WAR libraries
     }

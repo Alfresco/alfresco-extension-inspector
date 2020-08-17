@@ -60,7 +60,7 @@ public class WarLibraryUsageConflict extends AbstractConflict
     public String toString()
     {
         return "WarLibraryUsageConflict{" +
-               "classDependencies=" + dependencies +
+               "dependencies=" + dependencies +
                "} " + super.toString();
     }
 }
