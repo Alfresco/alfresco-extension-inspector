@@ -84,11 +84,14 @@ public class ClasspathConflictPrinter implements ConflictPrinter
                 TreeMap::new,
                 toUnmodifiableSet()))
             .values().stream()
-            .map(conflicts -> List.of(
-                    conflicts.iterator().next().getAmpResourceInConflict().getId(),
-                    conflicts.iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                    conflicts.iterator().next().getWarResourceInConflict().getDefiningObject(),
-                    joinWarVersions(conflicts), valueOf(conflicts.size())))
+            .map(conflicts -> {
+                Conflict conflict = conflicts.iterator().next();
+                return List.of(
+                        conflict.getAmpResourceInConflict().getId(),
+                        conflict.getAmpResourceInConflict().getDefiningObject(),
+                        conflict.getWarResourceInConflict().getDefiningObject(),
+                        joinWarVersions(conflicts), valueOf(conflicts.size()));
+            })
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
