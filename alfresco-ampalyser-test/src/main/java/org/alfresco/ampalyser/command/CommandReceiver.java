@@ -21,7 +21,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandReceiver
 {
-        CommandOutput cmdOut;
+        private static final String FILE_CONFLICTS_SECTION = "File conflicts";
+        private static final String BEAN_NAMING_CONFLICTS_SECTION = "Bean naming conflicts";
+        private static final String CUSTOM_CODE_USING_INTERNAL_CLASSES_SECTION = "Custom code using internal classes";
+        private static final String CLASSPATH_CONFLICTS_SECTION = "Classpath conflicts";
+        private static final String USING_3_RD_PARTY_LIBS_SECTION = "Custom code using 3rd party libraries managed by the ACS repository";
+
+        private CommandOutput cmdOut;
 
 
         public CommandOutput runAnalyserCmd(CommandModel comm)
@@ -35,9 +41,7 @@ public class CommandReceiver
                         Process process = processBuilder.start();
                         processBuilder.redirectErrorStream(true);
 
-                        var multiVersionRegex = "--target-version=\\d\\.\\d\\.\\d-\\d\\.\\d\\.\\d";
-                        var isMultiVersion = processBuilder.command().stream().filter(s -> s.matches(multiVersionRegex)).count() > 0;
-                        if (isMultiVersion)
+                        if (comm.getCommandOptions().contains("--verbose"))
                         {
                                 recordOutputVerbose(process, cmdOut);
                         }
@@ -65,39 +69,24 @@ public class CommandReceiver
         {
                 BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
-                boolean isInFileOverwriteConflicts = false;
-                boolean isInBeanOverwriteConflicts = false;
-                boolean isInPublicAPIConflicts = false;
-                boolean isInClassPathConflicts = false;
-                boolean isThirdPartyLibraryConflicts = false;
                 while ((line = in.readLine()) != null)
                 {
                         cmdOut.getOutput().add(line);
                         // Check file overwrite total line
                         Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
                         Matcher fileOverwriteTotalMatcher = fileOverwriteTotalPattern.matcher(line);
-                        Pattern fileOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
-                        Matcher fileOverwriteRowMatcher = fileOverwriteRowPattern.matcher(line);
                         // Check bean overwrite total line
                         Pattern beanOverwriteTotalPattern = Pattern.compile("║BEAN_OVERWRITE\\s+│(\\d+)\\s+║");
                         Matcher beanOverwriteTotalMatcher = beanOverwriteTotalPattern.matcher(line);
-                        Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)║");
-                        Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
                         Pattern publicAPITotalPattern = Pattern.compile("║ALFRESCO_INTERNAL_USAGE\\s*│(\\d+)\\s+║");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
-                        Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)║");
-                        Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
                         // Check classPath overwrite total line
                         Pattern classPathTotalPattern = Pattern.compile("║CLASSPATH_CONFLICT\\s+│(\\d+)\\s+║");
                         Matcher classPathTotalMatcher = classPathTotalPattern.matcher(line);
-                        Pattern classPathRowPattern = Pattern.compile("║(.+)│(.+)║");
-                        Matcher classPathRowMatcher = classPathRowPattern.matcher(line);
                         // Check thirdPartyLibrary total line
                         Pattern thirdPartyLibraryTotalPattern = Pattern.compile("║WAR_LIBRARY_USAGE\\s+│(\\d+)\\s+║");
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
-                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("║(.+)│(.+)║");
-                        Matcher thirdPartyLibraryRowMatcher = thirdPartyLibraryRowPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
                         {
@@ -124,60 +113,68 @@ public class CommandReceiver
                                 int total = Integer.parseInt(thirdPartyLibraryTotalMatcher.group(1));
                                 cmdOut.setThirdPartyLibTotal(total);
                         }
-                        else if (line.contains("Extension Resource ID overwriting WAR resource"))
+                        else
                         {
-                                isInFileOverwriteConflicts = true;
+                                findConflicts(line.trim(), in, cmdOut);
                         }
-                        else if (fileOverwriteRowMatcher.find() && isInFileOverwriteConflicts)
+                }
+        }
+
+        private void findConflicts(String line, BufferedReader in, CommandOutput result)
+            throws IOException
+        {
+                switch (line)
+                {
+                case FILE_CONFLICTS_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine()).startsWith(
+                            "The module management tool will reject modules"))
                         {
-                                String filePath = fileOverwriteRowMatcher.group(1);
-                                cmdOut.getFileOverwriteConflicts().add(filePath.trim());
+                                result.getFileOverwriteConflicts().add(line.trim());
                         }
-                        else if (line.contains("Extension Bean Resource") && !line.contains("Extension Bean Resource Defining Object"))
+                        break;
+                case BEAN_NAMING_CONFLICTS_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine()).startsWith(
+                            "Spring beans are the basic building blocks"))
                         {
-                                isInBeanOverwriteConflicts = true;
+                                result.getBeanOverwriteConflicts().add(line.trim());
                         }
-                        else if (beanOverwriteRowMatcher.find() && isInBeanOverwriteConflicts)
+                        break;
+                case CUSTOM_CODE_USING_INTERNAL_CLASSES_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine())
+                            .startsWith("Internal repository classes"))
                         {
-                                String beanPath = beanOverwriteRowMatcher.group(1).trim();
-                                cmdOut.getBeanOverwriteConflicts().add(beanPath.trim());
+                                result.getPublicAPIConflicts().add(line.trim());
                         }
-                        else if (line.contains("Extension Resource using Alfresco Internal Code"))
+                        break;
+                case CLASSPATH_CONFLICTS_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine()).startsWith(
+                            "Ambiguous resources on the Java classpath"))
                         {
-                                isInPublicAPIConflicts = true;
+                                result.getClassPathConflicts().add(line.trim());
                         }
-                        else if (publicAPIRowMatcher.find() && isInPublicAPIConflicts)
+                        break;
+                case USING_3_RD_PARTY_LIBS_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine()).startsWith(
+                            "These 3rd party libraries are managed by the ACS"))
                         {
-                                String publicAPIPath = publicAPIRowMatcher.group(1).trim();
-                                cmdOut.getPublicAPIConflicts().add(publicAPIPath.trim());
+                                result.getThirdPartyLibConflicts().add(line.trim());
                         }
-                        else if (line.contains("Extension Classpath Resource ID"))
-                        {
-                                isInClassPathConflicts = true;
-                        }
-                        else if (classPathRowMatcher.find() && isInClassPathConflicts)
-                        {
-                                String classPath = classPathRowMatcher.group(1);
-                                cmdOut.getClassPathConflicts().add(classPath.trim());
-                        }
-                        else if (line.contains("Extension Resource ID using 3rd Party library code"))
-                        {
-                                isThirdPartyLibraryConflicts = true;
-                        }
-                        else if (thirdPartyLibraryRowMatcher.find() && isThirdPartyLibraryConflicts)
-                        {
-                                String thirdPartyLibs = thirdPartyLibraryRowMatcher.group(1);
-                                cmdOut.getThirdPartyLibConflicts().add(thirdPartyLibs.trim());
-                        }
-                        else if (line.length() == 0)
-                        {
-                                isInFileOverwriteConflicts = false;
-                                isInBeanOverwriteConflicts = false;
-                                isInPublicAPIConflicts = false;
-                                isInClassPathConflicts = false;
-                                isThirdPartyLibraryConflicts = false;
-                        }
-                        System.out.println(line);
+                        break;
                 }
         }
 
@@ -192,6 +189,7 @@ public class CommandReceiver
                 boolean isThirdPartyLibraryConflicts = false;
                 while ((line = in.readLine()) != null)
                 {
+                        line = line.trim();
                         cmdOut.getOutput().add(line);
                         // Check file overwrite total line
                         Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
@@ -244,7 +242,7 @@ public class CommandReceiver
                                 int total = Integer.parseInt(thirdPartyLibraryTotalMatcher.group(1));
                                 cmdOut.setThirdPartyLibTotal(total);
                         }
-                        else if (line.contains("Extension Resource ID overwriting WAR resource"))
+                        else if (FILE_CONFLICTS_SECTION.equals(line))
                         {
                                 isInFileOverwriteConflicts = true;
                         }
@@ -255,7 +253,7 @@ public class CommandReceiver
                                 String entry = String.format("%s,%s", filePath, version);
                                 cmdOut.getFileOverwriteConflicts().add(entry);
                         }
-                        else if (line.contains("Extension Bean Resource ID") && !line.contains("Extension Bean Resource Defining Object"))
+                        else if (BEAN_NAMING_CONFLICTS_SECTION.equals(line))
                         {
                                 isInBeanOverwriteConflicts = true;
                         }
@@ -269,9 +267,13 @@ public class CommandReceiver
                                         cmdOut.getBeanOverwriteConflicts().add(entry);
                                 }
                         }
-                        else if (line.contains("Extension Resource using Alfresco Internal code"))
+                        else if (CUSTOM_CODE_USING_INTERNAL_CLASSES_SECTION.equals(line))
                         {
                                 isInPublicAPIConflicts = true;
+                                while(!in.readLine().startsWith("╠═════════════"))
+                                {
+                                        // go to table's content
+                                }
                         }
                         else if (publicAPIRowMatcher.find() && isInPublicAPIConflicts)
                         {
@@ -283,29 +285,46 @@ public class CommandReceiver
                                         cmdOut.getPublicAPIConflicts().add(entry);
                                 }
                         }
-                        else if (line.contains("Extension Classpath Resource ID"))
+                        else if (CLASSPATH_CONFLICTS_SECTION.equals(line))
                         {
                                 isInClassPathConflicts = true;
+                                while(!in.readLine().startsWith("╠═════════════"))
+                                {
+                                        // go to table's content
+                                }
                         }
                         else if (classPathRowMatcher.find() && isInClassPathConflicts)
                         {
                                 String classPath = classPathRowMatcher.group(1).trim();
                                 String version = classPathRowMatcher.group(4).trim();
-                                if (classPath.length() > 0)
+                                if (!classPath.isBlank() && !version.isBlank())
                                 {
+                                        if (!classPath.endsWith(".class"))
+                                        {
+                                                classPathRowMatcher = classPathRowPattern
+                                                    .matcher(in.readLine());
+                                                String remainingPath = classPathRowMatcher.find() ?
+                                                    classPathRowMatcher.group(1).trim() :
+                                                    "";
+                                                classPath = classPath.concat(remainingPath);
+                                        }
                                         String entry = String.format("%s,%s", classPath, version);
                                         cmdOut.getClassPathConflicts().add(entry);
                                 }
                         }
-                        else if (line.contains("Extension Resource ID using 3rd "))
+                        else if (USING_3_RD_PARTY_LIBS_SECTION.equals(line))
                         {
                                 isThirdPartyLibraryConflicts = true;
+                                while(!in.readLine().startsWith("╠═════════════"))
+                                {
+                                        // go to table's content
+                                }
                         }
                         else if (thirdPartyLibraryRowMatcher.find() && isThirdPartyLibraryConflicts)
                         {
                                 String thirdPartyLibs = thirdPartyLibraryRowMatcher.group(1).trim();
                                 String version = thirdPartyLibraryRowMatcher.group(4).trim();
-                                if (!thirdPartyLibs.equals("Party library cod") && thirdPartyLibs.length() > 0)
+                                if (!thirdPartyLibs.isBlank() && !version.isBlank())
                                 {
                                         String entry = String.format("%s,%s", thirdPartyLibs, version);
                                         cmdOut.getThirdPartyLibConflicts().add(entry);
@@ -318,7 +337,7 @@ public class CommandReceiver
                                 isInPublicAPIConflicts = false;
                                 isInClassPathConflicts = false;
                                 isThirdPartyLibraryConflicts = false;
-                        } System.out.println(line);
+                        }
                 }
         }
 
