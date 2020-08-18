@@ -40,6 +40,5 @@ public class PrintingService
         }
 
         System.out.println(tableBuilder.build().render(180));
-        System.out.println();
     }
 }

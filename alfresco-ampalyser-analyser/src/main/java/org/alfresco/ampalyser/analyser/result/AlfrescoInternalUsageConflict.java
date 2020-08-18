@@ -7,7 +7,7 @@
  */
 package org.alfresco.ampalyser.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CUSTOM_CODE;
+import static org.alfresco.ampalyser.analyser.result.Conflict.Type.ALFRESCO_INTERNAL_USAGE;
 
 import java.util.Objects;
 import java.util.Set;
@@ -20,18 +20,18 @@ import org.alfresco.ampalyser.model.ClasspathElementResource;
  *
  * @author Lucian Tuca
  */
-public class CustomCodeConflict extends AbstractConflict
+public class AlfrescoInternalUsageConflict extends AbstractConflict
 {
     private Set<String> invalidAlfrescoDependencies;
 
-    public CustomCodeConflict()
+    public AlfrescoInternalUsageConflict()
     {
     }
 
-    public CustomCodeConflict(ClasspathElementResource ampResourceInConflict,
+    public AlfrescoInternalUsageConflict(ClasspathElementResource ampResourceInConflict,
         Set<String> invalidAlfrescoDependencies, String alfrescoVersion)
     {
-        super(CUSTOM_CODE, ampResourceInConflict, null, alfrescoVersion);
+        super(ALFRESCO_INTERNAL_USAGE, ampResourceInConflict, null, alfrescoVersion);
         this.invalidAlfrescoDependencies = invalidAlfrescoDependencies;
     }
 
@@ -51,7 +51,7 @@ public class CustomCodeConflict extends AbstractConflict
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        CustomCodeConflict that = (CustomCodeConflict) o;
+        AlfrescoInternalUsageConflict that = (AlfrescoInternalUsageConflict) o;
         return Objects.equals(invalidAlfrescoDependencies, that.invalidAlfrescoDependencies);
     }
 
@@ -64,7 +64,7 @@ public class CustomCodeConflict extends AbstractConflict
     @Override
     public String toString()
     {
-        return "CustomCodeConflict{" +
+        return "AlfrescoInternalUsageConflict{" +
             "invalidAlfrescoDependencies=" + invalidAlfrescoDependencies +
             "} " + super.toString();
     }

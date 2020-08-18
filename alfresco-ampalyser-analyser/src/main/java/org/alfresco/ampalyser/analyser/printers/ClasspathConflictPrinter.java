@@ -8,15 +8,15 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -31,15 +31,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClasspathConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER =
-        "Found classpath conflicts. Although it may be possible to install this "
-            + "extension, its behaviour is undefined." + lineSeparator()
-            + "The following resources in your extension are in conflict with resources "
-            + "on the classpath in the repository:";
+    private static final String HEADER = "The following files and libraries in the extension module cause conflicts on the Java classpath:";
+    private static final String DESCRIPTION =
+        "Ambiguous resources on the Java classpath render the behaviour of the JVM undefined (see Java specification)."
+            + lineSeparator()
+            + "Although it might be possible that the repository can still start-up, you can expect erroneous behavior in certain situations. Problems of this kind are typically very hard to detect and trace back to their root cause."
+            + lineSeparator()
+            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.";
 
-    private static final Set<String> CONFLICTING_EXTENSION_JARS_ALREADY_PRINTED = new HashSet<>();
     private static final String EXTENSION_DEFINING_OBJECT = "Extension Classpath Resource Defining Object";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Classpath Resource ID";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Classpath Resource";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -57,6 +58,18 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     }
 
     @Override
+    public String getDescription()
+    {
+        return DESCRIPTION;
+    }
+
+    @Override
+    public String getSection()
+    {
+        return "Classpath conflicts";
+    }
+    
+    @Override
     public Conflict.Type getConflictType()
     {
         return CLASSPATH_CONFLICT;
@@ -67,16 +80,18 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     {
         String[][] data =  conflictSet
             .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
+            .collect(groupingBy(c -> c.getAmpResourceInConflict().getId() + "@" + c.getAmpResourceInConflict().getDefiningObject(),
                 TreeMap::new,
                 toUnmodifiableSet()))
-            .entrySet().stream()
-            .map(entry -> List.of(
-                entry.getKey(),
-                entry.getValue().iterator().next().getAmpResourceInConflict().getDefiningObject(),
-                joinWarResourceDefiningObjs(entry.getKey(), entry.getValue()),
-                joinWarVersions(entry.getValue()),
-                valueOf(entry.getValue().size())))
+            .values().stream()
+            .map(conflicts -> {
+                Conflict conflict = conflicts.iterator().next();
+                return List.of(
+                        conflict.getAmpResourceInConflict().getId(),
+                        conflict.getAmpResourceInConflict().getDefiningObject(),
+                        conflict.getWarResourceInConflict().getDefiningObject(),
+                        joinWarVersions(conflicts), valueOf(conflicts.size()));
+            })
             .map(rowAsList -> rowAsList.toArray(new String[0]))
             .toArray(String[][]::new);
 
@@ -90,21 +105,12 @@ public class ClasspathConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-        String[][] data =  conflictSet
-            .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getDefiningObject(),
-                TreeMap::new,
-                toUnmodifiableSet()))
-            .entrySet().stream()
-            .map(entry -> List.of(
-                entry.getKey(),
-                valueOf(entry.getValue().size())))
-            .map(rowAsList -> rowAsList.toArray(new String[0]))
-            .toArray(String[][]::new);
-
-        data = ArrayUtils.insert(0, data, new String[][] {
-            new String[] { EXTENSION_RESOURCE_ID, TOTAL } });
-
-        printTable(data);
+        System.out.println(
+            conflictSet
+                .stream()
+                .map(conflict -> format("\t%s",conflict.getAmpResourceInConflict().getDefiningObject()))
+                .distinct()
+                .sorted()
+                .collect(joining("\n")));
     }
 }

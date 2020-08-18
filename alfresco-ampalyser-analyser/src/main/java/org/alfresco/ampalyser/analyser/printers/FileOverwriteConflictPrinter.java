@@ -8,9 +8,11 @@
 
 package org.alfresco.ampalyser.analyser.printers;
 
+import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.analyser.result.Conflict.Type.FILE_OVERWRITE;
 import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
@@ -29,12 +31,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileOverwriteConflictPrinter implements ConflictPrinter
 {
-    private static final String HEADER =
-        "Found resource conflicts." + lineSeparator() + "The following resources will "
-            + "conflict with resources used in various Alfresco versions, so you won't be able "
-            + "to install this extension on these versions. Try using the "
-            + "--target option to limit this scan to specific Alfresco versions.";
-    private static final String EXTENSION_RESOURCE_ID = "Extension Resource ID overwriting WAR resource";
+    private static final String HEADER = "The following files in the extension module conflict with resources in the ACS repository:";
+    private static final String DESCRIPTION =
+        "The module management tool will reject modules with file conflicts, making it impossible to install this module."
+            + lineSeparator()
+            + "It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.";
+    private static final String EXTENSION_RESOURCE_ID = "Extension Resource overwriting WAR resource";
 
     @Autowired
     private WarInventoryReportStore store;
@@ -49,6 +51,18 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     public String getHeader()
     {
         return HEADER;
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return DESCRIPTION;
+    }
+
+    @Override
+    public String getSection()
+    {
+        return "File conflicts";
     }
 
     @Override
@@ -81,20 +95,12 @@ public class FileOverwriteConflictPrinter implements ConflictPrinter
     @Override
     public void print(Set<Conflict> conflictSet)
     {
-        String[][] data =  conflictSet
-            .stream()
-            .collect(groupingBy(conflict -> conflict.getAmpResourceInConflict().getId(),
-                TreeMap::new,
-                toUnmodifiableSet()))
-            .entrySet().stream()
-            .map(entry -> List.of(
-                entry.getKey(),
-                valueOf(entry.getValue().size())))
-            .map(rowAsList -> rowAsList.toArray(new String[0]))
-            .toArray(String[][]::new);
-
-        data = ArrayUtils.insert(0, data,
-            new String[][] { new String[] { EXTENSION_RESOURCE_ID, TOTAL } });
-        printTable(data);
+        System.out.println(
+            conflictSet
+                .stream()
+                .map(conflict -> format("\t%s",conflict.getAmpResourceInConflict().getId()))
+                .distinct()
+                .sorted()
+                .collect(joining("\n")));
     }
 }

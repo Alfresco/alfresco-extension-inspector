@@ -13,8 +13,8 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
-import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.repeat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,12 +36,12 @@ public interface ConflictPrinter
     Logger LOGGER = LoggerFactory.getLogger(ConflictPrinter.class);
     
     String EXTENSION_DEFINING_OBJECT = "Extension Defining Object";
-    String INVALID_3_RD_PARTY_DEPENDENCIES = "Invalid 3rd Party Dependencies";
-    String INVALID_DEPENDENCIES = "Invalid Dependencies";
+    String THIRD_PARTY_DEPENDENCIES = "3rd Party Libraries";
+    String INTERNAL_REPOSITORY_CLASSES = "Internal Repository Classes";
     String RESTRICTED_CLASS = "Restricted Class";
     String WAR_DEFINING_OBJECTS = "WAR Defining Objects";
     String WAR_VERSION = "WAR Versions";
-    String TOTAL = "Total conflicts";
+    String TOTAL = "No. of WARs with this conflict";
     
     default void print(final Map<String, Set<Conflict>> conflicts, final boolean verbose)
     {
@@ -56,25 +56,31 @@ public interface ConflictPrinter
             .flatMap(Set::stream)
             .collect(toSet());
 
-        String[][] data = new String[2][1];
-        data[0][0] = getConflictType() + " CONFLICTS";
-        data[1][0] = getHeader();
-        printTable(data);
-
         try
         {
             if (verbose)
             {
+                System.out.println(getSection());
+                System.out.println(repeat("-", getSection().length()));
+                System.out.println(getDescription());
+                System.out.println(getHeader());
+                
                 printVerboseOutput(allConflicts);
             }
             else
             {
+                System.out.println(getSection());
+                System.out.println(repeat("-", getSection().length()));
+                System.out.println(getHeader());
+                
                 print(allConflicts);
+                
+                System.out.println(getDescription());
             }
         }
         catch (Exception e)
         {
-            LOGGER.warn("Failed to print " + getConflictType() + " conflicts!", e);
+            LOGGER.warn("Failed to print " + getSection(), e);
         }
 
         System.out.println();
@@ -83,6 +89,10 @@ public interface ConflictPrinter
     SortedSet<String> retrieveAllKnownVersions();
     
     String getHeader();
+    
+    String getDescription();
+    
+    String getSection();
 
     Conflict.Type getConflictType();
 

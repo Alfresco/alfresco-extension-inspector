@@ -20,6 +20,7 @@ import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
 import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
 import org.alfresco.ampalyser.model.ClasspathElementResource;
 import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.ampalyser.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -160,15 +161,17 @@ class WarLibraryUsageCheckerTest
         final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());
 
         final Set<Conflict> expected = Set.of(
-            conflict(res("/com/example/test/C51.class", "color"), Set.of("/com/example/test/W10.class")),
-            conflict(res("/com/example/test/C52.class", "color"), Set.of("/com/example/test/W17.class")),
-            conflict(res("/com/example/test/C53.class", "color"), Set.of("/com/example/test/W13.class")),
-            conflict(res("/com/example/test/C54.class", "color"), Set.of("/com/example/test/W11.class", "/com/example/test/W15.class")),
-            conflict(res("/com/example/test/C55.class", "color"), Set.of("/com/example/test/W19.class")),
-            conflict(res("/com/example/test/C56.class", "color"), Set.of("/com/example/test/W20.class")),
-            conflict(res("/com/example/test/A2.class", "white"), Set.of("/com/example/test/W21.class")),
-            conflict(res("/com/example/test/A2.class", "black"), Set.of("/com/example/test/W21.class")),
-            conflict(res("/com/example/test/C61.class", "color"), Set.of("/com/example/test/W22.class"))
+            conflict(res("/com/example/test/C51.class", "color"), Set.of(new ClasspathElementResource(
+                "/com/example/test/W10.class", "test.jar"))),
+            conflict(res("/com/example/test/C52.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W17.class", "test.jar"))),
+            conflict(res("/com/example/test/C53.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W13.class", "test.jar"))),
+            conflict(res("/com/example/test/C54.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W11.class", "test.jar"), 
+                new ClasspathElementResource("/com/example/test/W15.class", "test.jar"))),
+            conflict(res("/com/example/test/C55.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W19.class", "test.jar"))),
+            conflict(res("/com/example/test/C56.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W20.class", "test.jar"))),
+            conflict(res("/com/example/test/A2.class", "white"), Set.of(new ClasspathElementResource("/com/example/test/W21.class", "test.jar"))),
+            conflict(res("/com/example/test/A2.class", "black"), Set.of(new ClasspathElementResource("/com/example/test/W21.class", "test.jar"))),
+            conflict(res("/com/example/test/C61.class", "color"), Set.of(new ClasspathElementResource("/com/example/test/W22.class", "test.jar")))
         );
         assertEquals(expected.size(), result.size());
         expected.forEach(c -> assertTrue(expected.contains(c)));
@@ -213,9 +216,9 @@ class WarLibraryUsageCheckerTest
         final Set<Conflict> result = checker.process(warInventory, "6.0.0").collect(toSet());
 
         final Set<Conflict> expected = Set.of(
-            conflict(res("/com/example/amp/A3.class", "color"), Set.of("/com/example/abc/X2.class")),
-            conflict(res("/com/example/amp/A2.class", "color"), Set.of("/com/example/abc/X2.class")),
-            conflict(res("/com/example/amp/A1.class", "color"), Set.of("/com/example/abc/X1.class"))
+            conflict(res("/com/example/amp/A3.class", "color"), Set.of(new ClasspathElementResource("/com/example/abc/X2.class", "test.jar"))),
+            conflict(res("/com/example/amp/A2.class", "color"), Set.of(new ClasspathElementResource("/com/example/abc/X2.class", "test.jar"))),
+            conflict(res("/com/example/amp/A1.class", "color"), Set.of(new ClasspathElementResource("/com/example/abc/X1.class", "test.jar")))
         );
         assertEquals(expected.size(), result.size());
         expected.forEach(c -> assertTrue(expected.contains(c)));
@@ -226,7 +229,7 @@ class WarLibraryUsageCheckerTest
         return new ClasspathElementResource(id, definingObject);
     }
 
-    private static WarLibraryUsageConflict conflict(ClasspathElementResource resource, Set<String> classes)
+    private static WarLibraryUsageConflict conflict(ClasspathElementResource resource, Set<Resource> classes)
     {
         return new WarLibraryUsageConflict(resource, classes, "6.0.0");
     }

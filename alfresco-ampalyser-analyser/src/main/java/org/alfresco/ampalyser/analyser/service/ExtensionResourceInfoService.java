@@ -97,6 +97,7 @@ public class ExtensionResourceInfoService
                 .getExtensionResources(CLASSPATH_ELEMENT)
                 .stream()
                 .map(r -> (ClasspathElementResource) r)
+                .filter(r -> !r.getId().toLowerCase().endsWith(".txt") && !r.getId().toLowerCase().endsWith(".md"))
                 .collect(groupingBy(
                     Resource::getId,
                     toUnmodifiableSet()

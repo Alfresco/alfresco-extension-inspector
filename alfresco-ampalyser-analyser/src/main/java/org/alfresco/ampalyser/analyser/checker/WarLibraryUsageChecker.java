@@ -9,6 +9,7 @@ package org.alfresco.ampalyser.analyser.checker;
 
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.alfresco.ampalyser.analyser.checker.Checker.isInAllowedList;
 import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
@@ -50,15 +51,16 @@ public class WarLibraryUsageChecker implements Checker
 
         // Iterate through the WAR classpath elements and keep the ones that could be dependencies of the extension.
         // We keep this intermediate data structure (Set), so that we don't hash the entire War inventory
-        final Set<String> classesInWar = warInventory
+        final Map<String, Set<Resource>> resourcesInWar = warInventory
             .getResources().getOrDefault(CLASSPATH_ELEMENT, emptySet())
             .stream()
-            .map(Resource::getId)
-            .filter(s -> s.endsWith(".class"))
-            .filter(s -> !s.startsWith("/org/alfresco/")) // strip Alfresco Classes
-            .filter(allExtensionDependencies::contains) // keep if the WAR entry could be a dependency of the extension
-            .collect(toUnmodifiableSet());
-
+            .filter(s -> s.getId().endsWith(".class"))
+            .filter(s -> !s.getId().startsWith("/org/alfresco/")) // strip Alfresco Classes
+            .filter(s -> !s.getId().startsWith("/javax/")) // strip JavaX Classes
+            .filter(s -> allExtensionDependencies.contains(s.getId())) // keep if the WAR entry could be a dependency of the extension
+            .collect(groupingBy(Resource::getId,toUnmodifiableSet()));
+        final Set<String> classesInWar = resourcesInWar.keySet();
+        
         final Map<String, Set<ClasspathElementResource>> extensionClassesById =
             extensionResourceInfoService.retrieveClasspathElementsById();
 
@@ -83,9 +85,14 @@ public class WarLibraryUsageChecker implements Checker
                 .stream()
                 .map(r -> new WarLibraryUsageConflict(
                     r,
-                    e.getValue(),
+                    e.getValue()
+                        .stream()
+                        .flatMap(s->resourcesInWar.get(s).stream())
+                        .collect(toUnmodifiableSet()),
                     alfrescoVersion
-                )));
+                ))
+                .filter(c -> !c.getDependencies().isEmpty())
+            );
 
         // TODO: create conflicts for extension dependencies not satisfied by either the AMP or the WAR libraries
     }
