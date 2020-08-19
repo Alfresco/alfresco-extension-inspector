@@ -8,8 +8,12 @@
 
 package org.alfresco.ampalyser;
 
-import org.alfresco.ampalyser.command.CommandExecutor;
-import org.alfresco.ampalyser.command.CommandInventoryImpl;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.alfresco.ampalyser.command.InventoryCommand;
 import org.alfresco.ampalyser.command.CommandReceiver;
 import org.alfresco.ampalyser.model.InventoryReport;
 import org.alfresco.ampalyser.model.Resource;
@@ -20,60 +24,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 @Component
 public class AmpalyserClient
 {
         @Autowired
-        @Qualifier("initInventoryCommand")
-        private CommandModel cmdInventory;
+        @Qualifier("inventoryCommand")
+        private CommandModel inventoryCommand;
 
         @Autowired
-        @Qualifier("initAnalyserCommand")
-        private CommandModel cmdAnalyser;
+        @Qualifier("analyserCommand")
+        private CommandModel analyserCommand;
 
         @Autowired
         private CommandReceiver commReceiver;
-        @Autowired
-        private CommandExecutor executor;
         @Autowired
         private JsonInventoryParser jsonInventory;
 
         public CommandOutput runAmpalyserAnalyserCommand(List<String> cmdOptions)
         {
-                return runAnalyserCommand(cmdOptions, cmdAnalyser);
+                return runCommand(cmdOptions, analyserCommand);
         }
 
         public CommandOutput runAmpalyserInventoryCommand(List<String> cmdOptions)
         {
-                return runAnalyserCommand(cmdOptions, cmdInventory);
+                return runCommand(cmdOptions, inventoryCommand);
         }
 
-        private CommandOutput runAnalyserCommand(List<String> cmdOptions, CommandModel cmd)
+        private CommandOutput runCommand(List<String> cmdOptions, CommandModel cmd)
         {
-                CommandOutput cmdOut;
                 List<String> commandOptions = new ArrayList<>(cmd.getCommandOptions());
 
                 try
                 {
                         // Add additional inventory command options
                         cmd.addCommandOptions(cmdOptions);
-                        CommandInventoryImpl invCmd = new CommandInventoryImpl(commReceiver, cmd);
+                        InventoryCommand invCmd = new InventoryCommand(commReceiver, cmd);
 
                         System.out.println("Running command: " + cmd.toString());
-                        cmdOut = executor.execute(invCmd);
+                        return invCmd.execute();
                 }
                 finally
                 {
                         cmd.getCommandOptions().clear();
                         cmd.addCommandOptions(commandOptions);
                 }
-
-                return cmdOut;
         }
 
         public Resource retrieveInventoryResource(Resource.Type resourceType, String resourceId, File jsonReport)

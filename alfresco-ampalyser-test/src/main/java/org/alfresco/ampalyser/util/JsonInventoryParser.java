@@ -25,16 +25,14 @@ public class JsonInventoryParser {
 
     public InventoryReport getInventoryReportFromJson(File jsonInventoryReport)
     {
-        InventoryReport invReport = new InventoryReport();
         try
         {
-            invReport = objectMapper.readValue(jsonInventoryReport, InventoryReport.class);
+            return objectMapper.readValue(jsonInventoryReport, InventoryReport.class);
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
-
-        return invReport;
+        return new InventoryReport();
     }
 }

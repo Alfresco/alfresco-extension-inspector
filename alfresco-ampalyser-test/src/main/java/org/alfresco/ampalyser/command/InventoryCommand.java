@@ -11,12 +11,12 @@ package org.alfresco.ampalyser.command;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.models.CommandModel;
 
-public class CommandInventoryImpl implements Command
+public class InventoryCommand implements Command
 {
         private CommandReceiver commReceiver;
         private CommandModel commandModel;
 
-        public CommandInventoryImpl(CommandReceiver commReceiver, CommandModel commandModel)
+        public InventoryCommand(CommandReceiver commReceiver, CommandModel commandModel)
         {
                 this.commReceiver = commReceiver;
                 this.commandModel = commandModel;

@@ -28,13 +28,13 @@ public class AppConfig
         static final String JAVA_COM = "java -jar";
 
         @Bean
-        public CommandModel initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
+        public CommandModel inventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
         {
                 return addPathToCommandOptions(pathToInventoryJar);
         }
 
         @Bean
-        public CommandModel initAnalyserCommand(@Value("${ampalyser.analyser.path}") String pathToAnalyserAmp)
+        public CommandModel analyserCommand(@Value("${ampalyser.analyser.path}") String pathToAnalyserAmp)
         {
                 return addPathToCommandOptions(pathToAnalyserAmp);
         }
