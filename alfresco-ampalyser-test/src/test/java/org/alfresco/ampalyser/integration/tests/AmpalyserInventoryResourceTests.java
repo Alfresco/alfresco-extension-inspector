@@ -17,11 +17,11 @@ import static org.alfresco.ampalyser.util.TestResource.INVALID_XML_MESSAGE;
 import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
 import static org.alfresco.ampalyser.util.TestResource.getTestInventoryReport;
 import static org.alfresco.ampalyser.util.TestResource.getTestResourcePath;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -32,16 +32,18 @@ import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.util.AppConfig;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = AppConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContextTests
+public class AmpalyserInventoryResourceTests
 {
     @Autowired
     private InventoryClient client;
@@ -49,7 +51,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
     private File inventoryReport;
     private CommandOutput cmdOut;
 
-    @BeforeClass
+    @BeforeEach
     public void executeCommand()
     {
         // Delete inventory report if exists

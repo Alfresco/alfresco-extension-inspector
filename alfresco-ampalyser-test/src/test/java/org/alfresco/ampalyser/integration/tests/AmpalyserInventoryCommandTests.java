@@ -10,8 +10,8 @@ package org.alfresco.ampalyser.integration.tests;
 
 import static java.io.File.separator;
 import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -21,15 +21,17 @@ import org.alfresco.ampalyser.InventoryClient;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.util.AppConfig;
 import org.alfresco.ampalyser.util.TestResource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.Test;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = AppConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextTests
+public class AmpalyserInventoryCommandTests
 {
     @Autowired
     private InventoryClient client;
