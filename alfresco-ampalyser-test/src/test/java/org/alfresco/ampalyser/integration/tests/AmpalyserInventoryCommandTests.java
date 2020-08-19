@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import org.alfresco.ampalyser.AmpalyserClient;
+import org.alfresco.ampalyser.InventoryClient;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.alfresco.ampalyser.util.AppConfig;
 import org.alfresco.ampalyser.util.TestResource;
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
-    private AmpalyserClient client;
+    private InventoryClient client;
 
     private CommandOutput cmdOut;
 
@@ -44,7 +44,7 @@ public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextT
         List<String> cmdOptions = List.of(warResourcePath, "--o=" + inventoryReportPath);
 
         // Generate new inventory report
-        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
+        cmdOut = client.runCommand(cmdOptions);
         final File inventoryReport = new File(
             inventoryReportPath + separator + TestResource.getTestInventoryReport().getName());
 
@@ -56,11 +56,11 @@ public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextT
     @Test
     public void runCommandWithExitCodeError()
     {
-        cmdOut = client.runAmpalyserInventoryCommand(Collections.emptyList());
+        cmdOut = client.runCommand(Collections.emptyList());
         assertEquals(cmdOut.getExitCode(), 1);
         assertTrue(cmdOut.isInOutput("Missing war file."));
 
-        cmdOut = client.runAmpalyserInventoryCommand(List.of("nonExisting.war"));
+        cmdOut = client.runCommand(List.of("nonExisting.war"));
         assertEquals(cmdOut.getExitCode(), 1);
         assertTrue(cmdOut.isInOutput("The war file is not valid"));
     }

@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.alfresco.ampalyser.AmpalyserClient;
+import org.alfresco.ampalyser.InventoryClient;
 import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
 import org.alfresco.ampalyser.model.Resource;
 import org.alfresco.ampalyser.models.CommandOutput;
@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
-    private AmpalyserClient client;
+    private InventoryClient client;
 
     private File inventoryReport;
     private CommandOutput cmdOut;
@@ -63,7 +63,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
         final List<String> cmdOptions = List.of(warResourcePath);
 
         // Generate new inventory report
-        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
+        cmdOut = client.runCommand(cmdOptions);
         assertEquals(cmdOut.getExitCode(), 0);
         assertTrue(cmdOut.isInOutput(SUCCESS_MESSAGE), "Inventory report has not been generated");
 

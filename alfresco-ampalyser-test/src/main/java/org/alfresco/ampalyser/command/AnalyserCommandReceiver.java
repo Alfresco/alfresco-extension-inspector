@@ -11,15 +11,15 @@ package org.alfresco.ampalyser.command;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.alfresco.ampalyser.models.CommandModel;
 import org.alfresco.ampalyser.models.CommandOutput;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommandReceiver
+public class AnalyserCommandReceiver
 {
         private static final String FILE_CONFLICTS_SECTION = "File conflicts";
         private static final String BEAN_NAMING_CONFLICTS_SECTION = "Bean naming conflicts";
@@ -29,35 +29,30 @@ public class CommandReceiver
 
         private CommandOutput cmdOut;
 
-
-        public CommandOutput runAnalyserCmd(CommandModel comm)
+        public CommandOutput runAnalyserCmd(final List<String> commandAndOptions)
         {
                 cmdOut = new CommandOutput();
 
                 ProcessBuilder processBuilder = new ProcessBuilder();
-                processBuilder.command(comm.getCommandOptions());
+                processBuilder.command(commandAndOptions);
                 try
                 {
                         Process process = processBuilder.start();
                         processBuilder.redirectErrorStream(true);
 
-                        if (comm.getCommandOptions().contains("--verbose"))
+                        if (commandAndOptions.contains("--verbose"))
                         {
                                 recordOutputVerbose(process, cmdOut);
                         }
-                        else{
+                        else
+                        {
                                 recordOutput(process, cmdOut);
-
                         }
                         int exitCode = process.waitFor();
                         cmdOut.setExitCode(exitCode);
                         System.out.println("\nExited with error code : " + exitCode);
                 }
-                catch (IOException e)
-                {
-                        e.printStackTrace();
-                }
-                catch (InterruptedException e)
+                catch (IOException | InterruptedException e)
                 {
                         e.printStackTrace();
                 }
