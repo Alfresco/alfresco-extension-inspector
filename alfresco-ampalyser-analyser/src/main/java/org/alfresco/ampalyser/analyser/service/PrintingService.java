@@ -24,8 +24,8 @@ public class PrintingService
     {
         TableModel tableModel = new ArrayTableModel(data);
         TableBuilder tableBuilder = new TableBuilder(tableModel);
-        tableBuilder.addInnerBorder(BorderStyle.fancy_light);
-        tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
+        tableBuilder.addInnerBorder(BorderStyle.oldschool);
+        tableBuilder.addHeaderBorder(BorderStyle.oldschool);
         // Limit the size of the columns
         // On verbose output
         // Last column (tableModel.getColumnCount()-1) is always "Total conflicts" or "Total" (for report summary) - we'll skip it
