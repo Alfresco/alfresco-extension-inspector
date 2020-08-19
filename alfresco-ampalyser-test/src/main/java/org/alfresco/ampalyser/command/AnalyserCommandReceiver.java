@@ -68,19 +68,19 @@ public class AnalyserCommandReceiver
                 {
                         cmdOut.getOutput().add(line);
                         // Check file overwrite total line
-                        Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Pattern fileOverwriteTotalPattern = Pattern.compile("\\|FILE_OVERWRITE\\s+\\|(\\d+)\\s+\\|");
                         Matcher fileOverwriteTotalMatcher = fileOverwriteTotalPattern.matcher(line);
                         // Check bean overwrite total line
-                        Pattern beanOverwriteTotalPattern = Pattern.compile("║BEAN_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Pattern beanOverwriteTotalPattern = Pattern.compile("\\|BEAN_OVERWRITE\\s+\\|(\\d+)\\s+\\|");
                         Matcher beanOverwriteTotalMatcher = beanOverwriteTotalPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║ALFRESCO_INTERNAL_USAGE\\s*│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("\\|ALFRESCO_INTERNAL_USAGE\\s*\\|(\\d+)\\s+\\|");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
                         // Check classPath overwrite total line
-                        Pattern classPathTotalPattern = Pattern.compile("║CLASSPATH_CONFLICT\\s+│(\\d+)\\s+║");
+                        Pattern classPathTotalPattern = Pattern.compile("\\|CLASSPATH_CONFLICT\\s+\\|(\\d+)\\s+\\|");
                         Matcher classPathTotalMatcher = classPathTotalPattern.matcher(line);
                         // Check thirdPartyLibrary total line
-                        Pattern thirdPartyLibraryTotalPattern = Pattern.compile("║WAR_LIBRARY_USAGE\\s+│(\\d+)\\s+║");
+                        Pattern thirdPartyLibraryTotalPattern = Pattern.compile("\\|WAR_LIBRARY_USAGE\\s+\\|(\\d+)\\s+\\|");
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
@@ -187,29 +187,29 @@ public class AnalyserCommandReceiver
                         line = line.trim();
                         cmdOut.getOutput().add(line);
                         // Check file overwrite total line
-                        Pattern fileOverwriteTotalPattern = Pattern.compile("║FILE_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Pattern fileOverwriteTotalPattern = Pattern.compile("\\|FILE_OVERWRITE\\s+\\|(\\d+)\\s+\\|");
                         Matcher fileOverwriteTotalMatcher = fileOverwriteTotalPattern.matcher(line);
-                        Pattern fileOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)║");
+                        Pattern fileOverwriteRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher fileOverwriteRowMatcher = fileOverwriteRowPattern.matcher(line);
                         // Check bean overwrite total line
-                        Pattern beanOverwriteTotalPattern = Pattern.compile("║BEAN_OVERWRITE\\s+│(\\d+)\\s+║");
+                        Pattern beanOverwriteTotalPattern = Pattern.compile("\\|BEAN_OVERWRITE\\s+\\|(\\d+)\\s+\\|");
                         Matcher beanOverwriteTotalMatcher = beanOverwriteTotalPattern.matcher(line);
-                        Pattern beanOverwriteRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)║");
+                        Pattern beanOverwriteRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher beanOverwriteRowMatcher = beanOverwriteRowPattern.matcher(line);
                         // Check publicAPI total line
-                        Pattern publicAPITotalPattern = Pattern.compile("║ALFRESCO_INTERNAL_USAGE\\s*│(\\d+)\\s+║");
+                        Pattern publicAPITotalPattern = Pattern.compile("\\|ALFRESCO_INTERNAL_USAGE\\s*\\|(\\d+)\\s+\\|");
                         Matcher publicAPITotalMatcher = publicAPITotalPattern.matcher(line);
-                        Pattern publicAPIRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
+                        Pattern publicAPIRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher publicAPIRowMatcher = publicAPIRowPattern.matcher(line);
                         // Check classPath overwrite total line
-                        Pattern classPathTotalPattern = Pattern.compile("║CLASSPATH_CONFLICT\\s+│(\\d+)\\s+║");
+                        Pattern classPathTotalPattern = Pattern.compile("\\|CLASSPATH_CONFLICT\\s+\\|(\\d+)\\s+\\|");
                         Matcher classPathTotalMatcher = classPathTotalPattern.matcher(line);
-                        Pattern classPathRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
+                        Pattern classPathRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher classPathRowMatcher = classPathRowPattern.matcher(line);
                         // Check thirdPartyLibrary total line
-                        Pattern thirdPartyLibraryTotalPattern = Pattern.compile("║WAR_LIBRARY_USAGE\\s+│(\\d+)\\s+║");
+                        Pattern thirdPartyLibraryTotalPattern = Pattern.compile("\\|WAR_LIBRARY_USAGE\\s+\\|(\\d+)\\s+\\|");
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
-                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("║(.+)│(.+)│(.+)│(.+)│(.+)║");
+                        Pattern thirdPartyLibraryRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher thirdPartyLibraryRowMatcher = thirdPartyLibraryRowPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
@@ -265,7 +265,7 @@ public class AnalyserCommandReceiver
                         else if (CUSTOM_CODE_USING_INTERNAL_CLASSES_SECTION.equals(line))
                         {
                                 isInPublicAPIConflicts = true;
-                                while(!in.readLine().startsWith("╠═════════════"))
+                                while(!in.readLine().startsWith("+-------------"))
                                 {
                                         // go to table's content
                                 }
@@ -283,7 +283,7 @@ public class AnalyserCommandReceiver
                         else if (CLASSPATH_CONFLICTS_SECTION.equals(line))
                         {
                                 isInClassPathConflicts = true;
-                                while(!in.readLine().startsWith("╠═════════════"))
+                                while(!in.readLine().startsWith("+-------------"))
                                 {
                                         // go to table's content
                                 }
@@ -310,7 +310,7 @@ public class AnalyserCommandReceiver
                         else if (USING_3_RD_PARTY_LIBS_SECTION.equals(line))
                         {
                                 isThirdPartyLibraryConflicts = true;
-                                while(!in.readLine().startsWith("╠═════════════"))
+                                while(!in.readLine().startsWith("+-------------"))
                                 {
                                         // go to table's content
                                 }
