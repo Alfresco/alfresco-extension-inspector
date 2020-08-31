@@ -34,12 +34,14 @@ Example structure of the report:
         {
          "type" : "ALFRESCO_PUBLIC_API",
          "id" : "package.ClassName1",
-         "deprecated" : false
+         "deprecated" : false,
+         "implicit" : false
         },
         {
          "type" : "ALFRESCO_PUBLIC_API",
          "id" : "package.ClassName2",
-         "deprecated" : true
+         "deprecated" : true,
+         "implicit" : true
         },
         ...
       ],
@@ -120,108 +122,77 @@ The conflict types that can be detected by **Amp-a-lyser** are the following:
 * Bean overwrites (`BEAN_OVERWRITE`)
 * Classpath conflicts (`CLASSPATH_CONFLICT`)
 * Beans instantiating restricted classes (`BEAN_RESTRICTED_CLASS`)
-* Usage of non @AlfrescoPublicAPI classes (`CUSTOM_CODE`)
+* Usage of non @AlfrescoPublicAPI classes (`ALFRESCO_INTERNAL_USAGE`)
 * Usage of 3rd party libraries (`WAR_LIBRARY_USAGE`)
 
 Example of output:
 ```text
+Bean naming conflicts
+---------------------
+The following Spring beans defined in the extension module are in conflict with beans defined in the ACS repository:
+    extension_bean
+Spring beans are the basic building blocks of the ACS repository. Replacing these will alter the behaviour of the system and can lead to unexpected behaviour.
+Since all these beans are subject to change between Alfresco versions and even in service packs, these modifications are typically bound to a specific Alfresco version.
+You should avoid redefining default beans of the ACS repository in your extensions to reduce the cost of upgrades.
+It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.
+
+Beans instantiating internal classes
+------------------------------------
+The following Spring beans defined in the extension module instantiate internal classes:
+    extension_bean (class=org.alfresco.repo.... )
+
+These classes are considered an internal implementation detail of the ACS repository and do not constitute a supported extension point. They might change or completely disappear between ACS versions and even in service packs.
+
+Classpath conflicts
+-------------------
+The following files and libraries in the extension module cause conflicts on the Java classpath:
+    /lib/alfresco-test.jar
+
+Ambiguous resources on the Java classpath render the behaviour of the JVM undefined (see Java specification).
+Although it might be possible that the repository can still start-up, you can expect erroneous behavior in certain situations. Problems of this kind are typically very hard to detect and trace back to their root cause.
+It is possible that these conflicts only exist in specific ACS versions. Run this tool with the -verbose option to get a complete list of versions where each of these files has conflicts.
+
+Custom code using internal classes
+----------------------------------
+The following classes defined in the extension module are using internal repository classes:
+    org.alfresco.repo...
+
+Internal repository classes:
+    org.alfresco.repo...
+
+These classes are considered an internal implementation detail of the ACS repository and might change or completely disappear between ACS versions and even between service packs.
+For a complete usage matrix, use the -verbose option of this tool.
+
+Custom code using 3rd party libraries managed by the ACS repository
+-------------------------------------------------------------------
+The code provided by the extension module is using these 3rd party libraries brought by the ACS repository:
+    /WEB-INF/lib/test-1.0.0.jar
+
+These 3rd party libraries are managed by the ACS repository and are subject to constant change, even in service packs and hotfixes.
+Each of these libraries has its own backward compatibility strategy, which will make it really hard for this extension to keep up with these changes.
+
+REPORT SUMMARY
 Across the provided target versions, the following number of conflicts have been found:
-+---------------------+-----+
-|REPORT SUMMARY       |     |
-+---------------------+-----+
-|Type                 |Total|
-+---------------------+-----+
-|BEAN_OVERWRITE       |1    |
-+---------------------+-----+
-|BEAN_RESTRICTED_CLASS|2    |
-+---------------------+-----+
-|CUSTOM_CODE          |6    |
-+---------------------+-----+
-|WAR_LIBRARY_USAGE    |4    |
-+---------------------+-----+
-|                     |     |
-+---------------------+-----+
-
-
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|BEAN_OVERWRITE CONFLICTS                                                                                                                                          |
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|Found bean overwrites. Spring beans defined by Alfresco are a fundamental building block of the repository, and must not be overwritten unless explicitly allowed.|
-|The following beans overwrite default functionality:                                                                                                              |
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-
-+----------------------------------+-----------------------------------------------------------------------------+---------------------------------------------------------------------+
-|Extension Bean Resource ID        |Extension Defining Objects                                                   |WAR Defining object                                                  |
-+----------------------------------+-----------------------------------------------------------------------------+---------------------------------------------------------------------+
-|extension_bean                    |config/alfresco/module/org.alfresco.module.x/module-context.xml              |alfresco/war-context.xml@WEB-INF/lib/some-war-lib.jar                |
-+----------------------------------+-----------------------------------------------------------------------------+---------------------------------------------------------------------+
-
-
-
-+----------------------------------------------------------------------------------------------------------------------------+
-|BEAN_RESTRICTED_CLASS CONFLICTS                                                                                             |
-+----------------------------------------------------------------------------------------------------------------------------+
-|Found beans that instantiate internal classes.                                                                              |
-|The following beans instantiate classes from Alfresco or 3rd party libraries which must not be instantiated by custom beans:|
-+----------------------------------------------------------------------------------------------------------------------------+
-
-
-+---------------------------------------------------+--------------------------------------------------------------------------+
-|Extension Bean Resource ID                         |Restricted Class                                                          |
-+---------------------------------------------------+--------------------------------------------------------------------------+
-|org_alfresco_module_x_SomeClass                    |org.alfresco.web.config.WebClientConfigBootstrap                          |
-+---------------------------------------------------+--------------------------------------------------------------------------+
-|org_alfresco_module_x_AnotherClass                 |org.alfresco.web.config.WebClientConfigBootstrap                          |
-+---------------------------------------------------+--------------------------------------------------------------------------+
-
-
-
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|CUSTOM_CODE CONFLICTS                                                                                                                                                                                                                                        |
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|Found usage of internal classes. Alfresco provides a Java API that is clearly marked as @AlfrescoPublicAPI. Any other classes or interfaces in the repository are considered our internal implementation detail and might change or even disappear in service|
-|packs and new versions without prior notice.                                                                                                                                                                                                                 |
-|The following classes use internal Alfresco classes:                                                                                                                                                                                                         |
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-+--------------------------------------------------------------------------------------------------------------+
-|Extension Resource ID using Custom Code                                                                       |
-+--------------------------------------------------------------------------------------------------------------+
-|/org/alfresco/module/blogIntegration/ui/AnExtensionClass.class@/lib/extension-lib.jar                         |
-+--------------------------------------------------------------------------------------------------------------+
-|[...]                                                                                                         |
-+--------------------------------------------------------------------------------------------------------------+
-
-
-
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|WAR_LIBRARY_USAGE CONFLICTS                                                                                                                                                                                                                                  |
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|Found 3rd party library usage. Although this isn't an immediate problem, all 3rd party libraries that are delivered with the repository are considered as our internal implementation detail. These libraries will change or may be removed in future service|
-|packs without notice.                                                                                                                                                                                                                                        |
-|The following classes use 3rd party libraries:                                                                                                                                                                                                               |
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-+--------------------------------------------------------------------------------------------------------------+
-|Extension Resource ID using 3rd Party library code                                                            |
-+--------------------------------------------------------------------------------------------------------------+
-|/org/alfresco/module/blogIntegration/ui/AnExtensionClass.class@/lib/extension-lib.jar                         |
-+--------------------------------------------------------------------------------------------------------------+
-|[...]                                                                                                         |
-+--------------------------------------------------------------------------------------------------------------+
-
-
++-----------------------+-----+
+|Type                   |Total|
++-----------------------+-----+
+|BEAN_OVERWRITE         |1    |
++-----------------------+-----+
+|BEAN_RESTRICTED_CLASS  |1    |
++-----------------------+-----+
+|CLASSPATH_CONFLICT     |1    |
++-----------------------+-----+
+|ALFRESCO_INTERNAL_USAGE|2    |
++-----------------------+-----+
+|WAR_LIBRARY_USAGE      |1    |
++-----------------------+-----+
 
 (use option --verbose for version details)
 ```
 
 ### Implementation details
 
-Alfresco extensions might hide conflicts of types `BEAN_RESTRICTED_CLASS`, `WAR_LIBRARY_USAGE` and `CUSTOM_CODE` if they contain Alfresco specific libraries.
+Alfresco extensions might hide conflicts of types `BEAN_RESTRICTED_CLASS`, `WAR_LIBRARY_USAGE` and `ALFRESCO_INTERNAL_USAGE` if they contain Alfresco specific libraries.
 
 That's because the aforementioned types of conflicts exclude from processing all the classes in the extension's classpath.
 
