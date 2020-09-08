@@ -1,6 +1,6 @@
-# amp-a-lyser
+# alfresco-extension-inspector
 
-**amp-a-lyser** is a tool that scans and validates an Alfresco extension (amp or jar) against an `alfresco.war` file.
+**alfresco-extension-inspector** is a tool that scans and validates an Alfresco extension (amp or jar) against an `alfresco.war` file.
 
 The tool parses an extension and generates a report on possible overrides, discouraged usage of non-public API, Alfresco's 3rd-party libraries.
 
@@ -8,7 +8,7 @@ The tools has two modules, one for parsing the war files - the **Inventory**, an
 
 ## Inventory
 
-The `InventoryApplication` is a Spring Boot application, implemented in the module **alfresco-ampalyser-inventory**.
+The `InventoryApplication` is a Spring Boot application, implemented in the module **alfresco-extension-inspector-inventory**.
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
@@ -16,7 +16,7 @@ This creates an executable jar, `alfresco-ampalyser-inventory-<version>-applicat
 
 ### Usage:
 ```shell script
-java -jar alfresco-ampalyser-inventory-<version>-application.jar <alfresco_war_path> [--o=<report_file_path>]
+java -jar alfresco-extension-inspector-inventory-<version>-application.jar <alfresco_war_path> [--o=<report_file_path>]
 ```
 - the first parameter is a path to a valid war file
 - the optional `--o` parameter is for the output of the report, a given file or a folder location where a report with the default name, `<war_name>.inventory.json`, is generated. 
@@ -87,22 +87,22 @@ Example structure of the report:
 
 ## Analyser
 
-The `AnalyserApplication` is a Spring Boot application, implemented in the module **alfresco-ampalyser-analyser**.
+The `AnalyserApplication` is a Spring Boot application, implemented in the module **alfresco-extension-inspector-analyser**.
 This tool analyses custom extensions against war inventories.
 
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-ampalyser-analyser-<version>-application.jar`.
+This creates an executable jar, `alfresco-extension-inspector-analyser-<version>-application.jar`.
 
 ### Usage:
 ```shell script
 # Analyse a given Alfresco extension
-java -jar alfresco-ampalyser-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--verbose=[true | false]]
+java -jar alfresco-extension-inspector-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--verbose=[true | false]]
 
 # Help command
-java -jar alfresco-ampalyser-analyser-<version>-application.jar --help
+java -jar alfresco-extension-inspector-analyser-<version>-application.jar --help
 
 # List all versions with bundled inventories
-java -jar alfresco-ampalyser-analyser-<version>-application.jar --list-known-alfresco-versions
+java -jar alfresco-extension-inspector-analyser-<version>-application.jar --list-known-alfresco-versions
 ```
 Options:
 ```bash
@@ -115,9 +115,9 @@ Options:
 ```
 
 ### Output
-When running the analysing command, **Amp-a-lyser** writes the conflicts directly to the console, grouped by their type.
+When running the analysing command, **alfresco-extension-inspector** writes the conflicts directly to the console, grouped by their type.
 
-The conflict types that can be detected by **Amp-a-lyser** are the following:
+The conflict types that can be detected by **alfresco-extension-inspector** are the following:
 * File overwrites (`FILE_OVERWRITE`)
 * Bean overwrites (`BEAN_OVERWRITE`)
 * Classpath conflicts (`CLASSPATH_CONFLICT`)

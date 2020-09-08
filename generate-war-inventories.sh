@@ -16,8 +16,8 @@ fi
 echo "Rebuilding project..."
 mvn clean install -DskipTests &>/dev/null || exit 1
 
-JAR_EXECUTABLE=$(find . -name 'alfresco-ampalyser-inventory*application.jar' | head -1)
-JAR_EXECUTABLE="${JAR_EXECUTABLE:-$(find . -name 'alfresco-ampalyser-inventory*.jar' | head -1)}"
+JAR_EXECUTABLE=$(find . -name 'alfresco-extension-inspector-inventory*application.jar' | head -1)
+JAR_EXECUTABLE="${JAR_EXECUTABLE:-$(find . -name 'alfresco-extension-inspector-inventory*.jar' | head -1)}"
 
 echo "Inventory tool executable jar: ${JAR_EXECUTABLE}"
 

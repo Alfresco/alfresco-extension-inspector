@@ -17,7 +17,7 @@ pushd alfresco-ampalyser-analyser/target || exit 2
 
 cp "${EXTENSION_PATH}" ./
 
-time java -jar alfresco-ampalyser-analyser-*-SNAPSHOT-application.jar "${EXTENSION_NAME}" --verbose
+time java -jar alfresco-extension-inspector-analyser-*-SNAPSHOT-application.jar "${EXTENSION_NAME}" --verbose
 
 popd || exit 3
 
