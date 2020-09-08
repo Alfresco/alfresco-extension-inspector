@@ -10,7 +10,7 @@
 
     <artifactId>alfresco-extension-inspector-analyser</artifactId>
     <name>alfresco-extension-inspector-analyser</name>
-    <description>Alfresco Amp-a-lyser Analyser Tool</description>
+    <description>Alfresco Extension Inspector Analyser Tool</description>
 
     <dependencies>
         <dependency>
