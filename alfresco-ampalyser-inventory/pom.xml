@@ -3,22 +3,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.alfresco.ampalyser</groupId>
-        <artifactId>alfresco-ampalyser</artifactId>
+        <artifactId>alfresco-extension-inspector</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>alfresco-ampalyser-inventory</name>
-    <description>Alfresco Amp-a-lyser Inventory Tool</description>
+    <name>alfresco-extension-inspector-inventory</name>
+    <description>Alfresco Extension Inspector Inventory Tool</description>
 
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>alfresco-ampalyser-inventory</artifactId>
+    <artifactId>alfresco-extension-inspector-inventory</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.alfresco.ampalyser</groupId>
-            <artifactId>alfresco-ampalyser-commons</artifactId>
+            <artifactId>alfresco-extension-inspector-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

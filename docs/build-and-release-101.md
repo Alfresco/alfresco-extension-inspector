@@ -1,5 +1,5 @@
 # Build
-The `amp-a-lyser` project uses _Travis CI_. \
+The `alfresco-extension-inspector` project uses _Travis CI_. \
 The `.travis.yml` config file can be found in the root of the repository.
 
 

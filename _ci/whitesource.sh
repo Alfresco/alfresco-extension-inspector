@@ -13,7 +13,7 @@ mvn -B clean install \
     -Dorg.whitesource.checkPolicies=true \
     -Dorg.whitesource.forceCheckAllDependencies=true \
     -Dorg.whitesource.ignorePomModules=false \
-    "-Dorg.whitesource.product=amp-a-lyser" \
+    "-Dorg.whitesource.product=alfresco-extension-inspector" \
     -Dmaven.wagon.http.pool=false
 
 popd
