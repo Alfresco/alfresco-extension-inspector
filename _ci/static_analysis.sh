@@ -6,7 +6,7 @@ set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../"
 
 # Run in a sandbox for every branch, run normally on master
-[ "${TRAVIS_BRANCH}" != "master" ] && RUN_IN_SANDBOX="-sandboxname Alfresco Extension Inspector" || RUN_IN_SANDBOX=""
+[ "${TRAVIS_BRANCH}" != "master" ] && RUN_IN_SANDBOX="-sandboxname Alfresco-Extension-Inspector" || RUN_IN_SANDBOX=""
 
 java -jar vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar -vid $VERACODE_API_ID \
      -vkey $VERACODE_API_KEY -action uploadandscan -appname "Alfresco Extension Inspector" \
