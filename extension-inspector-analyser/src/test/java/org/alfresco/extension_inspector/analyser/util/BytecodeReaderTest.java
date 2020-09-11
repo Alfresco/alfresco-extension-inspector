@@ -100,16 +100,16 @@ class BytecodeReaderTest
     public void testExtractClassBytecodeFromJar() throws IOException
     {
         final Set<String> expected = Set.of(
-            "/org/alfresco/extension_inspector/models/InventoryCommand.class",
-            "/org/alfresco/extension_inspector/command/CommandReceiver.class",
-            "/org/alfresco/extension_inspector/command/CommandImpl.class",
-            "/org/alfresco/extension_inspector/AmpalyserClient.class",
-            "/org/alfresco/extension_inspector/models/CommandOutput.class",
-            "/org/alfresco/extension_inspector/command/CommandExecutor.class",
-            "/org/alfresco/extension_inspector/util/TestResource.class",
-            "/org/alfresco/extension_inspector/util/AppConfig.class",
-            "/org/alfresco/extension_inspector/util/JsonInventoryParser.class",
-            "/org/alfresco/extension_inspector/command/Command.class"
+            "/org/alfresco/ampalyser/models/InventoryCommand.class",
+            "/org/alfresco/ampalyser/command/CommandReceiver.class",
+            "/org/alfresco/ampalyser/command/CommandImpl.class",
+            "/org/alfresco/ampalyser/AmpalyserClient.class",
+            "/org/alfresco/ampalyser/models/CommandOutput.class",
+            "/org/alfresco/ampalyser/command/CommandExecutor.class",
+            "/org/alfresco/ampalyser/util/TestResource.class",
+            "/org/alfresco/ampalyser/util/AppConfig.class",
+            "/org/alfresco/ampalyser/util/JsonInventoryParser.class",
+            "/org/alfresco/ampalyser/command/Command.class"
         );
         try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/some.jar.data")))
         {
