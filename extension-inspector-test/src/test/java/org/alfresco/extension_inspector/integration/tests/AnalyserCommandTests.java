@@ -32,7 +32,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
                 List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
 
                 // Generate new analyser report
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions);
                 System.out.println(cmdOut.getOutput());
                 assertEquals(cmdOut.getExitCode(), 0);
         }
@@ -42,7 +42,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
         {
                 String ampResourcePath = TestResource.getTestResourcePath("test.txt");
                 List<String> cmdOptions = List.of(ampResourcePath);
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions);
                 assertEquals(cmdOut.getExitCode(), 1);
                 assertTrue(cmdOut.isInOutput("The extension file is not valid or does not exist. Supported file formats are AMP and JAR."));
         }
@@ -55,7 +55,7 @@ public class AnalyserCommandTests extends AbstractTestNGSpringContextTests
                 String version = "4.0.0";
                 List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
 
-                cmdOut = client.runAmpalyserAnalyserCommand(cmdOptions);
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions);
 
                 assertTrue(cmdOut.isInOutput("Target ACS version was not recognised"));
         }

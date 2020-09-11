@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = AppConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextTests
+public class InventoryCommandTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
     private ExtensionInspectorClient client;
@@ -44,7 +44,7 @@ public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextT
         List<String> cmdOptions = List.of(warResourcePath, "--o=" + inventoryReportPath);
 
         // Generate new inventory report
-        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
+        cmdOut = client.runExtensionInspectorInventoryCommand(cmdOptions);
         final File inventoryReport = new File(
             inventoryReportPath + separator + TestResource.getTestInventoryReport().getName());
 
@@ -56,11 +56,11 @@ public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextT
     @Test
     public void runCommandWithExitCodeError()
     {
-        cmdOut = client.runAmpalyserInventoryCommand(Collections.emptyList());
+        cmdOut = client.runExtensionInspectorInventoryCommand(Collections.emptyList());
         assertEquals(cmdOut.getExitCode(), 1);
         assertTrue(cmdOut.isInOutput("Missing war file."));
 
-        cmdOut = client.runAmpalyserInventoryCommand(List.of("nonExisting.war"));
+        cmdOut = client.runExtensionInspectorInventoryCommand(List.of("nonExisting.war"));
         assertEquals(cmdOut.getExitCode(), 1);
         assertTrue(cmdOut.isInOutput("The war file is not valid"));
     }

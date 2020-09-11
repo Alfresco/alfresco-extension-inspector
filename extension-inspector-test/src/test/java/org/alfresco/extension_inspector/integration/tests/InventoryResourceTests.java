@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = AppConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContextTests
+public class InventoryResourceTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
     private ExtensionInspectorClient client;
@@ -63,7 +63,7 @@ public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContext
         final List<String> cmdOptions = List.of(warResourcePath);
 
         // Generate new inventory report
-        cmdOut = client.runAmpalyserInventoryCommand(cmdOptions);
+        cmdOut = client.runExtensionInspectorInventoryCommand(cmdOptions);
         assertEquals(cmdOut.getExitCode(), 0);
         assertTrue(cmdOut.isInOutput(SUCCESS_MESSAGE), "Inventory report has not been generated");
 

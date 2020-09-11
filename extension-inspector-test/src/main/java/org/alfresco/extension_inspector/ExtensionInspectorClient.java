@@ -43,12 +43,12 @@ public class ExtensionInspectorClient
         @Autowired
         private JsonInventoryParser jsonInventory;
 
-        public CommandOutput runAmpalyserAnalyserCommand(List<String> cmdOptions)
+        public CommandOutput runExtensionInspectorAnalyserCommand(List<String> cmdOptions)
         {
                 return runAnalyserCommand(cmdOptions, cmdAnalyser);
         }
 
-        public CommandOutput runAmpalyserInventoryCommand(List<String> cmdOptions)
+        public CommandOutput runExtensionInspectorInventoryCommand(List<String> cmdOptions)
         {
                 return runAnalyserCommand(cmdOptions, cmdInventory);
         }
