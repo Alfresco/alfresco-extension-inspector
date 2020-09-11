@@ -70,6 +70,6 @@ public class UsagePrinter
         Arrays
             .stream(supportedCommands)
             .forEach(command -> 
-                System.out.println("   java -jar alfresco-ampalyser-analyser.jar " + command));
+                System.out.println("   java -jar alfresco-extension-inspector-analyser.jar " + command));
     }
 }

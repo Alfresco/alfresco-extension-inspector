@@ -12,7 +12,7 @@ import java.util.Objects;
 import org.alfresco.extension_inspector.model.Resource;
 
 /**
- * Base class for various type of conflicts, usually found by the {@link org.alfresco.ampalyser.analyser.checker.Checker}
+ * Base class for various type of conflicts, usually found by the {@link org.alfresco.extension_inspector.analyser.checker.Checker}
  *
  * @author Lucian Tuca
  */

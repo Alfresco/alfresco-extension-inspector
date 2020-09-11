@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 @SpringBootApplication
 @ComponentScan(
-    basePackages = {"org.alfresco.ampalyser.inventory", "org.alfresco.ampalyser.analyser"},
+    basePackages = {"org.alfresco.extension_inspector.inventory", "org.alfresco.extension_inspector.analyser"},
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {AlfrescoWarInventory.class, InventoryApplication.class })
     })

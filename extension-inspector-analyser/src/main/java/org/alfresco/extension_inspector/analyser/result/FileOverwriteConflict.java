@@ -15,7 +15,7 @@ import java.util.Objects;
 import org.alfresco.extension_inspector.model.FileResource;
 
 /**
- * Represents a conflict, usually found by {@link org.alfresco.ampalyser.analyser.checker.FileOverwritingChecker}
+ * Represents a conflict, usually found by {@link org.alfresco.extension_inspector.analyser.checker.FileOverwritingChecker}
  * That can happen when certain .amp resources are copied (by the MMT tool) to the .war
  *
  * @author Lucian Tuca

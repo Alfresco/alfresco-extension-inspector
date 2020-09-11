@@ -12,7 +12,7 @@ import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.BEA
 import org.alfresco.extension_inspector.model.BeanResource;
 
 /**
- * Represents a conflict, usually found by {@link org.alfresco.ampalyser.analyser.checker.BeanOverwritingChecker}
+ * Represents a conflict, usually found by {@link org.alfresco.extension_inspector.analyser.checker.BeanOverwritingChecker}
  * That can happen when certain .amp resources are copied (by the MMT tool) to the .war
  *
  * @author Lucian Tuca

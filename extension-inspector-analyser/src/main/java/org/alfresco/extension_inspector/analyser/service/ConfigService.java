@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Single source of truth for the ampalyser-analyser execution.
+ * Single source of truth for the extension-inspector-analyser execution.
  * It contains the runtime configuration provided through the application arguments.
  * It can also server as a global cache for resources that don't change during the
  * application's runtime (e.g. AMP information - file mappings)

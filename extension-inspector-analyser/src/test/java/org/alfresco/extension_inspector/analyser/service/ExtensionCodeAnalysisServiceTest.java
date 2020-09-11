@@ -79,19 +79,19 @@ class ExtensionCodeAnalysisServiceTest
         doReturn(bytecodeReader.readJarArtifact(absoluteFilePath)).when(bytecodeReader).readArtifact(any());
 
         final Map<String, Set<String>> someExpectedEntries = Map.of(
-            "/org/alfresco/ampalyser/util/TestResource.class", Set.of(
-                "/org/alfresco/ampalyser/util/TestResource.class"
+            "/org/alfresco/extension_inspector/util/TestResource.class", Set.of(
+                "/org/alfresco/extension_inspector/util/TestResource.class"
             ),
-            "/org/alfresco/ampalyser/command/CommandImpl.class", Set.of(
-                "/org/alfresco/ampalyser/command/CommandImpl.class",
-                "/org/alfresco/ampalyser/models/InventoryCommand.class",
-                "/org/alfresco/ampalyser/command/Command.class",
-                "/org/alfresco/ampalyser/command/CommandReceiver.class",
-                "/org/alfresco/ampalyser/models/CommandOutput.class"
+            "/org/alfresco/extension_inspector/command/CommandImpl.class", Set.of(
+                "/org/alfresco/extension_inspector/command/CommandImpl.class",
+                "/org/alfresco/extension_inspector/models/InventoryCommand.class",
+                "/org/alfresco/extension_inspector/command/Command.class",
+                "/org/alfresco/extension_inspector/command/CommandReceiver.class",
+                "/org/alfresco/extension_inspector/models/CommandOutput.class"
             ),
-            "/org/alfresco/ampalyser/command/Command.class", Set.of(
-                "/org/alfresco/ampalyser/command/Command.class",
-                "/org/alfresco/ampalyser/models/CommandOutput.class"
+            "/org/alfresco/extension_inspector/command/Command.class", Set.of(
+                "/org/alfresco/extension_inspector/command/Command.class",
+                "/org/alfresco/extension_inspector/models/CommandOutput.class"
             )
         );
 
@@ -155,7 +155,7 @@ class ExtensionCodeAnalysisServiceTest
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertTrue(result.contains("/org/alfresco/ampalyser/models/InventoryCommand.class"));
+        assertTrue(result.contains("/org/alfresco/extension_inspector/models/InventoryCommand.class"));
         assertEquals(21, result.size());
     }
 

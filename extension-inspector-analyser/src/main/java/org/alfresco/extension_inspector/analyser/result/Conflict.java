@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Represents the result that a {@link org.alfresco.ampalyser.analyser.checker.Checker} can find.
+ * Represents the result that a {@link org.alfresco.extension_inspector.analyser.checker.Checker} can find.
  * @author Lucian Tuca
  */
 @JsonTypeInfo(
