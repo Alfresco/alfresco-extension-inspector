@@ -21,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@ComponentScan("org.alfresco.ampalyser")
+@ComponentScan("org.alfresco.extension_inspector")
 @PropertySource(value="application.properties")
 public class AppConfig
 {
         static final String JAVA_COM = "java -jar";
 
         @Bean
-        public CommandModel initInventoryCommand(@Value("${ampalyser.inventory.path}") String pathToInventoryJar)
+        public CommandModel initInventoryCommand(@Value("${extension_inspector.inventory.path}") String pathToInventoryJar)
         {
                 return addPathToCommandOptions(pathToInventoryJar);
         }
 
         @Bean
-        public CommandModel initAnalyserCommand(@Value("${ampalyser.analyser.path}") String pathToAnalyserAmp)
+        public CommandModel initAnalyserCommand(@Value("${extension_inspector.analyser.path}") String pathToAnalyserAmp)
         {
                 return addPathToCommandOptions(pathToAnalyserAmp);
         }
