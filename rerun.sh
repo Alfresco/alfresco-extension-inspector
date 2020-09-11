@@ -13,7 +13,7 @@ find "${HOME}/.m2/repository"  -type d -name '*-SNAPSHOT*' | xargs -r -l rm -rf
 
 mvn clean install -DskipTests || exit 1
 
-pushd alfresco-ampalyser-analyser/target || exit 2
+pushd alfresco-extension-inspector-analyser/target || exit 2
 
 cp "${EXTENSION_PATH}" ./
 

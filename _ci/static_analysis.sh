@@ -11,9 +11,9 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../"
 java -jar vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar -vid $VERACODE_API_ID \
      -vkey $VERACODE_API_KEY -action uploadandscan -appname "Alfresco Extension Inspector" \
      ${RUN_IN_SANDBOX} -createprofile false \
-     -filepath alfresco-ampalyser-analyser/target/alfresco-extension-inspector-analyser-*.jar \
-     alfresco-ampalyser-commons/target/alfresco-extension-inspector-commons-*.jar \
-     alfresco-ampalyser-inventory/target/alfresco-extension-inspector-inventory-*.jar \
+     -filepath extension-inspector-analyser/target/alfresco-extension-inspector-analyser-*.jar \
+     extension-inspector-commons/target/alfresco-extension-inspector-commons-*.jar \
+     extension-inspector-inventory/target/alfresco-extension-inspector-inventory-*.jar \
      -version "$TRAVIS_JOB_ID - $TRAVIS_JOB_NUMBER" -scantimeout 3600
 
 popd
