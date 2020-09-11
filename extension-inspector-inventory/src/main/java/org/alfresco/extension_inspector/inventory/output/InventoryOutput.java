@@ -6,11 +6,11 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.output;
+package org.alfresco.extension_inspector.inventory.output;
 
 import static java.text.MessageFormat.format;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 
 public interface InventoryOutput
 {

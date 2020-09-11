@@ -1,7 +1,7 @@
-package org.alfresco.ampalyser.analyser.util;
+package org.alfresco.extension_inspector.analyser.util;
 
 import static java.util.Collections.emptyMap;
-import static org.alfresco.ampalyser.analyser.util.BytecodeReader.extractClassBytecodeFromJar;
+import static org.alfresco.extension_inspector.analyser.util.BytecodeReader.extractClassBytecodeFromJar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

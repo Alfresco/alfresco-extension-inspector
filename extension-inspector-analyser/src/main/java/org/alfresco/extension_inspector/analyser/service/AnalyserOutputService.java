@@ -6,17 +6,17 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.Comparator.comparing;
-import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
+import static org.alfresco.extension_inspector.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.printers.ConflictPrinter;
-import org.alfresco.ampalyser.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.printers.ConflictPrinter;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

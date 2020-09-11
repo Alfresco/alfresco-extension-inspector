@@ -5,11 +5,11 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.parser;
+package org.alfresco.extension_inspector.analyser.parser;
 
 import java.io.InputStream;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 
 /**
  * @author Lucian Tuca

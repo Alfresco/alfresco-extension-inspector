@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,11 +19,11 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.inventory.data.classes.ClassDeprecated;
-import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotation;
-import org.alfresco.ampalyser.inventory.data.classes.ClassWithAlfrescoApiAnnotationDeprecated;
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.inventory.data.classes.ClassDeprecated;
+import org.alfresco.extension_inspector.inventory.data.classes.ClassWithAlfrescoApiAnnotation;
+import org.alfresco.extension_inspector.inventory.data.classes.ClassWithAlfrescoApiAnnotationDeprecated;
+import org.alfresco.extension_inspector.model.AlfrescoPublicApiResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;

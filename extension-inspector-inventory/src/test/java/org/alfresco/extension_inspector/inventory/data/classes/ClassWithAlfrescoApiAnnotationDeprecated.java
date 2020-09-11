@@ -6,9 +6,9 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.data.classes;
+package org.alfresco.extension_inspector.inventory.data.classes;
 
-import org.alfresco.ampalyser.inventory.worker.PublicApiInventoryWorkerTest;
+import org.alfresco.extension_inspector.inventory.worker.PublicApiInventoryWorkerTest;
 
 /**
  * Used as test resource, .class file, for {@link PublicApiInventoryWorkerTest}

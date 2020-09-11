@@ -5,22 +5,22 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.checker;
+package org.alfresco.extension_inspector.analyser.checker;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
-import static org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
-import org.alfresco.ampalyser.model.FileResource;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.result.FileOverwriteConflict;
+import org.alfresco.extension_inspector.analyser.service.ConfigService;
+import org.alfresco.extension_inspector.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.extension_inspector.model.FileResource;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

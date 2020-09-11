@@ -5,15 +5,15 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.checker;
+package org.alfresco.extension_inspector.analyser.checker;
 
 import static java.util.stream.Stream.empty;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.model.InventoryReport;
 
 /**
  * Defines how a checker should work.

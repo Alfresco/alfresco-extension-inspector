@@ -1,10 +1,10 @@
-package org.alfresco.ampalyser.analyser.checker;
+package org.alfresco.extension_inspector.analyser.checker;
 
 import static java.util.Collections.emptySet;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toSet;
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,15 +14,15 @@ import static org.mockito.Mockito.spy;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService;
-import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.model.ClasspathElementResource;
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.analyser.result.AlfrescoInternalUsageConflict;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.service.ConfigService;
+import org.alfresco.extension_inspector.analyser.service.ExtensionCodeAnalysisService;
+import org.alfresco.extension_inspector.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.extension_inspector.model.AlfrescoPublicApiResource;
+import org.alfresco.extension_inspector.model.ClasspathElementResource;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

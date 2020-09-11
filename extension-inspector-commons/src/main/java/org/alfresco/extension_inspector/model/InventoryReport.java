@@ -5,15 +5,15 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.alfresco.ampalyser.commons.InventoryUtils;
-import org.alfresco.ampalyser.model.Resource.Type;
+import org.alfresco.extension_inspector.commons.InventoryUtils;
+import org.alfresco.extension_inspector.model.Resource.Type;
 
 public class InventoryReport
 {

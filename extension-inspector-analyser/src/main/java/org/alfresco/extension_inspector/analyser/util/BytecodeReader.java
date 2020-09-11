@@ -1,4 +1,4 @@
-package org.alfresco.ampalyser.analyser.util;
+package org.alfresco.extension_inspector.analyser.util;
 
 import static java.util.Collections.singletonList;
 import static java.util.Map.Entry;
@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
-import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
+import static org.alfresco.extension_inspector.commons.InventoryUtils.extract;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

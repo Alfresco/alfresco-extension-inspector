@@ -6,16 +6,16 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static java.util.Collections.singleton;
-import static org.alfresco.ampalyser.commons.InventoryUtils.isFromJar;
+import static org.alfresco.extension_inspector.commons.InventoryUtils.isFromJar;
 
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.model.FileResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.FileResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.springframework.stereotype.Component;
 
 @Component

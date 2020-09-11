@@ -6,16 +6,16 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser;
+package org.alfresco.extension_inspector;
 
-import org.alfresco.ampalyser.command.CommandExecutor;
-import org.alfresco.ampalyser.command.CommandInventoryImpl;
-import org.alfresco.ampalyser.command.CommandReceiver;
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.models.CommandModel;
-import org.alfresco.ampalyser.models.CommandOutput;
-import org.alfresco.ampalyser.util.JsonInventoryParser;
+import org.alfresco.extension_inspector.command.CommandExecutor;
+import org.alfresco.extension_inspector.command.CommandInventoryImpl;
+import org.alfresco.extension_inspector.command.CommandReceiver;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.model.Resource;
+import org.alfresco.extension_inspector.models.CommandModel;
+import org.alfresco.extension_inspector.models.CommandOutput;
+import org.alfresco.extension_inspector.util.JsonInventoryParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class AmpalyserClient
+public class ExtensionInspectorClient
 {
         @Autowired
         @Qualifier("initInventoryCommand")

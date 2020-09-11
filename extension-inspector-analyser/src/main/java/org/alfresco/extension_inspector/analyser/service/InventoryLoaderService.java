@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.Collections.unmodifiableSortedMap;
 import static java.util.stream.Collectors.toMap;
@@ -19,8 +19,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-import org.alfresco.ampalyser.analyser.parser.InventoryParser;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.parser.InventoryParser;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

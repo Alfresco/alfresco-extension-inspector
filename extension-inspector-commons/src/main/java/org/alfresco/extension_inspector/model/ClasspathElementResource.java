@@ -6,9 +6,9 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
 
 import java.io.Serializable;
 

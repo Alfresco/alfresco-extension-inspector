@@ -5,11 +5,11 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.checker;
+package org.alfresco.extension_inspector.analyser.checker;
 
 import static java.util.stream.Collectors.toList;
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService;
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.ClasspathElementResource;
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.service.ConfigService;
+import org.alfresco.extension_inspector.analyser.service.ExtensionResourceInfoService;
+import org.alfresco.extension_inspector.model.AlfrescoPublicApiResource;
+import org.alfresco.extension_inspector.model.BeanResource;
+import org.alfresco.extension_inspector.model.ClasspathElementResource;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

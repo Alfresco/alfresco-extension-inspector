@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.models;
+package org.alfresco.extension_inspector.models;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.service;
+package org.alfresco.extension_inspector.inventory.service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,11 +16,11 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.commons.InventoryUtils;
-import org.alfresco.ampalyser.inventory.EntryProcessor;
-import org.alfresco.ampalyser.inventory.output.InventoryOutput;
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.commons.InventoryUtils;
+import org.alfresco.extension_inspector.inventory.EntryProcessor;
+import org.alfresco.extension_inspector.inventory.output.InventoryOutput;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

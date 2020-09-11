@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -16,9 +16,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

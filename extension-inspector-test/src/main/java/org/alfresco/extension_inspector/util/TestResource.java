@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.util;
+package org.alfresco.extension_inspector.util;
 
 import java.io.File;
 import java.nio.file.FileSystems;

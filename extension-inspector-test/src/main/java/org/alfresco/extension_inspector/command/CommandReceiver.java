@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.command;
+package org.alfresco.extension_inspector.command;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,8 +14,8 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.alfresco.ampalyser.models.CommandModel;
-import org.alfresco.ampalyser.models.CommandOutput;
+import org.alfresco.extension_inspector.models.CommandModel;
+import org.alfresco.extension_inspector.models.CommandOutput;
 import org.springframework.stereotype.Component;
 
 @Component

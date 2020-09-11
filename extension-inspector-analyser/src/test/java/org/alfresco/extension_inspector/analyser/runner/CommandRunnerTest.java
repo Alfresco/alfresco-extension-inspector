@@ -6,9 +6,9 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.runner;
+package org.alfresco.extension_inspector.analyser.runner;
 
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.isVerboseOutput;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.isVerboseOutput;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,9 +17,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.alfresco.ampalyser.analyser.service.AnalyserService;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.analyser.service.AnalyserService;
+import org.alfresco.extension_inspector.analyser.service.ConfigService;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

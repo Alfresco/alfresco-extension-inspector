@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import java.io.IOException;
 import java.util.HashSet;

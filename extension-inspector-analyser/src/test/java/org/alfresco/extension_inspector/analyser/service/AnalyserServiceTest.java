@@ -6,11 +6,11 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.Objects.requireNonNull;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_OVERWRITE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.BEAN_OVERWRITE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.alfresco.ampalyser.analyser.result.AbstractConflict;
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.result.AbstractConflict;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

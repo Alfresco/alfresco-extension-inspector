@@ -6,25 +6,25 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.runner;
+package org.alfresco.extension_inspector.analyser.runner;
 
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.HELP;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractExtensionPath;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.isVerboseOutput;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateAnalyserOptions;
-import static org.alfresco.ampalyser.analyser.runner.CommandOptionsResolver.validateOptionsForCommand;
-import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printHelp;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.HELP;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.extractExtensionPath;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.isVerboseOutput;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.validateAnalyserOptions;
+import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.validateOptionsForCommand;
+import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printHelp;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.alfresco.ampalyser.analyser.service.AnalyserService;
-import org.alfresco.ampalyser.analyser.service.ConfigService;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.analyser.service.AnalyserService;
+import org.alfresco.extension_inspector.analyser.service.ConfigService;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;

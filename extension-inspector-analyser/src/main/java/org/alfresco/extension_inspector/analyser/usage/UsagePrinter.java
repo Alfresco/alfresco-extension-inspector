@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.usage;
+package org.alfresco.extension_inspector.analyser.usage;
 
 import static java.lang.String.join;
 

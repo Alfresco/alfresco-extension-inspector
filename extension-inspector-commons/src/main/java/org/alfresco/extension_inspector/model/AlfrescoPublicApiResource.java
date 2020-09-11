@@ -5,9 +5,9 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.ALFRESCO_PUBLIC_API;
 
 import java.io.Serializable;
 

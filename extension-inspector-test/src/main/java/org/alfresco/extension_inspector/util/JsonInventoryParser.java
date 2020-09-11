@@ -6,12 +6,12 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.util;
+package org.alfresco.extension_inspector.util;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

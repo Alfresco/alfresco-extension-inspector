@@ -6,14 +6,14 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static java.util.Collections.emptySet;
 
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.Resource;
 
 /**
  * @author Denis Ungureanu

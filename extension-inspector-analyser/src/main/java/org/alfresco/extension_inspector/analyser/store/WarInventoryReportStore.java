@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.store;
+package org.alfresco.extension_inspector.analyser.store;
 
 import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
@@ -23,8 +23,8 @@ import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 
-import org.alfresco.ampalyser.analyser.parser.InventoryParser;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.parser.InventoryParser;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

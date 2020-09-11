@@ -6,24 +6,24 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.printers;
+package org.alfresco.extension_inspector.analyser.printers;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
-import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.extension_inspector.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.alfresco.ampalyser.model.BeanResource;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.model.BeanResource;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -5,12 +5,12 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.store;
+package org.alfresco.extension_inspector.analyser.store;
 
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -6,9 +6,9 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
 
 import java.io.Serializable;
 import java.util.Objects;

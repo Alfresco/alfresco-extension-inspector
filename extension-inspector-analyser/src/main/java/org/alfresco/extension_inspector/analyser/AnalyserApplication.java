@@ -5,11 +5,11 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser;
+package org.alfresco.extension_inspector.analyser;
 
-import org.alfresco.ampalyser.analyser.runner.CommandRunner;
-import org.alfresco.ampalyser.inventory.AlfrescoWarInventory;
-import org.alfresco.ampalyser.inventory.InventoryApplication;
+import org.alfresco.extension_inspector.analyser.runner.CommandRunner;
+import org.alfresco.extension_inspector.inventory.AlfrescoWarInventory;
+import org.alfresco.extension_inspector.inventory.InventoryApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

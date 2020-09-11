@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptySet;
@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.AlfrescoPublicApiResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;

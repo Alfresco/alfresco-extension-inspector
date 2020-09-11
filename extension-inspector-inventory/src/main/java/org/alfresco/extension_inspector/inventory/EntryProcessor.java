@@ -6,10 +6,10 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.extension_inspector.inventory;
 
-import static org.alfresco.ampalyser.commons.InventoryUtils.isJar;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.commons.InventoryUtils.isJar;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.alfresco.ampalyser.commons.InventoryUtils;
-import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.commons.InventoryUtils;
+import org.alfresco.extension_inspector.inventory.worker.InventoryWorker;
+import org.alfresco.extension_inspector.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

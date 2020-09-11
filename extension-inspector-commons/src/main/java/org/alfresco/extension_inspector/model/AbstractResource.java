@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
 import java.io.Serializable;
 import java.util.Objects;

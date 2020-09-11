@@ -5,21 +5,21 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 
 import javax.annotation.PostConstruct;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.inventory.service.InventoryService;
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.inventory.service.InventoryService;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

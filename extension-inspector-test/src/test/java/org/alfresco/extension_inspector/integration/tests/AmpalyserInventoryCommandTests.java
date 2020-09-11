@@ -6,10 +6,10 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.integration.tests;
+package org.alfresco.extension_inspector.integration.tests;
 
 import static java.io.File.separator;
-import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
+import static org.alfresco.extension_inspector.util.TestResource.SUCCESS_MESSAGE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -17,10 +17,10 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import org.alfresco.ampalyser.AmpalyserClient;
-import org.alfresco.ampalyser.models.CommandOutput;
-import org.alfresco.ampalyser.util.AppConfig;
-import org.alfresco.ampalyser.util.TestResource;
+import org.alfresco.extension_inspector.ExtensionInspectorClient;
+import org.alfresco.extension_inspector.models.CommandOutput;
+import org.alfresco.extension_inspector.util.AppConfig;
+import org.alfresco.extension_inspector.util.TestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 public class AmpalyserInventoryCommandTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
-    private AmpalyserClient client;
+    private ExtensionInspectorClient client;
 
     private CommandOutput cmdOut;
 

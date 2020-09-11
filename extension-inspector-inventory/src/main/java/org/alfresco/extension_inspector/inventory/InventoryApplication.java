@@ -6,13 +6,13 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.extension_inspector.inventory;
 
 import java.io.File;
 
-import org.alfresco.ampalyser.inventory.output.InventoryOutput;
-import org.alfresco.ampalyser.inventory.output.JSONInventoryOutput;
-import org.alfresco.ampalyser.inventory.service.InventoryService;
+import org.alfresco.extension_inspector.inventory.output.InventoryOutput;
+import org.alfresco.extension_inspector.inventory.output.JSONInventoryOutput;
+import org.alfresco.extension_inspector.inventory.service.InventoryService;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

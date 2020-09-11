@@ -6,10 +6,10 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.util;
+package org.alfresco.extension_inspector.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.alfresco.ampalyser.models.CommandModel;
+import org.alfresco.extension_inspector.models.CommandModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

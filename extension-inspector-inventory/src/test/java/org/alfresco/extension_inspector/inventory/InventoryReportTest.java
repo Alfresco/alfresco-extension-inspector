@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.extension_inspector.inventory;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,8 +17,8 @@ import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import org.alfresco.ampalyser.inventory.output.JSONInventoryOutput;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.inventory.output.JSONInventoryOutput;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 

@@ -6,11 +6,11 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.printers;
+package org.alfresco.extension_inspector.analyser.printers;
 
 import static java.util.Collections.emptyMap;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
-import static org.alfresco.ampalyser.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
+import static org.alfresco.extension_inspector.analyser.printers.ConflictPrinter.joinExtensionDefiningObjs;
+import static org.alfresco.extension_inspector.analyser.printers.ConflictPrinter.joinWarResourceDefiningObjs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -19,12 +19,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.alfresco.ampalyser.analyser.result.BeanOverwriteConflict;
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.result.FileOverwriteConflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
-import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.FileResource;
+import org.alfresco.extension_inspector.analyser.result.BeanOverwriteConflict;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.result.FileOverwriteConflict;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.model.BeanResource;
+import org.alfresco.extension_inspector.model.FileResource;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.junit.Before;
 import org.junit.Test;

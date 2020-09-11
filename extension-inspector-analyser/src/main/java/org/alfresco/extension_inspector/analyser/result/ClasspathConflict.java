@@ -5,11 +5,11 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.result;
+package org.alfresco.extension_inspector.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.CLASSPATH_CONFLICT;
 
-import org.alfresco.ampalyser.model.ClasspathElementResource;
+import org.alfresco.extension_inspector.model.ClasspathElementResource;
 
 public class ClasspathConflict extends AbstractConflict
 {

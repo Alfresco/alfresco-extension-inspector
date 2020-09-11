@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.inventory;
+package org.alfresco.extension_inspector.inventory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.alfresco.ampalyser.inventory.worker.AlfrescoPublicApiInventoryWorker;
-import org.alfresco.ampalyser.inventory.worker.BeanInventoryWorker;
-import org.alfresco.ampalyser.inventory.worker.ClasspathElementInventoryWorker;
-import org.alfresco.ampalyser.inventory.worker.FileInventoryWorker;
-import org.alfresco.ampalyser.inventory.worker.InventoryWorker;
+import org.alfresco.extension_inspector.inventory.worker.AlfrescoPublicApiInventoryWorker;
+import org.alfresco.extension_inspector.inventory.worker.BeanInventoryWorker;
+import org.alfresco.extension_inspector.inventory.worker.ClasspathElementInventoryWorker;
+import org.alfresco.extension_inspector.inventory.worker.FileInventoryWorker;
+import org.alfresco.extension_inspector.inventory.worker.InventoryWorker;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

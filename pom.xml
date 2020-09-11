@@ -51,9 +51,9 @@
     </distributionManagement>
 
     <modules>
-        <module>alfresco-ampalyser-inventory</module>
-        <module>alfresco-ampalyser-analyser</module>
-        <module>alfresco-ampalyser-commons</module>
-        <module>alfresco-ampalyser-test</module>
+        <module>extension-inspector-inventory</module>
+        <module>extension-inspector-analyser</module>
+        <module>extension-inspector-commons</module>
+        <module>extension-inspector-test</module>
     </modules>
 </project>

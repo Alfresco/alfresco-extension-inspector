@@ -5,12 +5,12 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.model;
+package org.alfresco.extension_inspector.model;
 
-import static org.alfresco.ampalyser.model.Resource.Type.Constants.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.Constants.BEAN;
-import static org.alfresco.ampalyser.model.Resource.Type.Constants.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.model.Resource.Type.Constants.FILE;
+import static org.alfresco.extension_inspector.model.Resource.Type.Constants.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.Constants.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.Constants.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.Constants.FILE;
 
 import java.io.Serializable;
 

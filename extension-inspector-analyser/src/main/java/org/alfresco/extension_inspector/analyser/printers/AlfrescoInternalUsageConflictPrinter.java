@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.printers;
+package org.alfresco.extension_inspector.analyser.printers;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
@@ -15,17 +15,17 @@ import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.ALFRESCO_INTERNAL_USAGE;
-import static org.alfresco.ampalyser.analyser.service.PrintingService.printTable;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.ALFRESCO_INTERNAL_USAGE;
+import static org.alfresco.extension_inspector.analyser.service.PrintingService.printTable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import org.alfresco.ampalyser.analyser.result.AlfrescoInternalUsageConflict;
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.analyser.store.WarInventoryReportStore;
+import org.alfresco.extension_inspector.analyser.result.AlfrescoInternalUsageConflict;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

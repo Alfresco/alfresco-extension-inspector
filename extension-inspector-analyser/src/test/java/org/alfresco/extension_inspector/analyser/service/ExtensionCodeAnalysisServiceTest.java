@@ -5,10 +5,10 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
-import static org.alfresco.ampalyser.analyser.service.ExtensionCodeAnalysisService.compileClassDependenciesFromBytecode;
-import static org.alfresco.ampalyser.commons.InventoryUtils.extract;
+import static org.alfresco.extension_inspector.analyser.service.ExtensionCodeAnalysisService.compileClassDependenciesFromBytecode;
+import static org.alfresco.extension_inspector.commons.InventoryUtils.extract;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.util.BytecodeReader;
+import org.alfresco.extension_inspector.analyser.util.BytecodeReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

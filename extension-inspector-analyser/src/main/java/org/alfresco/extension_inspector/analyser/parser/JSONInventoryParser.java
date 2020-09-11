@@ -5,13 +5,13 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.parser;
+package org.alfresco.extension_inspector.analyser.parser;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

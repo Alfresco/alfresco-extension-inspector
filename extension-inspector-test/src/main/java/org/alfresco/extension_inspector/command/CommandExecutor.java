@@ -6,9 +6,9 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.command;
+package org.alfresco.extension_inspector.command;
 
-import org.alfresco.ampalyser.models.CommandOutput;
+import org.alfresco.extension_inspector.models.CommandOutput;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -6,10 +6,10 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.service;
+package org.alfresco.extension_inspector.inventory.service;
 
-import org.alfresco.ampalyser.model.InventoryReport;
-import org.alfresco.ampalyser.inventory.output.InventoryOutput;
+import org.alfresco.extension_inspector.model.InventoryReport;
+import org.alfresco.extension_inspector.inventory.output.InventoryOutput;
 
 public interface InventoryService
 {

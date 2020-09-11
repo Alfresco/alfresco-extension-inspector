@@ -6,17 +6,17 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.integration.tests;
+package org.alfresco.extension_inspector.integration.tests;
 
-import static org.alfresco.ampalyser.model.Resource.Type.ALFRESCO_PUBLIC_API;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
-import static org.alfresco.ampalyser.util.TestResource.INVALID_XML;
-import static org.alfresco.ampalyser.util.TestResource.INVALID_XML_MESSAGE;
-import static org.alfresco.ampalyser.util.TestResource.SUCCESS_MESSAGE;
-import static org.alfresco.ampalyser.util.TestResource.getTestInventoryReport;
-import static org.alfresco.ampalyser.util.TestResource.getTestResourcePath;
+import static org.alfresco.extension_inspector.model.Resource.Type.ALFRESCO_PUBLIC_API;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.util.TestResource.INVALID_XML;
+import static org.alfresco.extension_inspector.util.TestResource.INVALID_XML_MESSAGE;
+import static org.alfresco.extension_inspector.util.TestResource.SUCCESS_MESSAGE;
+import static org.alfresco.extension_inspector.util.TestResource.getTestInventoryReport;
+import static org.alfresco.extension_inspector.util.TestResource.getTestResourcePath;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -27,11 +27,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.alfresco.ampalyser.AmpalyserClient;
-import org.alfresco.ampalyser.model.AlfrescoPublicApiResource;
-import org.alfresco.ampalyser.model.Resource;
-import org.alfresco.ampalyser.models.CommandOutput;
-import org.alfresco.ampalyser.util.AppConfig;
+import org.alfresco.extension_inspector.ExtensionInspectorClient;
+import org.alfresco.extension_inspector.model.AlfrescoPublicApiResource;
+import org.alfresco.extension_inspector.model.Resource;
+import org.alfresco.extension_inspector.models.CommandOutput;
+import org.alfresco.extension_inspector.util.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 public class AmpalyserInventoryResourceTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
-    private AmpalyserClient client;
+    private ExtensionInspectorClient client;
 
     private File inventoryReport;
     private CommandOutput cmdOut;

@@ -5,14 +5,14 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.alfresco.ampalyser.analyser.checker.Checker;
-import org.alfresco.ampalyser.analyser.result.Conflict;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.checker.Checker;
+import org.alfresco.extension_inspector.analyser.result.Conflict;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

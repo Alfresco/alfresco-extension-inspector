@@ -5,14 +5,14 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser;
+package org.alfresco.extension_inspector.analyser;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 
-import org.alfresco.ampalyser.analyser.parser.InventoryParser;
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.analyser.parser.InventoryParser;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

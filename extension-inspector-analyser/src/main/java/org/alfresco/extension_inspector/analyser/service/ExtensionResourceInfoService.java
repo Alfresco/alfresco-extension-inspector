@@ -5,23 +5,23 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.ClasspathElementResource;
-import org.alfresco.ampalyser.model.FileResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.BeanResource;
+import org.alfresco.extension_inspector.model.ClasspathElementResource;
+import org.alfresco.extension_inspector.model.FileResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

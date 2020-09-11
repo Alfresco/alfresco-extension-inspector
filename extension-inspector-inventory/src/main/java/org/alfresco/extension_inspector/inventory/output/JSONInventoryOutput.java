@@ -6,14 +6,14 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.output;
+package org.alfresco.extension_inspector.inventory.output;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.alfresco.ampalyser.model.InventoryReport;
+import org.alfresco.extension_inspector.model.InventoryReport;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;

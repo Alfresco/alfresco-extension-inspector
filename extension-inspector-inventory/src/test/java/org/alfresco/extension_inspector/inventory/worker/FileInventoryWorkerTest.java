@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.model.FileResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.FileResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

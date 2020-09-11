@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableMap;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.analyser.util.BytecodeReader;
-import org.alfresco.ampalyser.analyser.util.DependencyVisitor;
+import org.alfresco.extension_inspector.analyser.util.BytecodeReader;
+import org.alfresco.extension_inspector.analyser.util.DependencyVisitor;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

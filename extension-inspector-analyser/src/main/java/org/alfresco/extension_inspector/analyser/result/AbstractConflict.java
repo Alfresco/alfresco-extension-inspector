@@ -5,11 +5,11 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.result;
+package org.alfresco.extension_inspector.analyser.result;
 
 import java.util.Objects;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.Resource;
 
 /**
  * Base class for various type of conflicts, usually found by the {@link org.alfresco.ampalyser.analyser.checker.Checker}

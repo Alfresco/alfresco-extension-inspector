@@ -6,7 +6,7 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.inventory.worker;
+package org.alfresco.extension_inspector.inventory.worker;
 
 import static java.util.Collections.emptySet;
 
@@ -18,8 +18,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
-import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.BeanResource;
+import org.alfresco.extension_inspector.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

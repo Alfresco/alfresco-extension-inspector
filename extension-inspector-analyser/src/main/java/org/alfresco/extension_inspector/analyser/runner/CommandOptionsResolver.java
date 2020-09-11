@@ -6,11 +6,11 @@
  * agreement is prohibited.
  */
 
-package org.alfresco.ampalyser.analyser.runner;
+package org.alfresco.extension_inspector.analyser.runner;
 
 import static java.util.stream.Collectors.toSet;
-import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printAnalyserUsage;
-import static org.alfresco.ampalyser.analyser.usage.UsagePrinter.printCommandUsage;
+import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printAnalyserUsage;
+import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printCommandUsage;
 
 import java.io.File;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.alfresco.ampalyser.analyser.store.AlfrescoTargetVersionParser;
+import org.alfresco.extension_inspector.analyser.store.AlfrescoTargetVersionParser;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

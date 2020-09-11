@@ -1,9 +1,9 @@
-package org.alfresco.ampalyser.analyser.service;
+package org.alfresco.extension_inspector.analyser.service;
 
-import static org.alfresco.ampalyser.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
-import static org.alfresco.ampalyser.model.Resource.Type.BEAN;
-import static org.alfresco.ampalyser.model.Resource.Type.CLASSPATH_ELEMENT;
-import static org.alfresco.ampalyser.model.Resource.Type.FILE;
+import static org.alfresco.extension_inspector.analyser.service.ExtensionResourceInfoService.findMostSpecificMapping;
+import static org.alfresco.extension_inspector.model.Resource.Type.BEAN;
+import static org.alfresco.extension_inspector.model.Resource.Type.CLASSPATH_ELEMENT;
+import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.ampalyser.model.BeanResource;
-import org.alfresco.ampalyser.model.ClasspathElementResource;
-import org.alfresco.ampalyser.model.FileResource;
+import org.alfresco.extension_inspector.model.BeanResource;
+import org.alfresco.extension_inspector.model.ClasspathElementResource;
+import org.alfresco.extension_inspector.model.FileResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

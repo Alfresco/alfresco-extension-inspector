@@ -5,16 +5,16 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.ampalyser.analyser.result;
+package org.alfresco.extension_inspector.analyser.result;
 
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_OVERWRITE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.CLASSPATH_CONFLICT;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.ALFRESCO_INTERNAL_USAGE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
-import static org.alfresco.ampalyser.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.BEAN_OVERWRITE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.CLASSPATH_CONFLICT;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.ALFRESCO_INTERNAL_USAGE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
 
-import org.alfresco.ampalyser.model.Resource;
+import org.alfresco.extension_inspector.model.Resource;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
