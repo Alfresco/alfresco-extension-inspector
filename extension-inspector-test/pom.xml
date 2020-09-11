@@ -65,13 +65,13 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../alfresco-ampalyser-inventory/target</directory>
+                                    <directory>../extension-inspector-inventory/target</directory>
                                     <includes>
                                         <include>alfresco-extension-inspector-inventory*.jar</include>
                                     </includes>
                                 </resource>
                                 <resource>
-                                <directory>../alfresco-ampalyser-analyser/target</directory>
+                                <directory>../extension-inspector-analyser/target</directory>
                                 <includes>
                                     <include>alfresco-extension-inspector-analyser*.jar</include>
                                 </includes>
