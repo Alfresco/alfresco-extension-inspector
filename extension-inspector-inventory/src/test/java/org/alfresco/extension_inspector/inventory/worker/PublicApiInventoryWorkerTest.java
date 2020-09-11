@@ -32,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class PublicApiInventoryWorkerTest
 {
-    private static final String TEST_ALFRESCO_PUBLIC_API = "Lorg/alfresco/ampalyser/inventory/data/classes/TestAlfrescoPublicApi;";
+    private static final String TEST_ALFRESCO_PUBLIC_API = "Lorg/alfresco/extension_inspector/inventory/data/classes/TestAlfrescoPublicApi;";
     @Spy
     private AlfrescoPublicApiInventoryWorker worker = new AlfrescoPublicApiInventoryWorker();
 

@@ -1,4 +1,4 @@
 <beans>
-    <bean id='bean-with-id' name='bean-with-id' class='org.alfresco.ampalyser.inventory.Test'>
+    <bean id='bean-with-id' name='bean-with-id' class='org.alfresco.extension_inspector.inventory.Test'>
     </bean>
 </beans>

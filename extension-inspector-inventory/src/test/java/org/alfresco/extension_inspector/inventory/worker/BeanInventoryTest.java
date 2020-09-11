@@ -55,7 +55,7 @@ public class BeanInventoryTest
         ZipEntry zipEntry = new ZipEntry("file.xml");
         byte[] data = (
             "<beans>"
-            + "    <bean id='bean-with-id' name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "    <bean id='bean-with-id' name='bean-with-name' class='org.alfresco.extension_inspector.inventory.Test'></bean>"
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
@@ -76,7 +76,7 @@ public class BeanInventoryTest
         ZipEntry zipEntry = new ZipEntry("file.xml");
         byte[] data = (
             "<beans>"
-            + "    <bean name='bean-with-name' class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "    <bean name='bean-with-name' class='org.alfresco.extension_inspector.inventory.Test'></bean>"
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
@@ -97,7 +97,7 @@ public class BeanInventoryTest
         ZipEntry zipEntry = new ZipEntry("file.xml");
         byte[] data = (
             "<beans>"
-            + "    <bean class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "    <bean class='org.alfresco.extension_inspector.inventory.Test'></bean>"
             + "</beans>").getBytes();
 
         String definingObject = "unicorn-jar-for-tests.jar";
@@ -108,7 +108,7 @@ public class BeanInventoryTest
         assertTrue(resources.iterator().next() instanceof BeanResource);
 
         BeanResource br = (BeanResource) resources.iterator().next();
-        assertEquals("org.alfresco.ampalyser.inventory.Test", br.getId());
+        assertEquals("org.alfresco.extension_inspector.inventory.Test", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }
 
@@ -118,7 +118,7 @@ public class BeanInventoryTest
         ZipEntry zipEntry = new ZipEntry("file.xml");
         byte[] data = (
             "<beans>"
-            + "    <bean class='org.alfresco.ampalyser.inventory.Test'></bean>"
+            + "    <bean class='org.alfresco.extension_inspector.inventory.Test'></bean>"
             + "    <bean parent='only-parent-defined'>I should be anonymous</bean>"
             + "</beans>").getBytes();
 
@@ -130,7 +130,7 @@ public class BeanInventoryTest
         assertTrue(resources.iterator().next() instanceof BeanResource);
 
         BeanResource br = (BeanResource) resources.iterator().next();
-        assertEquals("org.alfresco.ampalyser.inventory.Test", br.getId());
+        assertEquals("org.alfresco.extension_inspector.inventory.Test", br.getId());
         assertEquals(zipEntry.getName() + "@" + definingObject, br.getDefiningObject());
     }
 }

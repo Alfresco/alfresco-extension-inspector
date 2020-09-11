@@ -84,7 +84,7 @@ public class InventoryApplication implements ApplicationRunner, ExitCodeGenerato
     private static void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println("java -jar alfresco-ampalyser-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
+        System.out.println("java -jar alfresco-extension-inspector-inventory.jar <alfresco-war-filename> [--o=<report_file_path>.json]");
     }
 
     @Bean
