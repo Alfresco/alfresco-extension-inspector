@@ -18,6 +18,7 @@ mvn -B \
     ${DRY_RUN} \
     -Dmaven.javadoc.failOnError=false
     "-Darguments=-DskipTests -Dmaven.javadoc.skip -Dadditionalparam=-Xdoclint:none -Dbuildnumber=${TRAVIS_BUILD_NUMBER}" \
+    -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
     release:clean release:prepare release:perform \
     -Dusername=alfresco-build \
     -Dpassword=${GIT_PASSWORD}
