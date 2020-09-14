@@ -1,0 +1,9 @@
+---
+spring:
+  main:
+    banner_mode: "off"
+
+logging:
+  level:
+    root: warn
+    org.alfresco.extension_inspector.inventory: info

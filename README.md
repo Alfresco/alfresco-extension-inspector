@@ -12,7 +12,7 @@ The `InventoryApplication` is a Spring Boot application, implemented in the modu
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-ampalyser-inventory-<version>-application.jar`.
+This creates an executable jar, `alfresco-extension-inspector-inventory-<version>-application.jar`.
 
 ### Usage:
 ```shell script

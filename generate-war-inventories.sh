@@ -21,7 +21,7 @@ JAR_EXECUTABLE="${JAR_EXECUTABLE:-$(find . -name 'alfresco-extension-inspector-i
 
 echo "Inventory tool executable jar: ${JAR_EXECUTABLE}"
 
-INVENTORY_DIR="alfresco-ampalyser-analyser/src/main/resources/bundled-inventories"
+INVENTORY_DIR="extension-inspector-analyser/src/main/resources/bundled-inventories"
 echo "Inventory dir: ${INVENTORY_DIR}"
 rm ${INVENTORY_DIR}/*.json
 
