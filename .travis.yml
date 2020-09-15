@@ -3,57 +3,76 @@ language: java
 jdk: openjdk11
 dist: xenial
 
-
 git:
   depth: false
   quiet: true
 
-
 cache:
   directories:
     - ${HOME}/.m2/repository
-
 
 branches:
   only:
     - master
     - /support\/.*/
 
-
 stages:
-  - build
-  - release
+  - name: build
+    if: branch NOT IN (company_release)
+  - name: release
+    if: commit_message ~= /\[release\]/ AND fork = false AND type != pull_request AND branch ~= /^(master|support\/.+|release\/.+)$/
+  - name: company_release
+    if: branch = company_release
 
+before_install: bash _ci/init.sh
 
 jobs:
   include:
     - name: "Build + Tests"
       stage: build
-      before_install: bash _ci/init.sh
       script: bash _ci/build.sh
 
     - name: "Source Clear Scan (SCA)"
-      stage: build
-      if: branch NOT IN (company_release)
-      before_install: bash _ci/init.sh
       install: skip
       script: travis_wait 30 bash _ci/source_clear.sh
 
     - name: "Static Analysis (SAST)"
       if: branch = master AND type != pull_request
-      stage: build
-      before_install:
-        - bash _ci/static_analysis_init.sh
-        - bash _ci/init.sh
+      before_script: bash _ci/static_analysis_init.sh
       script: bash _ci/static_analysis.sh
 
     - name: "WhiteSource"
-      stage: build
-      before_install: bash _ci/init.sh
       script: bash _ci/whitesource.sh
 
     - name: "Release"
       stage: release
-      if: commit_message ~= /\[trigger release\]/ AND branch ~= /^(master|support\/.+)$/
-      before_install: bash _ci/init.sh
       script: bash _ci/release.sh
+      before_deploy: travis_retry source _ci/prepare_staging_deploy.sh
+      deploy:
+        provider: s3
+        access_key_id: "${STAGING_AWS_ACCESS_KEY}"
+        secret_access_key: "${STAGING_AWS_SECRET_KEY}"
+        bucket: "alfresco-artefacts-staging"
+        skip_cleanup: true
+        region: "eu-west-1"
+        local_dir: "deploy_dir"
+        upload-dir: "enterprise/AlfrescoExtensionInspector/${VERSION}"
+        on:
+          all_branches: true
+
+    - name: "Company Release"
+      stage: company_release
+      install: skip
+      script: skip
+      before_deploy: travis_retry source _ci/prepare_release_deploy.sh
+      deploy:
+        provider: s3
+        access_key_id: "${RELEASE_AWS_ACCESS_KEY}"
+        secret_access_key: "${RELEASE_AWS_SECRET_KEY}"
+        bucket: "eu.dl.alfresco.com"
+        skip_cleanup: true
+        region: "eu-west-1"
+        local_dir: "deploy_dir"
+        upload-dir: "release/enterprise/AlfrescoExtensionInspector/${VERSION}"
+        on:
+          branch: company_release
