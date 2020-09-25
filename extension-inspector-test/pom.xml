@@ -72,15 +72,9 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../extension-inspector-inventory/target</directory>
+                                    <directory>../extension-inspector-packaging/target</directory>
                                     <includes>
-                                        <include>alfresco-extension-inspector-inventory*.jar</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>../extension-inspector-analyser/target</directory>
-                                    <includes>
-                                        <include>alfresco-extension-inspector-analyser*.jar</include>
+                                        <include>alfresco-extension-inspector-*.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
