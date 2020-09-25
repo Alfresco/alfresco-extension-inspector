@@ -15,7 +15,6 @@ import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.print
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -26,14 +25,14 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommandOptionsResolver
+class CommandOptionsResolver
 {
     public static final String TARGET_VERSION = "target-version";
     public static final String TARGET_INVENTORY = "target-inventory";
     public static final String VERBOSE = "verbose";
     public static final String HELP = "help";
     public static final String LIST_KNOWN_VERSIONS = "list-known-alfresco-versions";
-    
+
     @Autowired
     private AlfrescoTargetVersionParser alfrescoTargetVersionParser;
 

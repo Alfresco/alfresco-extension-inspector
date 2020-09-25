@@ -30,7 +30,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommandRunner
+public class AnalyserCommandRunner
 {
     @Autowired
     private ConfigService configService;

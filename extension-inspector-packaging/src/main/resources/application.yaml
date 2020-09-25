@@ -11,3 +11,4 @@ inventory-report-resource-pattern: "classpath:bundled-inventories/*.json"
 logging:
   level:
     root: warn
+    org.alfresco.extension_inspector.inventory: info

@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.DefaultApplicationArguments;
 
 @ExtendWith(MockitoExtension.class)
-public class CommandRunnerTest
+public class AnalyserCommandRunnerTest
 {
     @Mock
     private ConfigService configService;
@@ -41,7 +41,7 @@ public class CommandRunnerTest
     @Mock
     private CommandOptionsResolver commandOptionsResolver;
     @InjectMocks
-    private CommandRunner commandRunner;
+    private AnalyserCommandRunner commandRunner;
 
     @BeforeEach
     public void setup()
