@@ -4,17 +4,15 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.6.RELEASE</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>org.alfresco.extension-inspector</groupId>
     <artifactId>alfresco-extension-inspector</artifactId>
     <version>1.0.0-A2-SNAPSHOT</version>
-
-    <name>alfresco-extension-inspector</name>
-
     <packaging>pom</packaging>
 
+    <name>alfresco-extension-inspector</name>
     <description>Alfresco Extension Inspector</description>
 
     <properties>
@@ -25,8 +23,8 @@
         <connection>scm:git:https://github.com/Alfresco/alfresco-extension-inspector.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/alfresco-extension-inspector.git</developerConnection>
         <url>https://github.com/Alfresco/alfresco-extension-inspector</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -55,5 +53,6 @@
         <module>extension-inspector-analyser</module>
         <module>extension-inspector-commons</module>
         <module>extension-inspector-test</module>
+        <module>extension-inspector-packaging</module>
     </modules>
 </project>

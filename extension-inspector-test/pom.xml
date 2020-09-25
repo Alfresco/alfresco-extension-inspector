@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>alfresco-extension-inspector</artifactId>
         <groupId>org.alfresco.extension-inspector</groupId>
         <version>1.0.0-A2-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>alfresco-extension-inspector-test</artifactId>
+    <packaging>jar</packaging>
+
     <name>alfresco-extension-inspector-test</name>
+    <description>Alfresco Extension Inspector Tests</description>
 
     <dependencies>
         <dependency>
@@ -58,14 +61,13 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
@@ -76,11 +78,11 @@
                                     </includes>
                                 </resource>
                                 <resource>
-                                <directory>../extension-inspector-analyser/target</directory>
-                                <includes>
-                                    <include>alfresco-extension-inspector-analyser*.jar</include>
-                                </includes>
-                            </resource>
+                                    <directory>../extension-inspector-analyser/target</directory>
+                                    <includes>
+                                        <include>alfresco-extension-inspector-analyser*.jar</include>
+                                    </includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
