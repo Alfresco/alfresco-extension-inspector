@@ -11,6 +11,7 @@ import static java.text.MessageFormat.format;
 import static java.util.Arrays.copyOfRange;
 
 import org.alfresco.extension_inspector.analyser.runner.AnalyserCommandRunner;
+import org.alfresco.extension_inspector.analyser.usage.UsagePrinter;
 import org.alfresco.extension_inspector.inventory.runner.InventoryCommandRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,6 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static final String INVENTORY_ARG = "inventory";
-    private static final String ANALYSER_ARG = "analyse";
     private static final String HELP_ARG = "help";
 
     @Autowired
@@ -59,11 +59,8 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             case INVENTORY_ARG:
                 inventoryCommandRunner.execute(stripFirstArgument(args));
                 break;
-            case ANALYSER_ARG:
-                analyserCommandRunner.execute(stripFirstArgument(args));
-                break;
             default:
-                //TODO consider if the Analyser should be the implicit behaviour
+                analyserCommandRunner.execute(args);
             }
         }
         catch (IllegalArgumentException e)
@@ -86,52 +83,36 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             return HELP_ARG;
         }
 
-        if (!args.getOptionNames().contains(INVENTORY_ARG) &&
-            !args.getOptionNames().contains(ANALYSER_ARG))
+        if (args.getOptionNames().contains(INVENTORY_ARG))
         {
-            logger.error("Missing command argument (--{}/--{})",
-                INVENTORY_ARG, ANALYSER_ARG);
-            printUsage();
-            throw new IllegalArgumentException();
+            // if "--inventory" is specified, but it's not the first argument
+            if (!format("--{0}", INVENTORY_ARG).equals(args.getSourceArgs()[0]))
+            {
+                logger.error("Invalid argument order: \"--{}\" should be the first argument",
+                    INVENTORY_ARG);
+                printUsage();
+                throw new IllegalArgumentException();
+            }
+
+            if (!args.getOptionValues(INVENTORY_ARG).isEmpty())
+            {
+                logger.error("Invalid argument format for: --{}", INVENTORY_ARG);
+                printUsage();
+                throw new IllegalArgumentException();
+            }
+
+            return INVENTORY_ARG;
         }
 
-        if (args.getOptionNames().contains(INVENTORY_ARG) &&
-            args.getOptionNames().contains(ANALYSER_ARG))
-        {
-            logger.error("The \"--{}\" and the \"--{}\" options are mutually exclusive",
-                INVENTORY_ARG, ANALYSER_ARG);
-            printUsage();
-            throw new IllegalArgumentException();
-        }
-
-        final String arg = args.getOptionNames().contains(INVENTORY_ARG) ?
-                           INVENTORY_ARG : ANALYSER_ARG;
-
-        // if not the first argument
-        if (!format("--{0}", arg).equals(args.getSourceArgs()[0]))
-        {
-            logger.error("Invalid argument order: \"--{}\" or \"--{}\" should be the first " +
-                         "argument", INVENTORY_ARG, ANALYSER_ARG);
-            printUsage();
-            throw new IllegalArgumentException();
-        }
-
-        if (!args.getOptionValues(arg).isEmpty())
-        {
-            logger.error("Invalid argument format for: --{}", arg);
-            printUsage();
-            throw new IllegalArgumentException();
-        }
-
-        return arg;
+        return "analyse"; // not an actual command line option, just the default behaviour
     }
 
     private static void printUsage()
     {
         System.out.println("Usage:");
-        System.out.println(format(
-            "java -jar alfresco-extension-inspector.jar [--{0}|--{1}] ... ",
-            INVENTORY_ARG, ANALYSER_ARG));
+        UsagePrinter.printHelp();
+        System.out.println();
+        InventoryCommandRunner.printUsage();
     }
 
     private static DefaultApplicationArguments stripFirstArgument(final ApplicationArguments args)

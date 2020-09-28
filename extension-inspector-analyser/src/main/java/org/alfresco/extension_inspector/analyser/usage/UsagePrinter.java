@@ -29,6 +29,7 @@ public class UsagePrinter
 
     public static void printHelp()
     {
+        System.out.println("Extension analyser:");
         printUsage(
             join(" ",
                 EXTENSION_FILENAME,

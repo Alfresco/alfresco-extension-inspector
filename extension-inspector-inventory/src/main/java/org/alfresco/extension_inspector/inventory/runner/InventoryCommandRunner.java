@@ -47,9 +47,9 @@ public class InventoryCommandRunner
         inventoryService.generateInventoryReport(warPath, output);
     }
 
-    private static void printUsage()
+    public static void printUsage()
     {
-        System.out.println("Usage:");
+        System.out.println("Creating an extension inventory:");
         System.out.println(format(
             "java -jar alfresco-extension-inspector.jar --inventory <alfresco-war-filename> " +
             "[--{0}=<report_file_path>.json]", OUTPUT_ARG));
