@@ -12,7 +12,6 @@ import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsRes
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,6 +48,13 @@ public class AnalyserCommandRunnerTest
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void testListAllKnownVersions()
+    {
+        commandRunner.listKnownAlfrescoVersions();
+        verify(warInventoryReportStore).allKnownVersions();
+    }
+    
     @Test
     public void testExecuteExtensionAnalysisNoOptions()
     {
