@@ -42,7 +42,6 @@ public class AppConfig
         {
                 final List<String> comOptions = new ArrayList<>(JAVA_COM);
                 comOptions.add(path);
-                comOptions.add("--analyse");
 
                 return new CommandModel(comOptions);
         }

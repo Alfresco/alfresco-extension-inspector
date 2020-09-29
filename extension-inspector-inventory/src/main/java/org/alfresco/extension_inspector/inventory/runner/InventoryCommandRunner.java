@@ -1,6 +1,6 @@
 package org.alfresco.extension_inspector.inventory.runner;
 
-import static java.text.MessageFormat.format;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printInventoryUsage;
 
 import java.io.File;
 
@@ -8,8 +8,6 @@ import org.alfresco.extension_inspector.inventory.output.InventoryOutput;
 import org.alfresco.extension_inspector.inventory.output.JSONInventoryOutput;
 import org.alfresco.extension_inspector.inventory.service.InventoryService;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryCommandRunner
 {
-    private static final Logger logger = LoggerFactory.getLogger(InventoryCommandRunner.class);
-
     private static final String OUTPUT_ARG = "o";
 
     @Autowired
@@ -28,15 +24,13 @@ public class InventoryCommandRunner
     {
         if (args.getNonOptionArgs().isEmpty())
         {
-            logger.error("Missing war file.");
-            printUsage();
+            printInventoryUsage("Missing war file.");
             throw new IllegalArgumentException();
         }
         final String warPath = args.getNonOptionArgs().get(0);
         if (!isWarValid(warPath))
         {
-            logger.error("The war file is not valid.");
-            printUsage();
+            printInventoryUsage("The war file is not valid.");
             throw new IllegalArgumentException();
         }
 
@@ -45,14 +39,6 @@ public class InventoryCommandRunner
         final InventoryOutput output = new JSONInventoryOutput(warPath, reportPath);
 
         inventoryService.generateInventoryReport(warPath, output);
-    }
-
-    public static void printUsage()
-    {
-        System.out.println("Creating an extension inventory:");
-        System.out.println(format(
-            "java -jar alfresco-extension-inspector.jar --inventory <alfresco-war-filename> " +
-            "[--{0}=<report_file_path>.json]", OUTPUT_ARG));
     }
 
     private static boolean isWarValid(String warPath)

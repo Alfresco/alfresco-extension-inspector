@@ -8,17 +8,12 @@
 
 package org.alfresco.extension_inspector.analyser.runner;
 
-import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.HELP;
-import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.LIST_KNOWN_VERSIONS;
 import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.extractExtensionPath;
 import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.extractWarInventoryPaths;
 import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.isVerboseOutput;
 import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.validateAnalyserOptions;
-import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.validateOptionsForCommand;
-import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printHelp;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printAnalyserUsage;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -43,44 +38,14 @@ public class AnalyserCommandRunner
 
     public void execute(ApplicationArguments args)
     {
-        Set<String> options = args.getOptionNames();
-        List<String> nonOptionArgs = args.getNonOptionArgs();
-
-        // Stop if no command arguments have been provided
-        if (nonOptionArgs.isEmpty() && options.isEmpty())
+        // Stop if no extension file have been provided
+        if (args.getNonOptionArgs().isEmpty())
         {
-            printHelp();
+            printAnalyserUsage("Missing extension file.");
             throw new IllegalArgumentException();
         }
 
-        if (nonOptionArgs.isEmpty())
-        {
-            Iterator<String> iterator = options.iterator();
-            executeCommand(iterator.next(), iterator);
-        }
-        else
-        {
-            executeExtensionAnalysis(args);
-        }
-    }
-    
-    private void executeCommand(String command, Iterator<String> commandOptions)
-    {
-        switch (command)
-        {
-        case "help":
-            validateOptionsForCommand(HELP, commandOptions);
-            printHelp();
-            break;
-        case "list-known-alfresco-versions":
-            validateOptionsForCommand(LIST_KNOWN_VERSIONS, commandOptions);
-            listKnownAlfrescoVersions();
-            break;
-        default:
-            System.out.println("error: unknown command provided: " + command);
-            printHelp();
-            throw new IllegalArgumentException();
-        }
+        executeExtensionAnalysis(args);
     }
 
     private void executeExtensionAnalysis(ApplicationArguments args)
@@ -107,7 +72,7 @@ public class AnalyserCommandRunner
         analyserService.analyseAgainstKnownVersions(versions);
     }
 
-    private void listKnownAlfrescoVersions()
+    public void listKnownAlfrescoVersions()
     {
         System.out.println("Known Alfresco versions: " + warInventoryReportStore.allKnownVersions());
     }

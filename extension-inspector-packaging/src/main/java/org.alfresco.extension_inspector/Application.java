@@ -9,9 +9,11 @@ package org.alfresco.extension_inspector;
 
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.copyOfRange;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printCommandUsage;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printHelp;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printInventoryUsage;
 
 import org.alfresco.extension_inspector.analyser.runner.AnalyserCommandRunner;
-import org.alfresco.extension_inspector.analyser.usage.UsagePrinter;
 import org.alfresco.extension_inspector.inventory.runner.InventoryCommandRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
 
     private static final String INVENTORY_ARG = "inventory";
     private static final String HELP_ARG = "help";
+    private static final String LIST_KNOWN_VERSIONS_ARG = "list-known-alfresco-versions";
 
     @Autowired
     private InventoryCommandRunner inventoryCommandRunner;
@@ -54,7 +57,10 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             switch (retrieveMainDirectiveArg(args))
             {
             case HELP_ARG:
-                printUsage();
+                printHelp();
+                break;
+            case LIST_KNOWN_VERSIONS_ARG:
+                analyserCommandRunner.listKnownAlfrescoVersions();
                 break;
             case INVENTORY_ARG:
                 inventoryCommandRunner.execute(stripFirstArgument(args));
@@ -71,10 +77,10 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
 
     private static String retrieveMainDirectiveArg(final ApplicationArguments args)
     {
-        if (args.getOptionNames().isEmpty())
+        if (args.getOptionNames().isEmpty() && args.getNonOptionArgs().isEmpty())
         {
             logger.error("Missing arguments");
-            printUsage();
+            printHelp();
             throw new IllegalArgumentException();
         }
 
@@ -83,21 +89,31 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             return HELP_ARG;
         }
 
+        if (args.getOptionNames().contains(LIST_KNOWN_VERSIONS_ARG))
+        {
+            if (!args.getNonOptionArgs().isEmpty() && args.getOptionNames().size() > 1)
+            {
+                printCommandUsage("--" + LIST_KNOWN_VERSIONS_ARG,
+                    "Unknown options provided for '" + LIST_KNOWN_VERSIONS_ARG + "' command.");
+                throw new IllegalArgumentException();
+            }
+
+            return LIST_KNOWN_VERSIONS_ARG;
+        }
+        
         if (args.getOptionNames().contains(INVENTORY_ARG))
         {
             // if "--inventory" is specified, but it's not the first argument
             if (!format("--{0}", INVENTORY_ARG).equals(args.getSourceArgs()[0]))
             {
-                logger.error("Invalid argument order: \"--{}\" should be the first argument",
-                    INVENTORY_ARG);
-                printUsage();
+                printInventoryUsage(
+                    "Invalid argument order: --" + INVENTORY_ARG + " should be the first argument");
                 throw new IllegalArgumentException();
             }
 
             if (!args.getOptionValues(INVENTORY_ARG).isEmpty())
             {
-                logger.error("Invalid argument format for: --{}", INVENTORY_ARG);
-                printUsage();
+                printInventoryUsage("Invalid argument format for: --" + INVENTORY_ARG);
                 throw new IllegalArgumentException();
             }
 
@@ -105,14 +121,6 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
         }
 
         return "analyse"; // not an actual command line option, just the default behaviour
-    }
-
-    private static void printUsage()
-    {
-        System.out.println("Usage:");
-        UsagePrinter.printHelp();
-        System.out.println();
-        InventoryCommandRunner.printUsage();
     }
 
     private static DefaultApplicationArguments stripFirstArgument(final ApplicationArguments args)

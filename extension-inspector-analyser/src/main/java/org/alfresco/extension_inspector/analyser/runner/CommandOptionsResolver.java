@@ -9,8 +9,8 @@
 package org.alfresco.extension_inspector.analyser.runner;
 
 import static java.util.stream.Collectors.toSet;
-import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printAnalyserUsage;
-import static org.alfresco.extension_inspector.analyser.usage.UsagePrinter.printCommandUsage;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printAnalyserUsage;
+import static org.alfresco.extension_inspector.usage.UsagePrinter.printCommandUsage;
 
 import java.io.File;
 import java.util.Iterator;
