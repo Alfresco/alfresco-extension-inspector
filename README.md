@@ -12,11 +12,11 @@ The `InventoryApplication` is a Spring Boot application, implemented in the modu
 The application generates a report file in json format for a war file.
   
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-extension-inspector-inventory-<version>-application.jar`.
+This creates an executable jar, `alfresco-extension-inspector-inventory-<version>.jar`.
 
 ### Usage:
 ```shell script
-java -jar alfresco-extension-inspector-inventory-<version>-application.jar <alfresco_war_path> [--o=<report_file_path>]
+java -jar alfresco-extension-inspector-<version>.jar --inventory <alfresco_war_path> [--o=<report_file_path>]
 ```
 - the first parameter is a path to a valid war file
 - the optional `--o` parameter is for the output of the report, a given file or a folder location where a report with the default name, `<war_name>.inventory.json`, is generated. 
@@ -91,25 +91,27 @@ The `AnalyserApplication` is a Spring Boot application, implemented in the modul
 This tool analyses custom extensions against war inventories.
 
 Use `mvn clean package` to build the project.
-This creates an executable jar, `alfresco-extension-inspector-analyser-<version>-application.jar`.
+This creates an executable jar, `alfresco-extension-inspector-<version>.jar`.
 
 ### Usage:
 ```shell script
 # Analyse a given Alfresco extension
-java -jar alfresco-extension-inspector-analyser-<version>-application.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--verbose=[true | false]]
+java -jar alfresco-extension-inspector-<version>.jar <extension-filename> [--target-version=6.1.0[-7.0.0] | --target-inventory =/path/to/war_inventory.json] [--verbose=[true | false]]
 
 # Help command
-java -jar alfresco-extension-inspector-analyser-<version>-application.jar --help
+java -jar alfresco-extension-inspector-<version>.jar --help
 
 # List all versions with bundled inventories
-java -jar alfresco-extension-inspector-analyser-<version>-application.jar --list-known-alfresco-versions
+java -jar alfresco-extension-inspector-<version>.jar --list-known-alfresco-versions
 ```
 Options:
 ```bash
    --target-version                     An Alfresco version or a range of Alfresco versions.
    --target-inventory                   A file path of an existing WAR inventory.
    --verbose                            Verbose output.
-   
+   --inventory                          Creates an inventory report in json format for the specified war or extension file.
+   --o=<report_file_path>.json          A file path for the new inventory report.
+
    --help                               Shows this screen.
    --list-known-alfresco-versions       Lists all Alfresco versions with inventory reports included in the tool.
 ```
