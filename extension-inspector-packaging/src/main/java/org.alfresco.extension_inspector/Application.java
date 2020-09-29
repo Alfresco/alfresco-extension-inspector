@@ -128,10 +128,16 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             return INVENTORY_ARG;
         }
 
-        // if we reached this point, the arguments were not recognised
-        System.out.println("error: unknown arguments provided");
-        printHelp();
-        throw new IllegalArgumentException();
+        // some options were provided, but no extension file path
+        if (args.getNonOptionArgs().isEmpty())
+        {
+            // if we reached this point, the arguments were not recognised
+            System.out.println("error: unknown arguments provided");
+            printHelp();
+            throw new IllegalArgumentException();
+        }
+
+        return "analyse"; // not an actual command line option, just the default behaviour
     }
 
     private static DefaultApplicationArguments stripFirstArgument(final ApplicationArguments args)
