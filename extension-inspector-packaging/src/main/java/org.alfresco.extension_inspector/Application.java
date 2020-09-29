@@ -15,8 +15,6 @@ import static org.alfresco.extension_inspector.usage.UsagePrinter.printInventory
 
 import org.alfresco.extension_inspector.analyser.runner.AnalyserCommandRunner;
 import org.alfresco.extension_inspector.inventory.runner.InventoryCommandRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -33,8 +31,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @SpringBootApplication
 public class Application implements ApplicationRunner, ExitCodeGenerator
 {
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
-
     private static final String INVENTORY_ARG = "inventory";
     private static final String HELP_ARG = "help";
     private static final String LIST_KNOWN_VERSIONS_ARG = "list-known-alfresco-versions";
@@ -77,21 +73,33 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
 
     private static String retrieveMainDirectiveArg(final ApplicationArguments args)
     {
-        if (args.getOptionNames().isEmpty() && args.getNonOptionArgs().isEmpty())
+        if (args.getOptionNames().isEmpty())
         {
-            logger.error("Missing arguments");
-            printHelp();
-            throw new IllegalArgumentException();
+            if (args.getNonOptionArgs().isEmpty())
+            {
+                System.out.println("error: missing arguments");
+                printHelp();
+                throw new IllegalArgumentException();
+            }
+
+            return "analyse"; // not an actual command line option, just the default behaviour
         }
 
         if (args.getOptionNames().contains(HELP_ARG))
         {
+            if (!args.getNonOptionArgs().isEmpty() || args.getOptionNames().size() > 1)
+            {
+                printCommandUsage("--" + HELP_ARG,
+                    "Unknown options provided for '" + HELP_ARG + "' command.");
+                throw new IllegalArgumentException();
+            }
+
             return HELP_ARG;
         }
 
         if (args.getOptionNames().contains(LIST_KNOWN_VERSIONS_ARG))
         {
-            if (!args.getNonOptionArgs().isEmpty() && args.getOptionNames().size() > 1)
+            if (!args.getNonOptionArgs().isEmpty() || args.getOptionNames().size() > 1)
             {
                 printCommandUsage("--" + LIST_KNOWN_VERSIONS_ARG,
                     "Unknown options provided for '" + LIST_KNOWN_VERSIONS_ARG + "' command.");
@@ -120,7 +128,10 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
             return INVENTORY_ARG;
         }
 
-        return "analyse"; // not an actual command line option, just the default behaviour
+        // if we reached this point, the arguments were not recognised
+        System.out.println("error: unknown arguments provided");
+        printHelp();
+        throw new IllegalArgumentException();
     }
 
     private static DefaultApplicationArguments stripFirstArgument(final ApplicationArguments args)

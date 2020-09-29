@@ -9,12 +9,18 @@
 package org.alfresco.extension_inspector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
 
+import org.alfresco.extension_inspector.analyser.runner.AnalyserCommandRunner;
+import org.alfresco.extension_inspector.inventory.runner.InventoryCommandRunner;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.DefaultApplicationArguments;
 
@@ -22,72 +28,86 @@ import org.springframework.boot.DefaultApplicationArguments;
 public class ApplicationTests
 {
     @Mock
+    private InventoryCommandRunner inventoryCommandRunner;
+    @Mock
+    private AnalyserCommandRunner analyserCommandRunner;
+    @InjectMocks
     private Application application;
-    
+
+    @Captor
+    ArgumentCaptor<DefaultApplicationArguments> argsCaptor;
+
+    @BeforeEach
+    public void setup()
+    {
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Test
     public void testExecuteEmptyCommand()
     {
         application.run(new DefaultApplicationArguments());
-
         assertEquals(1, application.getExitCode());
     }
 
     @Test
     public void testExecuteListKnownVersionsCommand()
     {
-        application.run(new DefaultApplicationArguments("--list-known-alfresco-versions"));
-        //verify(warInventoryReportStore).allKnownVersions();
+        String listKnownVersions = "--list-known-alfresco-versions";
+        
+        application.run(new DefaultApplicationArguments(listKnownVersions));
+        assertEquals(0, application.getExitCode());
 
-        try
-        {
-            application.run(
-                new DefaultApplicationArguments("--list-known-alfresco-versions", "--some-option"));
-            fail("`list-known-alfresco-versions` command should not have extra options.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
+        application.run(
+            new DefaultApplicationArguments(listKnownVersions, "--some-option"));
+        assertEquals(1, application.getExitCode());
+
+        application.run(
+            new DefaultApplicationArguments(listKnownVersions, "some-option"));
+        assertEquals(1, application.getExitCode());
     }
 
     @Test
     public void testExecuteHelpCommand()
     {
         application.run(new DefaultApplicationArguments("--help"));
+        assertEquals(0, application.getExitCode());
 
-        try
-        {
-            application.run(new DefaultApplicationArguments("help"));
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
+        DefaultApplicationArguments arguments = new DefaultApplicationArguments("help");
+        application.run(arguments);
+        verify(analyserCommandRunner).execute(arguments);
 
-        try
-        {
-            application.run(
-                new DefaultApplicationArguments("--help", "--some-option", "--some-other-option"));
-            fail("`help` command should not have extra options.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
+        application
+            .run(new DefaultApplicationArguments("--help", "--some-option", "--some-other-option"));
+        assertEquals(1, application.getExitCode());
     }
 
     @Test
     public void testExecuteUnknownCommand()
     {
-        try
-        {
-            application.run(new DefaultApplicationArguments("--unknown"));
-            fail("`unknown` command should have failed.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
+        application.run(new DefaultApplicationArguments("--unknown"));
+        assertEquals(1, application.getExitCode());
     }
 
+    @Test
+    public void testExecuteInventoryCommand()
+    {
+        application.run(new DefaultApplicationArguments("--inventory", "path-to-war-file"));
+
+        verify(inventoryCommandRunner).execute(argsCaptor.capture());
+        assertEquals(0, argsCaptor.getValue().getOptionNames().size());
+        assertEquals(1, argsCaptor.getValue().getNonOptionArgs().size());
+        assertEquals(0, application.getExitCode());
+    }
+
+    @Test
+    public void testExecuteAnalysingCommand()
+    {
+        DefaultApplicationArguments args = new DefaultApplicationArguments("path-to-extension");
+        
+        application.run(args);
+        
+        verify(analyserCommandRunner).execute(args);
+        assertEquals(0, application.getExitCode());
+    }
 }
