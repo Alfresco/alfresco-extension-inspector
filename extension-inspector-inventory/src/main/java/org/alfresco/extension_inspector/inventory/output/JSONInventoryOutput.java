@@ -38,7 +38,7 @@ public class JSONInventoryOutput implements InventoryOutput
 
     private Path outputPath;
 
-    public JSONInventoryOutput(String warPath, String outputPath) throws Exception
+    public JSONInventoryOutput(String warPath, String outputPath)
     {
         this.outputPath = getNormalizedPath(warPath, outputPath);
     }
@@ -64,7 +64,7 @@ public class JSONInventoryOutput implements InventoryOutput
         }
     }
 
-    private Path getNormalizedPath(String warPath, String outputPath) throws Exception
+    private Path getNormalizedPath(String warPath, String outputPath)
     {
         if (outputPath == null)
         {

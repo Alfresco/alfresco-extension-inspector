@@ -9,8 +9,7 @@
 package org.alfresco.extension_inspector.analyser.runner;
 
 import static org.alfresco.extension_inspector.analyser.runner.CommandOptionsResolver.isVerboseOutput;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.DefaultApplicationArguments;
 
 @ExtendWith(MockitoExtension.class)
-public class CommandRunnerTest
+public class AnalyserCommandRunnerTest
 {
     @Mock
     private ConfigService configService;
@@ -41,7 +40,7 @@ public class CommandRunnerTest
     @Mock
     private CommandOptionsResolver commandOptionsResolver;
     @InjectMocks
-    private CommandRunner commandRunner;
+    private AnalyserCommandRunner commandRunner;
 
     @BeforeEach
     public void setup()
@@ -50,77 +49,12 @@ public class CommandRunnerTest
     }
 
     @Test
-    public void testExecuteEmptyCommand()
+    public void testListAllKnownVersions()
     {
-        try
-        {
-            commandRunner.execute(new DefaultApplicationArguments());
-            fail("Should have failed.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
-    }
-
-    @Test
-    public void testExecuteListKnownVersionsCommand()
-    {
-        commandRunner.execute(new DefaultApplicationArguments("--list-known-alfresco-versions"));
+        commandRunner.listKnownAlfrescoVersions();
         verify(warInventoryReportStore).allKnownVersions();
-
-        try
-        {
-            commandRunner.execute(
-                new DefaultApplicationArguments("--list-known-alfresco-versions", "--some-option"));
-            fail("`list-known-alfresco-versions` command should not have extra options.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
     }
-
-    @Test
-    public void testExecuteHelpCommand()
-    {
-        commandRunner.execute(new DefaultApplicationArguments("--help"));
-
-        try
-        {
-            commandRunner.execute(new DefaultApplicationArguments("help"));
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
-
-        try
-        {
-            commandRunner.execute(
-                new DefaultApplicationArguments("--help", "--some-option", "--some-other-option"));
-            fail("`help` command should not have extra options.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
-    }
-
-    @Test
-    public void testExecuteUnknownCommand()
-    {
-        try
-        {
-            commandRunner.execute(new DefaultApplicationArguments("--unknown"));
-            fail("`unknown` command should have failed.");
-        }
-        catch (IllegalArgumentException e)
-        {
-            //Expected
-        }
-    }
-
+    
     @Test
     public void testExecuteExtensionAnalysisNoOptions()
     {

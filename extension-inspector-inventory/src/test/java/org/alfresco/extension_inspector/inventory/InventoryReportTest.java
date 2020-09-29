@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class InventoryReportTest
 {
     @Test
-    public void testDefaultOutputPath1() throws Exception
+    public void testDefaultOutputPath1()
     {
         String warPath = "alfresco.war";
         String outputPath = "";
@@ -35,7 +35,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testDefaultOutputPath2() throws Exception
+    public void testDefaultOutputPath2()
     {
         String warPath = "alfresco-6.1.0.war";
         String outputPath = null;
@@ -45,7 +45,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testDefaultOutputPath3() throws Exception
+    public void testDefaultOutputPath3()
     {
         String warPath = "alfresco-6.2.war";
         String outputPath = "   ";
@@ -55,7 +55,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputPath1() throws Exception
+    public void testGivenOutputPath1()
     {
         String warPath = "alfresco.war";
         String outputPath = "report.json";
@@ -65,7 +65,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputPath2() throws Exception
+    public void testGivenOutputPath2()
     {
         String warPath = "alfresco.war";
         String outputPath = "out/report.json";
@@ -75,7 +75,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputFolderPath1() throws Exception
+    public void testGivenOutputFolderPath1()
     {
         String warPath = "alfresco.war";
         String outputPath = "out/folder";
@@ -85,7 +85,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputFolderPath2() throws Exception
+    public void testGivenOutputFolderPath2()
     {
         String warPath = "alfresco.war";
         String outputPath = "/out//folder/";
@@ -99,7 +99,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputPathWithJson() throws Exception
+    public void testGivenOutputPathWithJson()
     {
         String warPath = "alfresco.war";
         String outputPath = "/out//folder/report.JSon";
@@ -109,7 +109,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testGivenOutputPathWithNonJsonExtension() throws Exception
+    public void testGivenOutputPathWithNonJsonExtension()
     {
         String warPath = "alfresco.war";
         String outputPath = "out/folder/report.myextension";
@@ -127,7 +127,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testInvalidOutputPath() throws Exception
+    public void testInvalidOutputPath()
     {
         String warPath = "alfresco.war";
         // '\u0000' - nul character
@@ -163,7 +163,7 @@ public class InventoryReportTest
     }*/
 
     @Test
-    public void testReportIsGenerated1() throws Exception
+    public void testReportIsGenerated1()
     {
         String warPath = "alfresco.war";
         String outputPath = "target";
@@ -182,7 +182,7 @@ public class InventoryReportTest
     }
 
     @Test
-    public void testReportIsGenerated2() throws Exception
+    public void testReportIsGenerated2()
     {
         String warPath = "alfresco.war";
         String outputPath = "target/aa#/&%()+-//report.JSon";

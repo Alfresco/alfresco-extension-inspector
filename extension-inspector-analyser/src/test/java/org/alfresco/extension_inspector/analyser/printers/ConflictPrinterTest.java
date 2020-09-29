@@ -26,8 +26,8 @@ import org.alfresco.extension_inspector.analyser.store.WarInventoryReportStore;
 import org.alfresco.extension_inspector.model.BeanResource;
 import org.alfresco.extension_inspector.model.FileResource;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,20 +42,21 @@ public class ConflictPrinterTest
     @InjectMocks
     private BeanOverwriteConflictPrinter printer;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
-
-        when(store.allKnownVersions()).thenReturn(
-            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.3", "6.0.5", "6.2.1")
-                .stream()
-                .collect(Collectors.toCollection(
-                    () -> new TreeSet<>(Comparator.comparing(ComparableVersion::new)))));
     }
+
     @Test
     public void testJoinWarVersions()
     {
+        when(store.allKnownVersions()).thenReturn(
+            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.3", "6.0.5", "6.2.1")
+               .stream()
+               .collect(Collectors.toCollection(
+                   () -> new TreeSet<>(Comparator.comparing(ComparableVersion::new)))));
+
         BeanResource extBean1 = new BeanResource("bean1", "default_context.xml",
             "org.alfresco.Dummy");
         BeanResource extBean11 = new BeanResource("bean1", "another_context.xml",

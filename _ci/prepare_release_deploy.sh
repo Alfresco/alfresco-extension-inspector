@@ -11,18 +11,13 @@ export VERSION=$(git describe --abbrev=0 --tags)
 mkdir -p deploy_dir
 
 # Download the WhiteSource report
-mvn -B org.alfresco:whitesource-downloader-plugin:inventoryReport \
-    -N \
+mvn -B -N org.alfresco:whitesource-downloader-plugin:inventoryReport \
     "-Dorg.whitesource.product=alfresco-extension-inspector" \
     -DsaveReportAs=deploy_dir/3rd-party.xlsx
 
-# Download the JAR artifacts
+# Download the JAR artifact
 mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy \
-    -Dartifact=org.alfresco.extension-inspector:alfresco-extension-inspector-inventory:${VERSION}:jar:application \
-    -DoutputDirectory=deploy_dir
-
-mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy \
-    -Dartifact=org.alfresco.extension-inspector:alfresco-extension-inspector-analyser:${VERSION}:jar:application \
+    -Dartifact=org.alfresco.extension-inspector:alfresco-extension-inspector:${VERSION}:jar \
     -DoutputDirectory=deploy_dir
 
 echo "Local deploy directory content:"

@@ -5,7 +5,7 @@
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
-package org.alfresco.extension_inspector.analyser;
+package org.alfresco.extension_inspector;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -18,13 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AnalyserApplicationTests {
-
+public class ApplicationContextTests
+{
 	@Autowired
 	InventoryParser jsonInventoryParser;
 
 	@Test
-	void contextLoads() {
+	void contextLoads()
+	{
 	}
 
 	@Test

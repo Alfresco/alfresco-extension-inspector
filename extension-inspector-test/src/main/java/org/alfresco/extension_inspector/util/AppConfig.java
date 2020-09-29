@@ -25,32 +25,30 @@ import java.util.List;
 @PropertySource(value="application.properties")
 public class AppConfig
 {
-        static final String JAVA_COM = "java -jar";
+        static final List<String> JAVA_COM =  Arrays.asList("java -jar".split(" "));
 
         @Bean
-        public CommandModel initInventoryCommand(@Value("${extension_inspector.inventory.path}") String pathToInventoryJar)
+        public CommandModel initInventoryCommand(@Value("${extension_inspector.path}") String path)
         {
-                return addPathToCommandOptions(pathToInventoryJar);
+                final List<String> comOptions = new ArrayList<>(JAVA_COM);
+                comOptions.add(path);
+                comOptions.add("--inventory");
+
+                return new CommandModel(comOptions);
         }
 
         @Bean
-        public CommandModel initAnalyserCommand(@Value("${extension_inspector.analyser.path}") String pathToAnalyserAmp)
+        public CommandModel initAnalyserCommand(@Value("${extension_inspector.path}") String path)
         {
-                return addPathToCommandOptions(pathToAnalyserAmp);
+                final List<String> comOptions = new ArrayList<>(JAVA_COM);
+                comOptions.add(path);
+
+                return new CommandModel(comOptions);
         }
 
         @Bean
         public ObjectMapper mapper()
         {
                 return new ObjectMapper();
-        }
-
-        public CommandModel addPathToCommandOptions(String path)
-        {
-                List<String> comOptions = new ArrayList<>(Arrays.asList(JAVA_COM.split(" ")));
-                comOptions.add(path);
-
-                CommandModel cmd = new CommandModel(comOptions);
-                return cmd;
         }
 }

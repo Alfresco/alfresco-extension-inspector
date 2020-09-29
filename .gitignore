@@ -27,3 +27,5 @@ target/
 
 # Other
 wars/
+
+**/inventoryTest.inventory.json
