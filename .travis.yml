@@ -20,7 +20,7 @@ stages:
   - name: build
     if: branch NOT IN (company_release)
   - name: release
-    if: commit_message ~= /\[release\]/ AND fork = false AND type != pull_request AND branch ~= /^(master|support\/.+|release\/.+)$/
+    if: commit_message ~= /\[release\]/ AND fork = false AND branch ~= /^(master|support\/.+|release\/.+)$/
   - name: company_release
     if: branch = company_release
 
