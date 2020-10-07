@@ -4,7 +4,7 @@
     <parent>
         <artifactId>alfresco-extension-inspector</artifactId>
         <groupId>org.alfresco.extension-inspector</groupId>
-        <version>1.0.0-RC1-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
     </parent>
 
     <artifactId>alfresco-extension-inspector-test</artifactId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.alfresco.extension-inspector</groupId>
             <artifactId>alfresco-extension-inspector-commons</artifactId>
-            <version>1.0.0-RC1-SNAPSHOT</version>
+            <version>1.0.0-RC1</version>
         </dependency>
 
         <dependency>
