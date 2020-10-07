@@ -15,6 +15,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - company_release
 
 stages:
   - name: build
