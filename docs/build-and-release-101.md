@@ -11,15 +11,13 @@ The `.travis.yml` config file can be found in the root of the repository.
 ## Branches
 Travis CI builds differ by branch:
 * `master` / `support/*` branches:
-  - regular builds which include the _Build_ and _Tests_ stages;
+  - regular builds which include the _Build/Tests_ stages;
   - if the commit message contains the `[release]` tag, the builds will also 
   include the _Release_ stage;
   - PR builds where the latest commit contains the `[release]` tag will execute dry runs 
   of the release jobs (no artifacts will be published until the PR is actually merged).
-* `feature/*` / `fix/*` branches:
-  - regular builds which include only the _Build_ and _Tests_ stages;
 
-All other branches are ignored.
+All other branches get ignored by default.
 
 
 ## Release process steps & info
