@@ -51,6 +51,26 @@
                     <finalName>${project.parent.name}-${project.version}</finalName>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <repositoryId>alfresco-internal</repositoryId>
+                            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+                            <file>${project.build.directory}/${project.parent.name}-${project.version}.jar</file>
+                            <generatePom>false</generatePom>
+                            <pomFile>../pom.xml</pomFile>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
