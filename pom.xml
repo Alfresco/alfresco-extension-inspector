@@ -9,7 +9,7 @@
 
     <groupId>org.alfresco.extension-inspector</groupId>
     <artifactId>alfresco-extension-inspector-parent</artifactId>
-    <version>1.0.0-A4-SNAPSHOT</version>
+    <version>1.0.0-A4</version>
     <packaging>pom</packaging>
 
     <name>alfresco-extension-inspector-parent</name>
@@ -23,7 +23,7 @@
         <connection>scm:git:https://github.com/Alfresco/alfresco-extension-inspector.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/alfresco-extension-inspector.git</developerConnection>
         <url>https://github.com/Alfresco/alfresco-extension-inspector</url>
-        <tag>HEAD</tag>
+        <tag>alfresco-extension-inspector-parent-1.0.0-A4</tag>
     </scm>
 
     <dependencyManagement>
