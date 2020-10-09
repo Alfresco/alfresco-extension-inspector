@@ -6,7 +6,7 @@ set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../"
 
 
-mvn -B -U clean install
+mvn -B -U clean deploy
 
 
 popd
