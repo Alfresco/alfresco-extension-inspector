@@ -61,8 +61,10 @@
                         </goals>
                         <phase>deploy</phase>
                         <configuration>
-                            <repositoryId>alfresco-internal</repositoryId>
-                            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+                            <repositoryId>alfresco-internal-snapshots</repositoryId>
+                            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+<!--                            <repositoryId>alfresco-internal</repositoryId>-->
+<!--                            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>-->
                             <file>${project.build.directory}/alfresco-extension-inspector-${project.version}.jar</file>
                             <groupId>org.alfresco.extension-inspector</groupId>
                             <artifactId>alfresco-extension-inspector</artifactId>
