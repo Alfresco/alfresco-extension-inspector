@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.alfresco.extension-inspector</groupId>
-        <artifactId>alfresco-extension-inspector</artifactId>
-        <version>1.0.0-RC3-SNAPSHOT</version>
+        <artifactId>alfresco-extension-inspector-parent</artifactId>
+        <version>1.0.0-A3-SNAPSHOT</version>
     </parent>
 
     <artifactId>alfresco-extension-inspector-packaging</artifactId>
@@ -17,12 +17,12 @@
         <dependency>
             <groupId>org.alfresco.extension-inspector</groupId>
             <artifactId>alfresco-extension-inspector-inventory</artifactId>
-            <version>1.0.0-RC3-SNAPSHOT</version>
+            <version>1.0.0-A3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.extension-inspector</groupId>
             <artifactId>alfresco-extension-inspector-analyser</artifactId>
-            <version>1.0.0-RC3-SNAPSHOT</version>
+            <version>1.0.0-A3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -48,7 +48,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>${project.parent.name}-${project.version}</finalName>
+                    <finalName>alfresco-extension-inspector-${project.version}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -63,10 +63,11 @@
                         <configuration>
                             <repositoryId>alfresco-internal</repositoryId>
                             <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
-                            <file>${project.build.directory}/${project.parent.name}-${project.version}.jar</file>
-                            <generatePom>false</generatePom>
-                            <pomFile>../pom.xml</pomFile>
+                            <file>${project.build.directory}/alfresco-extension-inspector-${project.version}.jar</file>
+                            <groupId>org.alfresco.extension-inspector</groupId>
+                            <artifactId>alfresco-extension-inspector</artifactId>
                             <packaging>jar</packaging>
+                            <version>${project.version}</version>
                         </configuration>
                     </execution>
                 </executions>

@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>org.alfresco.extension-inspector</groupId>
-    <artifactId>alfresco-extension-inspector</artifactId>
-    <version>1.0.0-RC3-SNAPSHOT</version>
+    <artifactId>alfresco-extension-inspector-parent</artifactId>
+    <version>1.0.0-A3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>alfresco-extension-inspector</name>
+    <name>alfresco-extension-inspector-parent</name>
     <description>Alfresco Extension Inspector</description>
 
     <properties>
