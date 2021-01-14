@@ -1,5 +1,8 @@
 # alfresco-extension-inspector
 
+[![Build Status](https://travis-ci.com/Alfresco/alfresco-extension-inspector.svg?branch=master)](https://travis-ci.com/Alfresco/alfresco-extension-inspector)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 **alfresco-extension-inspector** is a tool that scans and validates an Alfresco extension (amp or jar) against an `alfresco.war` file.
 
 The tool parses an extension and generates a report on possible overrides, discouraged usage of non-public API, Alfresco's 3rd-party libraries.
@@ -8,6 +11,9 @@ The tool parses an extension and generates a report on possible overrides, disco
 
 The project has three main modules, one for parsing the war files - the **Inventory**, one for analysing custom extensions against the inventory - the **Analyser**, and one for packaging the **Inventory** and the **Analyser** in one executable tool.
 
+## License
+This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) license.
+If you are an Enterprise customer check with [Alfresco Support](http://support.alfresco.com).
 
 ## Packaging
 
