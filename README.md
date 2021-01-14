@@ -8,6 +8,9 @@ The tool parses an extension and generates a report on possible overrides, disco
 
 The project has three main modules, one for parsing the war files - the **Inventory**, one for analysing custom extensions against the inventory - the **Analyser**, and one for packaging the **Inventory** and the **Analyser** in one executable tool.
 
+## License
+This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) license.
+If you are an Enterprise customer check the [Support](#alfresco-enterprise-customers-and-partners-support) section.
 
 ## Packaging
 
