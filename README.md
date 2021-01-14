@@ -1,6 +1,7 @@
 # alfresco-extension-inspector
 
 [![Build Status](https://travis-ci.com/Alfresco/alfresco-extension-inspector.svg?branch=master)](https://travis-ci.com/Alfresco/alfresco-extension-inspector)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 **alfresco-extension-inspector** is a tool that scans and validates an Alfresco extension (amp or jar) against an `alfresco.war` file.
 
