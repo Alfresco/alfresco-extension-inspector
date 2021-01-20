@@ -19,7 +19,7 @@ We use Jira to track issues. If you are committing a fix for a raised issue plea
 If you are adding in a new feature or bug fix please do so [here](https://alfresco.atlassian.net/jira/software/c/projects/MNT/issues/?filter=allissues). By raising a ticket in this project you will be agreeing to the 
 Alfresco Contribution Agreement which can be found at the bottom of the 'Create Issue' form or alternatively attached to [this](https://community.alfresco.com/docs/DOC-7070-alfresco-contribution-agreement) page.
 
-When you are ready to make a change you just need to fork the [glacier-connector](https://github.com/Alfresco/alfresco-extension-inspector) 
+When you are ready to make a change you just need to fork the [Alfresco Extension Inspector](https://github.com/Alfresco/alfresco-extension-inspector) 
 repository and then make your changes into your copy of the code.
 
 We have a set of standards we follow when writing code. These can be found [here](https://community.alfresco.com/docs/DOC-4658-coding-standards).
