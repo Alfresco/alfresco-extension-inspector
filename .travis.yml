@@ -16,6 +16,7 @@ branches:
     - master
     - /support\/.*/
     - company_release
+    - /feature\/.*/
 
 stages:
   - name: tests
@@ -41,9 +42,6 @@ jobs:
       if: branch = master AND type != pull_request
       before_script: bash _ci/static_analysis_init.sh
       script: bash _ci/static_analysis.sh
-
-    - name: "WhiteSource"
-      script: bash _ci/whitesource.sh
 
     - name: "Release"
       stage: release
