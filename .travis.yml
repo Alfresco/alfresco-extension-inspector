@@ -43,9 +43,6 @@ jobs:
       before_script: bash _ci/static_analysis_init.sh
       script: bash _ci/static_analysis.sh
 
-    - name: "WhiteSource"
-      script: bash _ci/whitesource.sh
-
     - name: "Release"
       stage: release
       script: bash _ci/release.sh

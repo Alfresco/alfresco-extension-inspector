@@ -12,11 +12,6 @@ export VERSION=$(git describe --abbrev=0 --tags)
 
 mkdir -p deploy_dir
 
-# Download the WhiteSource report
-mvn -B -N org.alfresco:whitesource-downloader-plugin:inventoryReport \
-    "-Dorg.whitesource.product=alfresco-extension-inspector" \
-    -DsaveReportAs=deploy_dir/3rd-party.xlsx
-
 # Hard-link the JAR artifacts into "deploy_dir"
 ln "extension-inspector-packaging/target/${ARTIFACT}" "deploy_dir/${ARTIFACT}"
 
