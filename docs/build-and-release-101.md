@@ -66,7 +66,7 @@ Prerequisites:
   artifacts are deployed on Nexus.
 
 Steps:
-1. Create a new `company_release` branch from the `master` / `support/*` branch. This job uses 
-the latest branch git tag to identify the version that must be uploaded to the S3 release bucket.
-2. Wait for a green build on the branch.
-3. Delete local and remote `company_release` branch.
+1. Checkout the branch used for the Maven Release (the branch that contains the release tag).
+> This job uses the latest git tag on the current branch to identify the version is to be copied into the S3 release bucket.
+2. Create an empty commit with the `[publish]` tag in its message.
+3. Push your local commit to origin
