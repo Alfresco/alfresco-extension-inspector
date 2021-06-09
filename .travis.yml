@@ -37,11 +37,6 @@ jobs:
       install: skip
       script: travis_wait 30 bash _ci/source_clear.sh
 
-    - name: "Static Analysis (SAST)"
-      if: branch = master AND type != pull_request
-      before_script: bash _ci/static_analysis_init.sh
-      script: bash _ci/static_analysis.sh
-
     - name: "Release"
       stage: release
       script: bash _ci/release.sh
