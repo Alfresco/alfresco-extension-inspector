@@ -15,16 +15,15 @@ branches:
   only:
     - master
     - /support\/.*/
-    - company_release
     - /feature\/.*/
 
 stages:
   - name: tests
     if: commit_message !~ /\[skip tests\]/
   - name: release
-    if: commit_message ~= /\[release\]/ AND branch ~= /^(master|support\/.+|release\/.+)$/ AND type != pull_request AND fork = false
+    if: commit_message ~= /\[release\]/ AND branch ~= /^(master|support\/.+)$/ AND fork = false
   - name: publish
-    if: commit_message ~= /\[publish\]/ AND branch ~= /^(master|support\/.+|release\/.+)$/ AND type != pull_request AND fork = false
+    if: commit_message ~= /\[publish\]/ AND branch ~= /^(master|support\/.+)$/ AND type != pull_request AND fork = false
 
 before_install: bash _ci/init.sh
 
