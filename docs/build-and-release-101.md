@@ -4,7 +4,7 @@ The `.travis.yml` config file can be found in the root of the repository.
 
 
 ## Stages and Jobs
-1. **tests**:  Java Build with Unit Tests, Veracode scans
+1. **tests**:  Java Build with Unit Tests, Veracode scan
 2. **release**: Publish to Nexus
 3. **publish**: Copy to S3
 
