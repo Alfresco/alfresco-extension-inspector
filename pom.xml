@@ -17,7 +17,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <snakeyaml.version>1.26</snakeyaml.version>
     </properties>
 
     <scm>
