@@ -16,6 +16,7 @@ branches:
     - master
     - /support\/.*/
     - /feature\/.*/
+    - /fix/\.*/
 
 stages:
   - name: tests
