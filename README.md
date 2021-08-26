@@ -127,6 +127,12 @@ Example structure of the report:
 }
 ```
 
+### Adding a new supported inventory to the Inspector
+
+* Generate a new inventory in json format for the released version of ACS. See the [inventory command](README.md#inventory-command)
+* Add the generated inventory to [extension-inspector-analyser/src/main/resources/bundled-inventories](extension-inspector-analyser/src/main/resources/bundled-inventories)
+* Release a new version of the tool according to [build-and-release-101.MD](docs/build-and-release-101.md)
+
 ## Analyser
 
 The `AnalyserApplication` is a Spring Boot application, implemented in the module **alfresco-extension-inspector-analyser**.
