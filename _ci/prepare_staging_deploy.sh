@@ -18,6 +18,10 @@ ln "extension-inspector-packaging/target/${ARTIFACT}" "deploy_dir/${ARTIFACT}"
 # Hard-link the project README.md file into "deploy_dir"
 ln "README.md" "deploy_dir/README.md"
 
+# Create third party license csv file and add it to the deploy directory.
+curl https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/thirdPartyLicenseCSVCreator.py --output thirdPartyLicenseCSVCreator.py
+python3 ./thirdPartyLicenseCSVCreator.py --project "`pwd`" --version "${VERSION}" --combined --output "deploy_dir"
+
 echo "Local deploy directory content:"
 ls -lA deploy_dir
 
