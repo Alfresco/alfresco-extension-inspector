@@ -1,0 +1,18 @@
+name: Shell Commands
+
+jobs:
+  run-shell-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test github action
+        run: echo "Test Github Action for Alfresco Extension Inspector"
+        timeout-minutes: 0
+  run-windwos-commands:
+    runs-on: windows-latest
+    needs: ["run-shell-command"]
+    steps:
+      - name: Directory PowerShell
+        run: Get-Location
+      - name: Directory Bash
+        run: pwd
+        shell: bash
