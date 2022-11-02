@@ -39,7 +39,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-#      - name: Unit Tests
-#        run: _ci/unit_tests.sh
+      - name: Unit Tests
+        run: mvn -B -U clean install --file pom.xml
 #      - name: Source Clear Scan (SCA)
 #        run: _ci/source_clear.sh
