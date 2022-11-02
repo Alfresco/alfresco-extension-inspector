@@ -32,6 +32,13 @@ jobs:
           distribution: adopt
           java-version: 17
 
+      - name: Setup maven
+        shell: bash
+        run: |
+          [ -d ${HOME}/.m2/ ] || mkdir -p ${HOME}/.m2/
+          cp -rf _ci/settings.xml ${HOME}/.m2/
+          find ${HOME}/.m2/repository/ -type d -name "*-SNAPSHOT*" | xargs -r -l rm -rf
+
       - name: Cache the Maven packages to speed up build
         uses: actions/cache@v1
         with:
@@ -41,5 +48,3 @@ jobs:
 
       - name: Unit Tests
         run: mvn -B -U clean install --file pom.xml
-#      - name: Source Clear Scan (SCA)
-#        run: _ci/source_clear.sh
