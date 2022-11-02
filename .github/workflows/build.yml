@@ -32,18 +32,12 @@ jobs:
           distribution: adopt
           java-version: 17
 
-      - name: Setup maven
-        shell: bash
-        run: |
-          [ -d ${HOME}/.m2/ ] || mkdir -p ${HOME}/.m2/
-          cp -v settings.xml ${HOME}/.m2/ || cp -v .travis.settings.xml ${HOME}/.m2/settings.xml
-
-      - name: Cache local Maven repository
-        if: inputs.setup-java == 'true'
-        uses: actions/cache@v3
+      - name: Cache the Maven packages to speed up build
+        uses: actions/cache@v1
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ matrix.tests.component }}-${{ matrix.tests.suite }}
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
 #      - name: Unit Tests
 #        run: _ci/unit_tests.sh
