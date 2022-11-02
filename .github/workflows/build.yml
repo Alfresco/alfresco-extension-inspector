@@ -15,6 +15,9 @@ on:
       - 'support/**'
       - 'feature/**'
 
+env:
+  SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -45,8 +48,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Unit Tests
-        run: mvn -B -U clean install --file pom.xml
+      - name: Log Environmnent variable
+        run: |
+          echo "API: ${SRCCLR_API_TOKEN}"
 
-      - name: Source Clear Scan SCA
-        run: mvn clean install --file pom.xml -DskipTests -Dmaven.javadoc.skip=true com.srcclr:srcclr-maven-plugin:scan -Dcom.srcclr.apiToken=${{ secrets.SRCCLR_API_TOKEN }}
+#      - name: Unit Tests
+#        run: mvn -B -U clean install --file pom.xml
+#
+#      - name: Source Clear Scan SCA
+#        run: mvn clean install --file pom.xml -DskipTests -Dmaven.javadoc.skip=true com.srcclr:srcclr-maven-plugin:scan -Dcom.srcclr.apiToken=${{ secrets.SRCCLR_API_TOKEN }}
