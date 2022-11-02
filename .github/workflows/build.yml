@@ -48,5 +48,5 @@ jobs:
       - name: Unit Tests
         run: mvn -B -U clean install --file pom.xml
 
-      - name: Source Clear Scan (SCA)
+      - name: Source Clear Scan SCA
         run: mvn -B -q clean install --file pom.xml -DskipTests -Dmaven.javadoc.skip=true com.srcclr:srcclr-maven-plugin:scan -Dcom.srcclr.apiToken=${{secrets.SRCCLR_API_TOKEN}} > scan.log
