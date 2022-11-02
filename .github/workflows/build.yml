@@ -1,19 +1,19 @@
 name: alfresco Extension Inspector Build Workflow
 
-on: push
-#  push:
-#    branches:
-#      - master
-#      - 'fix/**'
-#      - 'support/**'
-#      - 'feature/**'
-#  pull_request:
-#    types: [opened, synchronize]
-#    branches:
-#      - master
-#      - 'fix/**'
-#      - 'support/**'
-#      - 'feature/**'
+on:
+  push:
+    branches:
+      - master
+      - 'fix/**'
+      - 'support/**'
+      - 'feature/**'
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - master
+      - 'fix/**'
+      - 'support/**'
+      - 'feature/**'
 
 jobs:
   tests:
@@ -27,9 +27,9 @@ jobs:
           java-version: 11
           distribution: 'adopt'
           cache: 'maven'
-     - name: Unit Tests
-       run: _ci/unit_tests.sh
-       shell: bash
-    - name: Source Clear Scan (SCA)
-      run: _ci/source_clear.sh
-      shell: bash
+      - name: Unit Tests
+        run: _ci/unit_tests.sh
+        shell: bash
+      - name: Source Clear Scan (SCA)
+        run: _ci/source_clear.sh
+        shell: bash
