@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "=========================== Starting Unit Test Script ==========================="
 PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex

@@ -29,7 +29,5 @@ jobs:
           cache: 'maven'
       - name: Unit Tests
         run: _ci/unit_tests.sh
-        shell: bash
       - name: Source Clear Scan (SCA)
         run: _ci/source_clear.sh
-        shell: bash
