@@ -1,19 +1,19 @@
 name: alfresco Extension Inspector Build Workflow
 
-on:
-  push:
-    branches:
-      - master
-      - 'fix/**'
-      - 'support/**'
-      - 'feature/**'
-  pull_request:
-    types: [opened, synchronize]
-    branches:
-      - master
-      - 'fix/**'
-      - 'support/**'
-      - 'feature/**'
+on: push
+#  push:
+#    branches:
+#      - master
+#      - 'fix/**'
+#      - 'support/**'
+#      - 'feature/**'
+#  pull_request:
+#    types: [opened, synchronize]
+#    branches:
+#      - master
+#      - 'fix/**'
+#      - 'support/**'
+#      - 'feature/**'
 
 jobs:
   tests:
