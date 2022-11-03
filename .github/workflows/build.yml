@@ -55,7 +55,7 @@ jobs:
       - name: Unit Tests
         run:  bash _ci/unit_tests.sh
 
-  Source-Clear-Scan-(SCA):
+  Source-Clear-Scan-SCA:
     runs-on: ubuntu-latest
     steps:
       # Typical Java workflow steps
