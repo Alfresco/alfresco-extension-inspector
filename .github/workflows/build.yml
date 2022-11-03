@@ -54,7 +54,6 @@ jobs:
 
       - name: Unit Tests
         run:  bash _ci/unit_tests.sh
-
   Source Clear Scan (SCA):
     runs-on: ubuntu-latest
     steps:
@@ -84,13 +83,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Log Environmnent variable
+        run: |
+          echo "API: ${SRCCLR_API_TOKEN}"
+
       - name: Source Clear Scan (SCA)
         run:  bash _ci/source_clear.sh
-
-
-
-
-
 #      - name: Unit Tests
 #        run: mvn -B -U clean install --file pom.xml
 #
