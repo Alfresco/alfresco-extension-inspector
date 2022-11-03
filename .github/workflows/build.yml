@@ -24,7 +24,6 @@ jobs:
     strategy:
       matrix:
         script: [ source_clear, unit_tests ]
-
     steps:
       # Typical Java workflow steps
       - uses: actions/checkout@v3
@@ -57,7 +56,7 @@ jobs:
 
   Release:
     runs-on: ubuntu-latest
-    needs: Source-Clear-Scan-SCA
+    needs: tests
     if: >
       contains(github.event.head_commit.message, '[release]') && github.ref_name == 'master'
     steps:
@@ -81,7 +80,7 @@ jobs:
 
   Copy-to-S3-Release-Bucket:
     runs-on: ubuntu-latest
-    need: Release
+    needs: Release
     if: >
       contains(github.event.head_commit.message, '[publish]') && github.ref_name == 'master'
     steps:
