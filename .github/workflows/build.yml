@@ -21,6 +21,8 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    if: >
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       matrix:
         script: [ source_clear, unit_tests ]
@@ -58,7 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests
     if: >
-      contains(github.event.head_commit.message, '[release]') && github.ref_name == 'master'
+      contains(github.event.head_commit.message, '[release]') && 
+      github.ref_name == 'master' && 
+      github.event.repository.fork==false
     steps:
       # Typical Java workflow steps
       - uses: actions/setup-python@v3
@@ -82,7 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: Release
     if: >
-      contains(github.event.head_commit.message, '[publish]') && github.ref_name == 'master'
+      contains(github.event.head_commit.message, '[publish]') && 
+      github.ref_name == 'master' &&
+      github.event.repository.fork==false
     steps:
       - uses: actions/checkout@v3
         with:
