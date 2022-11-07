@@ -18,7 +18,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     if: >
-      !contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tests]') &&
+      !(github.event_name == 'pull_request' && (startsWith(github.head_ref, 'fix/' || startsWith(github.head_ref, 'support/' || startsWith(github.head_ref, 'feature/'))
     strategy:
       matrix:
         script: [ source_clear, unit_tests ]
@@ -60,6 +61,7 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: 3.8.10
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -73,6 +75,7 @@ jobs:
 
       - name: "prepare_staging_deploy"
         run: bash _ci/prepare_staging_deploy.sh
+
       - name: "Deploy to S3 Staging Bucket"
         run : aws s3 cp --recursive ./deploy_dir s3://alfresco-artefacts-staging
 
