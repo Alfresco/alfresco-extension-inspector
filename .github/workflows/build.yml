@@ -57,7 +57,7 @@ jobs:
       contains(github.event.head_commit.message, '[release]') && 
       github.ref_name == 'master'
     steps:
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.8.10
 
