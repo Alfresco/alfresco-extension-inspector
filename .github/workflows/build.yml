@@ -46,6 +46,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v1
+
       - name: Run ${{ matrix.script }}
         run:  bash _ci/${{ matrix.script }}.sh
 
