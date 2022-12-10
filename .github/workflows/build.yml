@@ -72,6 +72,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_S3_STAGING_SECRET_KEY }}
           aws-region: eu-west-1
 
+      - name: Get branch name
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+
+      - name: "release to nexus"
+        env:
+          GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+          GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
+          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: bash _ci/release.sh
+
       - name: "prepare_staging_deploy"
         run: bash _ci/prepare_staging_deploy.sh
 
