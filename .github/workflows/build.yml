@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           [ -d ${HOME}/.m2/ ] || mkdir -p ${HOME}/.m2/
-          cp -v _ci/settings.xml ${HOME}/.m2/ ||  cp -v .travis.settings.xml ${HOME}/.m2/settings.xml
+          cp -v _ci/settings.xml ${HOME}/.m2/ || cp -v .travis.settings.xml ${HOME}/.m2/settings.xml
 
       - name: Cache the Maven packages to speed up build
         uses: actions/cache@v1
@@ -58,7 +58,7 @@ jobs:
     name: "Release"
     runs-on: ubuntu-latest
     needs: tests
-    if: ${{ ( startsWith(github.ref_name, 'support/') || startsWith(github.ref_name, 'feature/') || github.ref_name == 'master' ) &&
+    if: ${{ ( startsWith(github.ref_name, 'support/') || github.ref_name == 'master' ) &&
         contains(github.event.head_commit.message, '[release]') || inputs.commitMessage == '[release]' }}
     steps:
       - uses: actions/setup-python@v4
