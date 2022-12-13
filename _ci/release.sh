@@ -14,6 +14,7 @@ git checkout -B "${BRANCH_NAME}"
 git config user.email "build@alfresco.com"
 
 # Run the release plugin - with "[skip ci]" in the release commit message
+
 mvn -B \
     ${DRY_RUN} \
     -Dmaven.javadoc.failOnError=false \
