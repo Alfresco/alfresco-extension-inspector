@@ -6,7 +6,7 @@ set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../"
 
 # For PR builds only execute a Dry Run of the release
-[ "${github.event_name}" = "pull_request" ] && DRY_RUN="" || DRY_RUN="-DdryRun"
+[ "${github.event_name}" != "pull_request" ] && DRY_RUN="" || DRY_RUN="-DdryRun"
 
 # Travis CI runner work on DETACHED HEAD, so we need to checkout the release branch
 git checkout -B "${BRANCH_NAME}"
