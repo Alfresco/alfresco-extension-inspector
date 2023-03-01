@@ -77,7 +77,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.35.2
 
       - name: "release to nexus"
         env:
