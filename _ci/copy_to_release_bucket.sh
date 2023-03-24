@@ -14,6 +14,6 @@ DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/AlfrescoExtensionInspect
 echo "Source:      ${SOURCE}"
 echo "Destination: ${DESTINATION}"
 
-aws s3 cp --acl private "${SOURCE}" "${DESTINATION}" --recursive
+aws s3 cp --acl private --recursive --copy-props none "${SOURCE}" "${DESTINATION}" --recursive
 
 echo "========================== Finishing Copy to Release Bucket Script =========================="
