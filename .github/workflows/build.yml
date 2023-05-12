@@ -54,6 +54,14 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Setup tmate session
+        env:
+          GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+          GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
+          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        uses: mxschmitt/action-tmate@v3
+
       - name: Run ${{ matrix.script }}
         run:  bash _ci/${{ matrix.script }}.sh
 
