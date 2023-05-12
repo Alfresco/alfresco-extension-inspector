@@ -8,7 +8,7 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../"
 ARTIFACT="$(find extension-inspector-packaging/target -name "alfresco-extension-inspector-*.jar" -printf "%f\n" | head -1)"
 
 # Identify latest annotated tag (latest version)
-export VERSION=$(git describe --abbrev=0 --tags)
+#export VERSION=$(git describe --abbrev=0 --tags)
 
 mkdir -p deploy_dir
 

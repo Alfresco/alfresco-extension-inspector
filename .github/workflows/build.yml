@@ -21,6 +21,7 @@ env:
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   GITHUB_EVENT: ${{ github.event_name }}
+  VERSION: 1.6.0
 
 jobs:
   tests:
@@ -108,7 +109,7 @@ jobs:
         run: bash _ci/prepare_staging_deploy.sh
 
       - name: "Deploy to S3 Staging Bucket"
-        run : aws s3 cp --recursive ./deploy_dir s3://alfresco-artefacts-staging
+        run : aws s3 cp --recursive ./deploy_dir s3://alfresco-artefacts-staging/AlfrescoExtensionInspector/${VERSION}
 
   publish:
     name: "Copy-to-S3-Release-Bucket"
