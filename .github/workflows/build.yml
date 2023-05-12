@@ -18,6 +18,8 @@ on:
 
 env:
   SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   GITHUB_EVENT: ${{ github.event_name }}
 
 jobs:
