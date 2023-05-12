@@ -21,7 +21,7 @@ mvn -B \
     "-Darguments=-DskipTests -Dmaven.javadoc.skip -Dadditionalparam=-Xdoclint:none -Dbuildnumber=${BUILD_NUMBER}" \
     -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
     release:clean release:prepare release:perform \
-    -Dusername=alfresco-build \
+    -Dusername=${GIT_USERNAME} \
     -Dpassword=${GIT_PASSWORD}
 
 popd
