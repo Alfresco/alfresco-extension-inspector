@@ -21,9 +21,23 @@ env:
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   GITHUB_EVENT: ${{ github.event_name }}
-  VERSION: 1.6.0
+  VERSION: 1.7.0
 
 jobs:
+  pmd_scan:
+    name: "PMD Scan"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]') &&
+      !contains(github.event.head_commit.message, '[force]')
+    steps:
+      - uses: Alfresco/ya-pmd-scan@v2.0.2
+        with:
+          fail-on-new-issues: "false"
+          create-github-annotations: "false"
+
   tests:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, '[skip tests]') || inputs.commitMessage == '[skip tests]' }}
