@@ -162,6 +162,7 @@ The conflict types that can be detected by **alfresco-extension-inspector** are 
 * Beans instantiating restricted classes (`BEAN_RESTRICTED_CLASS`)
 * Usage of non @AlfrescoPublicAPI classes (`ALFRESCO_INTERNAL_USAGE`)
 * Usage of 3rd party libraries (`WAR_LIBRARY_USAGE`)
+* Jakarta migration dependency conflicts (`JAKARTA_MIGRATION_CONFLICT`)
 
 Example of output:
 ```text
@@ -209,21 +210,45 @@ The code provided by the extension module is using these 3rd party libraries bro
 These 3rd party libraries are managed by the ACS repository and are subject to constant change, even in service packs and hotfixes.
 Each of these libraries has its own backward compatibility strategy, which will make it really hard for this extension to keep up with these changes.
 
+Incompatible jakarta migration dependencies
+-------------------------------------------
+The following classes defined in the extension module are using incompatible jakarta migration dependencies:
+	org.alfresco.utility.data.DataEmail
+	org.alfresco.utility.data.DataEmail$1
+Jakarta migration dependencies:
+	jakarta.mail.Authenticator
+	jakarta.mail.Flags
+	jakarta.mail.Flags$Flag
+	jakarta.mail.Folder
+	jakarta.mail.Message
+	jakarta.mail.MessagingException
+	jakarta.mail.Session
+	jakarta.mail.Store
+	jakarta.mail.internet.MimeMessage
+	jakarta.mail.search.AndTerm
+	jakarta.mail.search.FlagTerm
+	jakarta.mail.search.SearchTerm
+Classes using non-jakarta migrated dependencies are incompatible with a jakarta migrated ACS version, and vice versa.
+For a complete usage matrix, use the -verbose option of this tool.
+
+
 REPORT SUMMARY
 Across the provided target versions, the following number of conflicts have been found:
-+-----------------------+-----+
-|Type                   |Total|
-+-----------------------+-----+
-|BEAN_OVERWRITE         |1    |
-+-----------------------+-----+
-|BEAN_RESTRICTED_CLASS  |1    |
-+-----------------------+-----+
-|CLASSPATH_CONFLICT     |1    |
-+-----------------------+-----+
-|ALFRESCO_INTERNAL_USAGE|2    |
-+-----------------------+-----+
-|WAR_LIBRARY_USAGE      |1    |
-+-----------------------+-----+
++--------------------------+-----+
+|Type                      |Total|
++--------------------------+-----+
+|BEAN_OVERWRITE            |1    |
++--------------------------+-----+
+|BEAN_RESTRICTED_CLASS     |1    |
++--------------------------+-----+
+|CLASSPATH_CONFLICT        |1    |
++--------------------------+-----+
+|ALFRESCO_INTERNAL_USAGE   |2    |
++--------------------------+-----+
+|WAR_LIBRARY_USAGE         |1    |
++--------------------------+-----+
+|JAKARTA_MIGRATION_CONFLICT|2    |
++--------------------------+-----+
 
 (use option --verbose for version details)
 ```

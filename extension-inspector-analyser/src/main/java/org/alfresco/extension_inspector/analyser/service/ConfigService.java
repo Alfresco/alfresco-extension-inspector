@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ public class ConfigService
     private Set<String> beanOverrideAllowedList = emptySet();
     private Set<String> internalClassAllowedList = emptySet();
     private Set<String> thirdPartyAllowedList = emptySet();
+    private Set<String> jakartaMigrationClassList = emptySet();
     private boolean verboseOutput = false;
 
     @PostConstruct
@@ -61,8 +62,9 @@ public class ConfigService
         beanOverrideAllowedList = allowedListService.loadBeanOverrideAllowedList();
         thirdPartyAllowedList = allowedListService.load3rdPartyAllowedList();
         internalClassAllowedList = allowedListService.loadInternalClassAllowedList();
+        jakartaMigrationClassList = allowedListService.loadJakartaMigrationClassList();
     }
-    
+
     public String getExtensionPath()
     {
         return extensionPath;
@@ -91,6 +93,11 @@ public class ConfigService
     public Set<String> getThirdPartyAllowedList()
     {
         return thirdPartyAllowedList;
+    }
+
+    public Set<String> getJakartaMigrationClassList()
+    {
+        return jakartaMigrationClassList;
     }
 
     public boolean isVerboseOutput()

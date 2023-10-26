@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.alfresco.extension_inspector.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CommandOutput
 {
@@ -32,6 +33,8 @@ public class CommandOutput
         private List<String> classPathConflicts = new ArrayList<>();
         private int classPathConflictsTotal;
         private List<String> thirdPartyLibConflicts = new ArrayList<>();
+        private List<String> jakartaMigrationConflicts = new ArrayList<>();
+        private int jakartaMigrationConflictsTotal;
 
 
 
@@ -82,9 +85,19 @@ public class CommandOutput
                 return beanOverwriteConflicts;
         }
 
-        public void seBeanOverwriteConflicts(List<String> fileOverwriteConflicts)
+        public void setBeanOverwriteConflicts(List<String> fileOverwriteConflicts)
         {
                 this.beanOverwriteConflicts = fileOverwriteConflicts;
+        }
+
+        public List<String> getJakartaMigrationConflicts()
+        {
+                return jakartaMigrationConflicts;
+        }
+
+        public void setJakartaMigrationConflicts(List<String> jakartaMigrationConflicts)
+        {
+                this.jakartaMigrationConflicts = jakartaMigrationConflicts;
         }
 
         public List<String> getOutput()
@@ -137,6 +150,11 @@ public class CommandOutput
                 return contains(beanOverwriteConflicts, str);
         }
 
+        public boolean isInJakartaMigrationConflicts(String str)
+        {
+                return contains(jakartaMigrationConflicts, str);
+        }
+
         private boolean contains(List<String> output, String message)
         {
                 return output.stream().anyMatch(s -> s.contains(message));
@@ -149,13 +167,29 @@ public class CommandOutput
                 case "PUBLIC_API":
                         return publicAPIConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                 case "3RD_PARTY_LIBS":
-                        return thirdPartyLibConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                        for (String thirdPartyLibConflict : thirdPartyLibConflicts)
+                        {
+                                if (thirdPartyLibConflict.contains(resource))
+                                {
+                                        return Optional.of(thirdPartyLibConflict).get();
+                                }
+                        }
+                        return Optional.<String>empty().get();
                 case "BEAN":
                         return beanOverwriteConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                 case "FILE_OVERWRITE":
                         return fileOverwriteConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
                 case "CLASS_PATH":
                         return classPathConflicts.stream().filter(s -> s.contains(resource)).findFirst().get();
+                case "JAKARTA_MIGRATION_CONFLICT":
+                        for (String s : jakartaMigrationConflicts)
+                        {
+                                if (s.contains(resource))
+                                {
+                                        return Optional.of(s).get();
+                                }
+                        }
+                        return Optional.<String>empty().get();
 
                 }
 
@@ -209,5 +243,15 @@ public class CommandOutput
         public void setThirdPartyLibTotal(int thirdPartyLibTotal)
         {
                 this.thirdPartyLibTotal = thirdPartyLibTotal;
+        }
+
+        public int getJakartaMigrationConflictsTotal()
+        {
+                return jakartaMigrationConflictsTotal;
+        }
+
+        public void setJakartaMigrationConflictsTotal(int jakartaMigrationConflictsTotal)
+        {
+                this.jakartaMigrationConflictsTotal = jakartaMigrationConflictsTotal;
         }
 }

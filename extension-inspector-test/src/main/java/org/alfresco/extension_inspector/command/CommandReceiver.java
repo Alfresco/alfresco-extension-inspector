@@ -34,6 +34,7 @@ public class CommandReceiver
         private static final String CUSTOM_CODE_USING_INTERNAL_CLASSES_SECTION = "Custom code using internal classes";
         private static final String CLASSPATH_CONFLICTS_SECTION = "Classpath conflicts";
         private static final String USING_3_RD_PARTY_LIBS_SECTION = "Custom code using 3rd party libraries managed by the ACS repository";
+        private static final String JAKARTA_MIGRATION_CONFLICTS_SECTION = "Incompatible jakarta migration dependencies";
 
         private CommandOutput cmdOut;
 
@@ -95,6 +96,9 @@ public class CommandReceiver
                         // Check thirdPartyLibrary total line
                         Pattern thirdPartyLibraryTotalPattern = Pattern.compile("\\|WAR_LIBRARY_USAGE\\s+\\|(\\d+)\\s+\\|");
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
+                        // Check classPath overwrite total line
+                        Pattern jakartaMigrationTotalPattern = Pattern.compile("\\|JAKARTA_MIGRATION_CONFLICT\\s*\\|(\\d+)\\s+\\|");
+                        Matcher jakartaMigrationTotalMatcher = jakartaMigrationTotalPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
                         {
@@ -120,6 +124,11 @@ public class CommandReceiver
                         {
                                 int total = Integer.parseInt(thirdPartyLibraryTotalMatcher.group(1));
                                 cmdOut.setThirdPartyLibTotal(total);
+                        }
+                        else if (jakartaMigrationTotalMatcher.find())
+                        {
+                                int total = Integer.parseInt(jakartaMigrationTotalMatcher.group(1));
+                                cmdOut.setJakartaMigrationConflictsTotal(total);
                         }
                         else
                         {
@@ -183,6 +192,16 @@ public class CommandReceiver
                                 result.getThirdPartyLibConflicts().add(line.trim());
                         }
                         break;
+                case JAKARTA_MIGRATION_CONFLICTS_SECTION:
+                        in.readLine(); // skipping "--------------"
+                        in.readLine(); // skipping section's header
+
+                        while (!(line = in.readLine()).startsWith(
+                                "Jakarta migration dependencies:"))
+                        {
+                                result.getJakartaMigrationConflicts().add(line.trim());
+                        }
+                        break;
                 }
         }
 
@@ -195,6 +214,7 @@ public class CommandReceiver
                 boolean isInPublicAPIConflicts = false;
                 boolean isInClassPathConflicts = false;
                 boolean isThirdPartyLibraryConflicts = false;
+                boolean isInJakartaMigrationConflicts = false;
                 while ((line = in.readLine()) != null)
                 {
                         line = line.trim();
@@ -224,6 +244,11 @@ public class CommandReceiver
                         Matcher thirdPartyLibraryTotalMatcher = thirdPartyLibraryTotalPattern.matcher(line);
                         Pattern thirdPartyLibraryRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
                         Matcher thirdPartyLibraryRowMatcher = thirdPartyLibraryRowPattern.matcher(line);
+                        // Check jakarta migration conflicts total line
+                        Pattern jakartaMigrationTotalPattern = Pattern.compile("\\|JAKARTA_MIGRATION_CONFLICT\\s*\\|(\\d+)\\s+\\|");
+                        Matcher jakartaMigrationTotalMatcher = jakartaMigrationTotalPattern.matcher(line);
+                        Pattern jakartaMigrationRowPattern = Pattern.compile("\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)\\|");
+                        Matcher jakartaMigrationRowMatcher = jakartaMigrationRowPattern.matcher(line);
 
                         if (fileOverwriteTotalMatcher.find())
                         {
@@ -249,6 +274,11 @@ public class CommandReceiver
                         {
                                 int total = Integer.parseInt(thirdPartyLibraryTotalMatcher.group(1));
                                 cmdOut.setThirdPartyLibTotal(total);
+                        }
+                        else if (jakartaMigrationTotalMatcher.find())
+                        {
+                                int total = Integer.parseInt(jakartaMigrationTotalMatcher.group(1));
+                                cmdOut.setJakartaMigrationConflictsTotal(total);
                         }
                         else if (FILE_CONFLICTS_SECTION.equals(line))
                         {
@@ -338,6 +368,33 @@ public class CommandReceiver
                                         cmdOut.getThirdPartyLibConflicts().add(entry);
                                 }
                         }
+                        else if (JAKARTA_MIGRATION_CONFLICTS_SECTION.equals(line))
+                        {
+                                isInJakartaMigrationConflicts = true;
+                                while(!in.readLine().startsWith("+-------------"))
+                                {
+                                        // go to table's content
+                                }
+                        }
+                        else if (jakartaMigrationRowMatcher.find() && isInJakartaMigrationConflicts)
+                        {
+                                String jakartaMigration = jakartaMigrationRowMatcher.group(1).trim();
+                                String version = jakartaMigrationRowMatcher.group(4).trim();
+                                if (!jakartaMigration.isBlank() && !version.isBlank())
+                                {
+                                        if (!jakartaMigration.endsWith(".class"))
+                                        {
+                                                jakartaMigrationRowMatcher = jakartaMigrationRowPattern
+                                                        .matcher(in.readLine());
+                                                String remainingPath = jakartaMigrationRowMatcher.find() ?
+                                                        jakartaMigrationRowMatcher.group(1).trim() :
+                                                        "";
+                                                jakartaMigration = jakartaMigration.concat(remainingPath);
+                                        }
+                                        String entry = String.format("%s,%s", jakartaMigration, version);
+                                        cmdOut.getJakartaMigrationConflicts().add(entry);
+                                }
+                        }
                         else if (line.length() == 0)
                         {
                                 isInFileOverwriteConflicts = false;
@@ -345,6 +402,7 @@ public class CommandReceiver
                                 isInPublicAPIConflicts = false;
                                 isInClassPathConflicts = false;
                                 isThirdPartyLibraryConflicts = false;
+                                isInJakartaMigrationConflicts = false;
                         }
                 }
         }
