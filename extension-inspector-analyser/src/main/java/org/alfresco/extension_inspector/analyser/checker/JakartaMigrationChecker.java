@@ -42,8 +42,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JakartaMigrationChecker implements Checker
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JakartaMigrationChecker.class);
-
     @Autowired
     private ConfigService configService;
     @Autowired

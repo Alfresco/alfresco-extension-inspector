@@ -24,11 +24,7 @@ import org.alfresco.extension_inspector.model.ClasspathElementResource;
 
 public class JakartaMigrationConflict extends AbstractConflict
 {
-    private Set<String> invalidJakartaMigrationDependencies;
-
-    public JakartaMigrationConflict()
-    {
-    }
+    private final Set<String> invalidJakartaMigrationDependencies;
 
     public JakartaMigrationConflict(ClasspathElementResource ampResourceInConflict,
                                          Set<String> invalidJakartaMigrationDependencies, String alfrescoVersion)
@@ -40,11 +36,6 @@ public class JakartaMigrationConflict extends AbstractConflict
     public Set<String> getInvalidJakartaMigrationDependencies()
     {
         return invalidJakartaMigrationDependencies;
-    }
-
-    public void setInvalidJakartaMigrationDependencies(Set<String> invalidJakartaMigrationDependencies)
-    {
-        this.invalidJakartaMigrationDependencies = invalidJakartaMigrationDependencies;
     }
 
     @Override
