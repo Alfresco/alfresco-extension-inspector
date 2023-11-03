@@ -215,22 +215,20 @@ public class ResourceTests extends AbstractTestNGSpringContextTests
                 verifyConflicts(2, true, JAKARTA_CLASSES);
 
                 // Run against Alfresco version 23.1.0 (23.1.0 is jakarta migrated)
-                // TODO: reinstate this after release of jakarta migrated ACS
-//                version = "23.1.0.200";
-//                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
-//
-//                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
-//                verifyConflicts(0, false, JAKARTA_CLASSES);
+                version = "23.1.0";
+                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
+                verifyConflicts(0, false, JAKARTA_CLASSES);
 
                 // Run against multiple Alfresco versions
-                // TODO: reinstate this after release of jakarta migrated ACS
-//                version = "7.3.0-23.1.0";
-//                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
-//
-//                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
-//                verifyConflicts(8, true, JAKARTA_CLASSES);
-//                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaMail" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
-//                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaServlet" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
+                version = "7.3.0-23.1.0";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
+                verifyConflicts(8, true, JAKARTA_CLASSES);
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaMail" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaServlet" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
         }
 
         @Test
@@ -245,22 +243,20 @@ public class ResourceTests extends AbstractTestNGSpringContextTests
                 verifyConflicts(0, false, JAVAX_CLASSES);
 
                 // Run against Alfresco version 23.1.0 (23.1.0 is jakarta migrated)
-                // TODO: reinstate this after release of jakarta migrated ACS
-//                version = "23.1.0.200";
-//                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
-//
-//                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
-//                verifyConflicts(2, true, JAVAX_CLASSES);
+                version = "23.1.0";
+                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
+                verifyConflicts(2, true, JAVAX_CLASSES);
 
                 // Run against multiple Alfresco versions
-                // TODO: reinstate this after release of jakarta migrated ACS 23.1.0
-//                version = "7.3.0-23.1.0";
-//                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
-//
-//                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
-//                verifyConflicts(2, true, JAVAX_CLASSES);
-//                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxMail" + "23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
-//                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxServlet" + "23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
+                version = "7.3.0-23.1.0";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
+                verifyConflicts(2, true, JAVAX_CLASSES);
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxMail" + ",23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxServlet" + ",23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
         }
 
         /* Helper method to assert the number of expected conflicts, and whether the classes are included in the report */
