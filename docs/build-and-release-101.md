@@ -1,6 +1,6 @@
 # Build
-The `alfresco-extension-inspector` project uses _Travis CI_. \
-The `.travis.yml` config file can be found in the root of the repository.
+The `alfresco-extension-inspector` project uses _GitHub Actions_. \
+The `ci.yml` config file can be found in the `.github/workflows` directory of the project.
 
 
 ## Stages and Jobs
@@ -10,7 +10,7 @@ The `.travis.yml` config file can be found in the root of the repository.
 
 
 ## Branches
-Travis CI builds differ by branch:
+GitHub Actions CI builds differ by branch:
 * `master` / `support/*` branches:
   - regular builds which include the _tests_ stage;
   - if the commit message contains the `[release]` tag, the builds will also 
