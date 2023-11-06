@@ -9,7 +9,7 @@
 
     <groupId>org.alfresco.extension-inspector</groupId>
     <artifactId>alfresco-extension-inspector-parent</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.8.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>alfresco-extension-inspector-parent</name>
