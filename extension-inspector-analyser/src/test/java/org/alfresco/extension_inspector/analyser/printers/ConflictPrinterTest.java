@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.alfresco.extension_inspector.analyser.result.BeanOverwriteConflict;
 import org.alfresco.extension_inspector.analyser.result.Conflict;
@@ -52,16 +53,16 @@ public class ConflictPrinterTest
     @BeforeEach
     public void setup()
     {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void testJoinWarVersions()
     {
         when(store.allKnownVersions()).thenReturn(
-            Set.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.3", "6.0.5", "6.2.1")
-               .stream()
-               .collect(Collectors.toCollection(
+            Stream.of("5.2.0", "5.2.4", "5.2.1", "6.0.0", "6.0.1", "6.0.2", "6.0.3", "6.0.5", "6.2.1", "23.1.0", "7.4.0",
+                    "7.4.1", "23.2.0", "7.4.2", "23.1.1", "23.3.0", "23.3.1")
+                  .collect(Collectors.toCollection(
                    () -> new TreeSet<>(Comparator.comparing(ComparableVersion::new)))));
 
         BeanResource extBean1 = new BeanResource("bean1", "default_context.xml",
@@ -81,6 +82,13 @@ public class ConflictPrinterTest
         Conflict c8 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.4");
         Conflict c9 = new BeanOverwriteConflict(extBean1, warBean1, "5.2.1");
         Conflict c10 = new BeanOverwriteConflict(extBean1, warBean1, "6.0.3");
+        Conflict c11 = new BeanOverwriteConflict(extBean1, warBean1, "7.4.2");
+        Conflict c12 = new BeanOverwriteConflict(extBean1, warBean1, "7.4.1");
+        Conflict c13 = new BeanOverwriteConflict(extBean1, warBean1, "23.1.0");
+        Conflict c14 = new BeanOverwriteConflict(extBean1, warBean1, "7.4.0");
+        Conflict c15 = new BeanOverwriteConflict(extBean1, warBean1, "23.2.0");
+        Conflict c16 = new BeanOverwriteConflict(extBean1, warBean1, "23.3.0");
+        Conflict c17 = new BeanOverwriteConflict(extBean1, warBean1, "23.3.1");
 
         Set<Conflict> conflicts = Set.of(c1, c2, c3, c4, c5, c6, c10);
         assertEquals("5.2.0;6.0.0-6.0.5", printer.joinWarVersions(conflicts));
@@ -105,6 +113,9 @@ public class ConflictPrinterTest
 
         conflicts = Set.of(c6, c8, c9);
         assertEquals("5.2.0-5.2.4", printer.joinWarVersions(conflicts));
+
+        conflicts = Set.of(c15, c16, c17, c11, c12, c13, c14 );
+        assertEquals("7.4.0-23.1.0;23.2.0-23.3.1", printer.joinWarVersions(conflicts));
     }
 
     @Test

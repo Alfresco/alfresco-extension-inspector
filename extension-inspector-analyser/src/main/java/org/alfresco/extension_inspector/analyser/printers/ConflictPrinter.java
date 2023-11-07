@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ public interface ConflictPrinter
     String INTERNAL_REPOSITORY_CLASSES = "Internal Repository Classes";
     String RESTRICTED_CLASS = "Restricted Class";
     String WAR_DEFINING_OBJECTS = "WAR Defining Objects";
+    String JAKARTA_MIGRATION_DEPENDENCIES = "Jakarta Migration Dependencies";
     String WAR_VERSION = "WAR Versions";
     String TOTAL = "No. of WARs with this conflict";
     
@@ -146,7 +147,7 @@ public interface ConflictPrinter
     private List<SortedSet<String>> groupRanges(SortedSet<String> versions)
     {
         List<SortedSet<String>> groups = new ArrayList<>();
-        SortedSet<String> range = new TreeSet<>();
+        SortedSet<String> range = new TreeSet<>(comparing(ComparableVersion::new));
 
         List<String> bundledVersions = List.copyOf(retrieveAllKnownVersions());
         Iterator<String> conflictVersions = versions.iterator();

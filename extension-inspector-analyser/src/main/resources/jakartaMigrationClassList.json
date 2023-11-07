@@ -1,0 +1,22 @@
+[
+  "javax.mail.*",
+  "jakarta.mail.*",
+  "javax.jms.*",
+  "jakarta.jms.*",
+  "javax.activation.*",
+  "jakarta.activation.*",
+  "javax.xml.bind.*",
+  "jakarta.xml.bind.*",
+  "javax.jws.*",
+  "jakarta.jws.*",
+  "javax.xml.soap.*",
+  "jakarta.xml.soap.*",
+  "javax.xml.ws.*",
+  "jakarta.xml.ws.*",
+  "javax.annotation.*",
+  "jakarta.annotation.*",
+  "javax.json.*",
+  "jakarta.json.*",
+  "javax.servlet.*",
+  "jakarta.servlet.*"
+]

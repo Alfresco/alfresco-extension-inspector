@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Con
 import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.FILE_OVERWRITE;
 import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.BEAN_RESTRICTED_CLASS;
 import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.WAR_LIBRARY_USAGE;
+import static org.alfresco.extension_inspector.analyser.result.Conflict.Type.Constants.JAKARTA_MIGRATION_CONFLICT;
 
 import org.alfresco.extension_inspector.model.Resource;
 
@@ -43,6 +44,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                   @JsonSubTypes.Type(value = ClasspathConflict.class, name = CLASSPATH_CONFLICT),
                   @JsonSubTypes.Type(value = AlfrescoInternalUsageConflict.class, name = ALFRESCO_INTERNAL_USAGE),
                   @JsonSubTypes.Type(value = WarLibraryUsageConflict.class, name = WAR_LIBRARY_USAGE),
+                  @JsonSubTypes.Type(value = JakartaMigrationConflict.class, name = JAKARTA_MIGRATION_CONFLICT),
               })
 public interface Conflict
 {
@@ -53,6 +55,7 @@ public interface Conflict
         BEAN_RESTRICTED_CLASS,
         CLASSPATH_CONFLICT, ALFRESCO_INTERNAL_USAGE,
         WAR_LIBRARY_USAGE,
+        JAKARTA_MIGRATION_CONFLICT
         ;
 
         static class Constants
@@ -63,6 +66,7 @@ public interface Conflict
             static final String CLASSPATH_CONFLICT = "CLASSPATH_CONFLICT";
             static final String ALFRESCO_INTERNAL_USAGE = "ALFRESCO_INTERNAL_USAGE";
             static final String WAR_LIBRARY_USAGE = "WAR_LIBRARY_USAGE";
+            static final String JAKARTA_MIGRATION_CONFLICT = "JAKARTA_MIGRATION_CONFLICT";
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ public class AllowedListService
     private static final String ALLOWED_BEAN_OVERRIDE_LIST = "/allowedBeanOverrideList.json";
     private static final String ALLOWED_INTERNAL_CLASS_LIST = "/allowedInternalClassList.json";
     private static final String DEFAULT_3RD_PARTY_ALLOWEDLIST = "/restricted3rdPartyClassesAllowedlist.default.json";
+    private static final String JAKARTA_MIGRATION_CLASS_LIST = "/jakartaMigrationClassList.json";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -118,5 +119,32 @@ public class AllowedListService
         }
 
         return allowedList;
+    }
+
+    /**
+     * Reads and loads a list of classes and packages to be checked for Jakarta migration conflicts
+     *
+     * @return a {@link Set} of the Jakarta migration classes and packages
+     */
+    public Set<String> loadJakartaMigrationClassList()
+    {
+        try
+        {
+            return new HashSet<String>(objectMapper
+                    .readValue(getClass().getResourceAsStream(JAKARTA_MIGRATION_CLASS_LIST),
+                            new TypeReference<>() {}))
+                    .stream()
+                    .map(s -> s.replaceAll("\\.\\*", "").replaceAll("\\.", "/"))
+                    .collect(Collectors.toSet());
+        }
+        catch (IOException ioe)
+        {
+            LOGGER.error(
+                    "Failed to read Jakarta Migration Class List file: " + JAKARTA_MIGRATION_CLASS_LIST,
+                    ioe);
+            throw new RuntimeException(
+                    "Failed to read Jakarta Migration Class List file: " + JAKARTA_MIGRATION_CLASS_LIST,
+                    ioe);
+        }
     }
 }

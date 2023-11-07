@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alfresco Software, Ltd.
+ * Copyright 2023 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -37,6 +38,9 @@ import static org.testng.Assert.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ResourceTests extends AbstractTestNGSpringContextTests
 {
+        private static final List<String> JAVAX_CLASSES = Arrays.asList("jakartamigrations.UseJavaxMail", "jakartamigrations.UseJavaxServlet");
+        private static final List<String> JAKARTA_CLASSES = Arrays.asList("jakartamigrations.UseJakartaMail", "jakartamigrations.UseJakartaServlet");
+
         @Autowired
         private ExtensionInspectorClient client;
 
@@ -197,5 +201,69 @@ public class ResourceTests extends AbstractTestNGSpringContextTests
                 assertEquals(cmdOut.getClassPathConflictsTotal(), 7);
                 assertNotNull(cmdOut.retrieveOutputLine("thirdpartylibs.ThirdPartyLibs,6.0.0-6.2.2",
                     "3RD_PARTY_LIBS")); // extension resource using 3rd party libs
+        }
+
+        @Test
+        public void testAnalyseJakartaMigrationDependenciesForMigratedExtension()
+        {
+                // Run against Alfresco version 7.4.1 (7.4.1 is not jakarta migrated)
+                String ampResourcePath = TestResource.getTestResourcePath("analyserTest-jakarta.amp");
+                String version = "7.4.1";
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions);
+                verifyConflicts(2, true, JAKARTA_CLASSES);
+
+                // Run against Alfresco version 23.1.0 (23.1.0 is jakarta migrated)
+                version = "23.1.0";
+                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
+                verifyConflicts(0, false, JAKARTA_CLASSES);
+
+                // Run against multiple Alfresco versions
+                version = "7.3.0-23.1.0";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
+                verifyConflicts(8, true, JAKARTA_CLASSES);
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaMail" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJakartaServlet" + ",7.3.0-7.4.1", "JAKARTA_MIGRATION_CONFLICT"));
+        }
+
+        @Test
+        public void testAnalyseJakartaMigrationDependenciesForNonMigratedExtension()
+        {
+                // Run against Alfresco version 7.4.1 (7.4.1 is not jakarta migrated)
+                String ampResourcePath = TestResource.getTestResourcePath("analyserTest-javax.amp");
+                String version = "7.4.1";
+                List<String> cmdOptions = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions);
+                verifyConflicts(0, false, JAVAX_CLASSES);
+
+                // Run against Alfresco version 23.1.0 (23.1.0 is jakarta migrated)
+                version = "23.1.0";
+                List<String> cmdOptions1 = List.of(ampResourcePath, "--target-version=" + version);
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions1);
+                verifyConflicts(2, true, JAVAX_CLASSES);
+
+                // Run against multiple Alfresco versions
+                version = "7.3.0-23.1.0";
+                List<String> cmdOptions2 = List.of(ampResourcePath, "--target-version=" + version, "--verbose");
+
+                cmdOut = client.runExtensionInspectorAnalyserCommand(cmdOptions2);
+                verifyConflicts(2, true, JAVAX_CLASSES);
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxMail" + ",23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
+                assertNotNull(cmdOut.retrieveOutputLine("jakartamigrations.UseJavaxServlet" + ",23.1.0", "JAKARTA_MIGRATION_CONFLICT"));
+        }
+
+        /* Helper method to assert the number of expected conflicts, and whether the classes are included in the report */
+        private void verifyConflicts(int numberOfConflicts, boolean isClassConflicting, List<String> conflictedClasses)
+        {
+                assertEquals(cmdOut.getJakartaMigrationConflictsTotal(), numberOfConflicts);
+                conflictedClasses.forEach(conflictedClass ->
+                        assertEquals(cmdOut.isInJakartaMigrationConflicts(conflictedClass), isClassConflicting));
         }
 }
