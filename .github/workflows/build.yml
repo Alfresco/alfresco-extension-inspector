@@ -38,8 +38,8 @@ jobs:
           fail-on-new-issues: "false"
           create-github-annotations: "false"
 
-  veracode_sast_acs:
-    name: "Pipeline SAST Scan ACS"
+  veracode_sast:
+    name: "Pipeline SAST Scan"
     runs-on: ubuntu-latest
     if: >
       ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
@@ -63,7 +63,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
-          bash ./scripts/ci/init.sh
+          bash ./ci/init.sh
           mvn -B -U install -DskipTests
       - name: "Run ACS SAST Scan"
         uses: veracode/Veracode-pipeline-scan-action@v1.0.10
