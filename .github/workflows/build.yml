@@ -38,6 +38,56 @@ jobs:
           fail-on-new-issues: "false"
           create-github-annotations: "false"
 
+  veracode_sast_acs:
+    name: "Pipeline SAST Scan ACS"
+    runs-on: ubuntu-latest
+    if: >
+      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v3.3.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v3.3.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v3.3.3
+      - name: "Login to Docker Hub"
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: "Login to Quay.io"
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          mvn -B -U install -DskipTests
+      - name: "Run ACS SAST Scan"
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+        with:
+          vid: '${{ secrets.VERACODE_API_ID }}'
+          vkey: '${{ secrets.VERACODE_API_KEY }}'
+          file: "extension-inspector-packaging/target/alfresco-extension-inspector-*.jar"
+          fail_build: true
+          project_name: alfresco-extension-inspector
+          issue_details: true
+          veracode_policy_name: Alfresco Default
+          summary_output: true
+          summary_output_file: readable_results.txt
+          summary_display: true
+      - name: Upload scan result
+        if: success() || failure()
+        run: zip readable_output.zip readable_results.txt
+      - name: Upload Artifact
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Veracode Pipeline-Scan Results (Human Readable)
+          path: readable_output.zip
+
   tests:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, '[skip tests]') || inputs.commitMessage == '[skip tests]' }}
