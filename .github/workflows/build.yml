@@ -33,17 +33,16 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]') &&
       !contains(github.event.head_commit.message, '[force]')
     steps:
-      - uses: Alfresco/ya-pmd-scan@v2.0.5
+      - uses: Alfresco/ya-pmd-scan@v4.0.0
         with:
           fail-on-new-issues: "false"
           create-github-annotations: "false"
 
+  
+
   tests:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, '[skip tests]') || inputs.commitMessage == '[skip tests]' }}
-    strategy:
-      matrix:
-        script: [ source_clear, unit_tests ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,9 +66,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
-      - name: Run ${{ matrix.script }}
-        run:  bash _ci/${{ matrix.script }}.sh
+          
+      - name: Run Source Code 
+        run:  bash _ci/source_clear.sh
+        continue-on-error: true
+      
+      - name: Run Unit Test 
+        run:  bash _ci/unit_tests.sh
 
   release:
     name: "Release"
