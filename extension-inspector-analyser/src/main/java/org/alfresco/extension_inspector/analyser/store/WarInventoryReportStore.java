@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.annotation.PostConstruct;
 
+import jakarta.annotation.PostConstruct;
 import org.alfresco.extension_inspector.analyser.parser.InventoryParser;
 import org.alfresco.extension_inspector.model.InventoryReport;
 import org.apache.maven.artifact.versioning.ComparableVersion;

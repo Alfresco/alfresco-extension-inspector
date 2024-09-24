@@ -20,11 +20,11 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableMap;
 import static org.alfresco.extension_inspector.model.Resource.Type.FILE;
 
-import javax.annotation.PostConstruct;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.annotation.PostConstruct;
 import org.alfresco.extension_inspector.inventory.service.InventoryService;
 import org.alfresco.extension_inspector.model.InventoryReport;
 import org.alfresco.extension_inspector.model.Resource;
