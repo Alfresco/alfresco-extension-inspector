@@ -2,6 +2,7 @@
 spring:
   main:
     banner_mode: "off"
+    allow-circular-references: true
   shell:
     interactive:
       enabled: false
