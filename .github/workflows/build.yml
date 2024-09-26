@@ -33,10 +33,17 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]') &&
       !contains(github.event.head_commit.message, '[force]')
     steps:
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: adopt
+          java-version: 17
+
       - uses: Alfresco/ya-pmd-scan@v4.0.0
         with:
           fail-on-new-issues: "false"
           create-github-annotations: "false"
+
 
   
 

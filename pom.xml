@@ -16,7 +16,7 @@
     <description>Alfresco Extension Inspector Parent</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <scm>
@@ -76,15 +76,6 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <configuration>
                         <tagNameFormat>@{project.version}</tagNameFormat>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.11.0</version>
-                    <configuration>
-                        <source>17</source>
-                        <target>17</target>
                     </configuration>
                 </plugin>
             </plugins>
