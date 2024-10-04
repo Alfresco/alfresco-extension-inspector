@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.context.annotation.Lazy;
 
 @SpringBootApplication
 public class Application implements ApplicationRunner, ExitCodeGenerator
@@ -46,6 +47,7 @@ public class Application implements ApplicationRunner, ExitCodeGenerator
     @Autowired
     private InventoryCommandRunner inventoryCommandRunner;
     @Autowired
+    @Lazy
     private AnalyserCommandRunner analyserCommandRunner;
 
     public static void main(String[] args)
