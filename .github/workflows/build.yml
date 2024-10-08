@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: adopt
-          java-version: 17
+          java-version: 21
 
       - uses: Alfresco/ya-pmd-scan@v4.0.0
         with:
@@ -58,7 +58,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: adopt
-          java-version: 17
+          java-version: 21
 
       - name: Setup maven
         shell: bash
