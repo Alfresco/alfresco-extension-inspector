@@ -95,6 +95,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: adopt
+          java-version: 17
+
       - name: "Configure AWS credentials"
         uses: aws-actions/configure-aws-credentials@v4
         with:
