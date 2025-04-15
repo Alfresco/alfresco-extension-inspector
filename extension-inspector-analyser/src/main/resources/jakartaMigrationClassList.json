@@ -18,5 +18,7 @@
   "javax.json.*",
   "jakarta.json.*",
   "javax.servlet.*",
-  "jakarta.servlet.*"
+  "jakarta.servlet.*",
+  "javax.transaction.*",
+  "jakarta.transaction.*"
 ]
