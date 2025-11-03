@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.alfresco.extension-inspector</groupId>
         <artifactId>alfresco-extension-inspector-parent</artifactId>
-        <version>2.4.1-SNAPSHOT</version>
+        <version>2.4.1</version>
     </parent>
 
     <artifactId>alfresco-extension-inspector-analyser</artifactId>
@@ -17,12 +17,12 @@
         <dependency>
             <groupId>org.alfresco.extension-inspector</groupId>
             <artifactId>alfresco-extension-inspector-commons</artifactId>
-            <version>2.4.1-SNAPSHOT</version>
+            <version>2.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.extension-inspector</groupId>
             <artifactId>alfresco-extension-inspector-inventory</artifactId>
-            <version>2.4.1-SNAPSHOT</version>
+            <version>2.4.1</version>
         </dependency>
 
         <dependency>
