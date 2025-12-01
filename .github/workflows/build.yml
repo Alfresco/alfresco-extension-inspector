@@ -39,7 +39,7 @@ jobs:
           distribution: adopt
           java-version: 17
 
-      - uses: Alfresco/ya-pmd-scan@v4.0.0
+      - uses: Alfresco/ya-pmd-scan@v4.3.0
         with:
           fail-on-new-issues: "false"
           create-github-annotations: "false"
