@@ -17,7 +17,6 @@ on:
         required: true
 
 env:
-  SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   GITHUB_EVENT: ${{ github.event_name }}
@@ -72,11 +71,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-          
-      - name: Run Source Code 
-        run:  bash _ci/source_clear.sh
-        continue-on-error: true
-      
+
       - name: Run Unit Test 
         run:  bash _ci/unit_tests.sh
 
