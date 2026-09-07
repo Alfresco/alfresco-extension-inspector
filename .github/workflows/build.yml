@@ -130,12 +130,11 @@ jobs:
 
       - name: "Deploy to S3 Staging Bucket"
         # ACS-12680 prototype: alfresco-build-tools#feature/ACS-12680-s3-upload-oidc-copy-mode, switch to a tagged ref once that PR merges
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@b3f0a85e53e08873122e4c17ae4a80c9d5b613d3
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@b776c82c1de1b1f62f1ac7e4f5a2d40df8c26cce
         with:
           aws-region: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_ROLE_ARN }}
-          s3-bucket: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_BUCKET }}
-          s3-path: AlfrescoExtensionInspector/${{ env.VERSION }}
+          destination: s3://${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_BUCKET }}/AlfrescoExtensionInspector/${{ env.VERSION }}
           source: ./deploy_dir
 
   publish:
@@ -156,11 +155,10 @@ jobs:
         run: echo "VERSION=$(git describe --abbrev=0 --tags)" >> "$GITHUB_ENV"
       - name: "Copy from Staging to Release Bucket"
         # ACS-12680 prototype: alfresco-build-tools#feature/ACS-12680-s3-upload-oidc-copy-mode, switch to a tagged ref once that PR merges
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@b3f0a85e53e08873122e4c17ae4a80c9d5b613d3
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@b776c82c1de1b1f62f1ac7e4f5a2d40df8c26cce
         with:
           aws-region: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_ROLE_ARN }}
-          s3-bucket: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_BUCKET }}
-          s3-path: release/enterprise/AlfrescoExtensionInspector/${{ env.VERSION }}
+          destination: s3://${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_BUCKET }}/release/enterprise/AlfrescoExtensionInspector/${{ env.VERSION }}
           source: s3://${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_BUCKET }}/AlfrescoExtensionInspector/${{ env.VERSION }}/
           copy-props: none
