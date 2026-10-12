@@ -44,7 +44,7 @@
     <distributionManagement>
         <!-- For now internal repositories -->
         <repository>
-            <id>alfresco-internal</id>
+            <id>alfresco-internal-releases</id>
             <url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
