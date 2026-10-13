@@ -94,6 +94,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: "Clear restored Maven repository"
+        run: |
+          rm -rf ~/.m2/repository
+          mkdir -p ~/.m2/repository
+
       - name: Run Unit Test 
         run:  bash _ci/unit_tests.sh
 
@@ -142,6 +147,11 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: "Clear restored Maven repository"
+        run: |
+          rm -rf ~/.m2/repository
+          mkdir -p ~/.m2/repository
 
       - name: "release to nexus"
         env:
