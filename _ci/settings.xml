@@ -1,67 +1,28 @@
 <settings>
-    <profiles>
-        <profile>
+    <mirrors>
+        <mirror>
             <id>alfresco-internal</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>alfresco-internal</id>
-                    <name>Alfresco Internal Repository</name>
-                    <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>alfresco-internal</id>
-                    <name>Alfresco Internal Repository</name>
-                    <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-    </profiles>
+            <name>Alfresco Cloudsmith Internal</name>
+            <url>https://artifacts.hyland.dev/basic/alfresco-internal/maven/</url>
+            <mirrorOf>*</mirrorOf>
+        </mirror>
+    </mirrors>
 
     <servers>
-        <!-- Credential for private Nexus repository groups -->
+        <!-- Credential for Cloudsmith, provided by the cloudsmith-auth action -->
         <server>
             <id>alfresco-internal</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
+            <username>${env.CLOUDSMITH_USERNAME}</username>
+            <password>${env.CLOUDSMITH_API_KEY}</password>
         </server>
-        <!-- Credential for private Nexus repositories -->
-        <server>
-            <id>alfresco-internal-snapshots</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
+        <!-- Credential for Nexus repositories used to deploy artifacts -->
         <server>
             <id>alfresco-internal-releases</id>
             <username>${env.NEXUS_USERNAME}</username>
             <password>${env.NEXUS_PASSWORD}</password>
         </server>
         <server>
-            <id>alfresco-enterprise-snapshots</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
-        <server>
-            <id>alfresco-enterprise-releases</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
-        <server>
-            <id>alfresco-public-snapshots</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
-        <server>
-            <id>alfresco-public</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
-        <server>
-            <id>alfresco-thirdparty</id>
+            <id>alfresco-internal-snapshots</id>
             <username>${env.NEXUS_USERNAME}</username>
             <password>${env.NEXUS_PASSWORD}</password>
         </server>
