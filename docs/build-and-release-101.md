@@ -5,7 +5,7 @@ The `ci.yml` config file can be found in the `.github/workflows` directory of th
 
 ## Stages and Jobs
 1. **tests**:  Java Build with Unit Tests, Veracode scan
-2. **release**: Publish to Nexus
+2. **release**: Publish to the Maven repository
 3. **publish**: Copy to S3
 
 
@@ -63,7 +63,7 @@ need to ensure that the _commit message_ contains the `[release]` tag (sub-strin
 ## Company Release process steps & info
 Prerequisites:
   - The **release** stage is complete - i.e. the release commit is tagged and the release 
-  artifacts are deployed on Nexus.
+  artifacts are deployed to the Maven repository.
 
 Steps:
 1. Checkout the branch used for the Maven Release (the branch that contains the release tag).
