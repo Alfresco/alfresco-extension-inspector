@@ -42,15 +42,12 @@
     </dependencyManagement>
 
     <distributionManagement>
-        <!-- For now internal repositories -->
         <repository>
-            <id>alfresco-internal-releases</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
+            <id>alfresco-releases</id>
+            <name>Alfresco Community Releases</name>
+            <!-- TODO: switch to maven.artifacts.hyland.dev once its DNS record exists -->
+            <url>https://maven.cloudsmith.io/hyland/alfresco-community-releases/</url>
         </repository>
-        <snapshotRepository>
-            <id>alfresco-internal-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <modules>
@@ -61,11 +58,46 @@
         <module>extension-inspector-test</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>alfresco-public</id>
+            <name>Alfresco Public Repository</name>
+            <url>https://artifacts.hyland.dev/public/alfresco-public/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <pluginRepositories>
         <pluginRepository>
-            <id>alfresco-internal-plugin</id>
-            <name>Alfresco Internal Repository</name>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>alfresco-public</id>
+            <name>Alfresco Public Repository</name>
+            <url>https://artifacts.hyland.dev/public/alfresco-public/maven/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
@@ -106,4 +138,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Deploys -A.x versions to internal releases; _ci/release.sh enables it for those versions -->
+        <profile>
+            <id>prerelease</id>
+            <distributionManagement>
+                <repository>
+                    <id>alfresco-releases</id>
+                    <name>Alfresco Internal Releases</name>
+                    <!-- TODO: switch to maven.artifacts.hyland.dev once its DNS record exists -->
+                    <url>https://maven.cloudsmith.io/hyland/alfresco-internal-releases/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
