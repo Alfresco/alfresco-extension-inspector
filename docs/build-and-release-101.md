@@ -30,6 +30,9 @@ Prerequisites:
  - the `master` / `support/*` branch is green and it contains all the changes that should be 
  included in the next release.
 
+All Maven releases, including `-A.x`, milestone, and GA versions, are published to the
+`alfresco-community-releases` Cloudsmith repository. Maven snapshots are not published.
+
 Steps:
 1. Create a new branch with the (recommended, but not necessary) name `feature/ACS-###_release_version` from the
  `master` / `support/*` branch.

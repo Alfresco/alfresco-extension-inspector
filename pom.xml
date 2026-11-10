@@ -138,19 +138,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <!-- Deploys -A.x versions to internal releases; _ci/release.sh enables it for those versions -->
-        <profile>
-            <id>prerelease</id>
-            <distributionManagement>
-                <repository>
-                    <id>alfresco-releases</id>
-                    <name>Alfresco Internal Releases</name>
-                    <!-- TODO: switch to maven.artifacts.hyland.dev once its DNS record exists -->
-                    <url>https://maven.cloudsmith.io/hyland/alfresco-internal-releases/</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
 </project>
