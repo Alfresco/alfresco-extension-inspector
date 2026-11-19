@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: adopt
-          java-version: 17
+          java-version: 21
 
       - uses: actions/checkout@v4
 
@@ -73,7 +73,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: adopt
-          java-version: 17
+          java-version: 21
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.1
         with:
